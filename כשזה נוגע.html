@@ -1,0 +1,11967 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>כשזה נוגע - שיר לכל עת</title>
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;700&family=Amatic+SC:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root { 
+            --turquoise-light: #e0f2f1;
+            --turquoise-main: #4db6ac;  
+            --turquoise-dark: #00897b;  
+        }
+
+        body { 
+            font-family: 'Assistant', sans-serif; 
+            background-color: #ffffff;
+            margin: 0; padding: 20px; text-align: center; 
+        }
+
+        .container { max-width: 1000px; margin: auto; }
+        .logo-container img { max-width: 350px; height: auto; margin-bottom: 20px; }
+        
+        #searchBar { 
+            width: 90%; max-width: 500px; padding: 15px 25px; font-size: 18px; 
+            border-radius: 50px; border: 2px solid var(--turquoise-main); outline: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 10px;
+        }
+.categories {
+            display: flex; 
+            justify-content: center; 
+            flex-wrap: wrap;
+            gap: 10px; 
+            padding: 20px;
+        }
+
+        .categories button {
+            background-color: #008080; 
+            color: white; 
+            border: 2px solid transparent; /* הכנה למסגרת של האפרסק */
+            padding: 10px 20px; 
+            border-radius: 8px; 
+            cursor: pointer;
+            font-size: 16px; 
+            font-weight: bold; 
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* אפקט מעבר עכבר רגיל */
+        .categories button:hover { 
+            background-color: #005f5f; 
+        }
+
+        /* העיצוב החדש לכפתור שנבחר - צבע אפרסק כתמתם */
+.categories button.active {
+    background-color: #ffb380 !important; /* אפרסק נוטה לכתום עדין */
+    color: #ffffff !important; /* טקסט לבן בדרך כלל נראה טוב יותר על כתום כהה יותר */
+    border-color: #ff9e61;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+    transform: translateY(1px); /* מוסיף תחושת לחיצה */
+}
+        #results {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); 
+            gap: 15px; padding: 20px;
+        }
+        
+        .song-card { 
+            background: var(--turquoise-light); padding: 20px; 
+            border-radius: 12px; cursor: pointer; transition: 0.3s; 
+            border-bottom: 3px solid var(--turquoise-main); 
+            height: 80px; display: flex; align-items: center; 
+            justify-content: center; font-weight: bold; color: var(--turquoise-dark);
+        }
+
+        .song-card:hover { transform: translateY(-3px); background: #b2dfdb; }
+
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); }
+        .modal-content { background: white; margin: 3% auto; padding: 30px; width: 85%; max-width: 600px; border-radius: 20px; position: relative; max-height: 85vh; overflow-y: auto; text-align: center; }
+        .close-btn { float: left; font-size: 28px; cursor: pointer; color: #aaa; }
+        .modal-title { color: var(--turquoise-dark); font-size: 1.8em; margin-bottom: 10px; border-bottom: 2px solid var(--turquoise-light); padding-bottom: 10px; }
+        .modal-lyrics { white-space: pre-wrap; line-height: 1.6; font-size: 1.1em; color: #333; margin: 20px 0; }
+        .youtube-link { display: inline-block; background: #ff0000; color: white; padding: 10px 25px; border-radius: 50px; text-decoration: none; font-weight: bold; }
+/* עיצוב למשבצות שירי משוררים - אפרסק בהיר */
+.song-card.poet-style {
+    background: #fff0e6 !important; /* אפרסק בהיר מאוד (50% פחות מהכפתור) */
+    border-bottom: 3px solid #ffccaa !important; /* מסגרת אפרסקית עדינה */
+    color: #cc7a00 !important; /* טקסט חום-כתום כהה שיהיה קריא */
+}
+
+.song-card.poet-style:hover {
+    background: #ffe5d4 !important;
+}  </style>
+</head>
+<body>
+<div class="container">
+    <div class="logo-container"><img src="logo.png" alt="כשזה נוגע"></div>
+    <input type="text" id="searchBar" placeholder="חיפוש שיר..." onkeyup="searchSongs()">
+ <div class="categories">
+        <button onclick="filterCategory('הכל')">הכל</button>
+        <button onclick="filterCategory('אהבה')">אהבה</button>
+        <button onclick="filterCategory('הודיה')">הודיה</button>    
+        <button onclick="filterCategory('יחד')">יחד</button>
+        <button onclick="filterCategory('געגוע')">געגוע</button>
+        <button onclick="filterCategory('בית')">בית</button>
+        <button onclick="filterCategory('תקווה')">תקווה</button>
+        <button onclick="filterCategory('אמונה')">אמונה</button>
+        <button onclick="filterCategory('התחלה')">התחלה</button>
+        <button onclick="filterCategory('איחול')">איחול</button>
+        <button onclick="filterCategory('ילדות')">ילדות</button>
+        <button onclick="filterCategory('משפחה')">משפחה</button>
+        <button onclick="filterCategory('שמחה')">שמחה</button>
+        <button onclick="filterCategory('מסע')">מסע</button>
+        <button onclick="filterCategory('מחזק')">מחזק</button>
+        <button onclick="filterCategory('עצוב')">כשעצוב וכואב</button>
+        <button onclick="filterCategory('נתינה')">נתינה</button>
+        <button onclick="filterCategory('זיכרון')">זיכרון</button>
+        <button onclick="filterCategory('טבע')">טבע</button>
+        <button onclick="filterCategory('פרידה')">פרידה</button>
+        <button onclick="filterCategory('עונות')">עונות</button>
+        <button onclick="filterCategory('שירים על שירים')">שירים על שירים</button>
+    </div>
+    <div id="results"></div>
+</div>
+
+<div id="songModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeModal()">&times;</span>
+        <h2 id="modalTitle" class="modal-title"></h2>
+        <div id="modalLyrics" class="modal-lyrics"></div>
+        <a id="modalYoutube" href="#" target="_blank" class="youtube-link">📺 לצפייה ביוטיוב</a>
+    </div>
+</div>
+
+<script>
+    const playlist = [        { name: "יש אי שם", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=JA3BtyZrhEY", lyrics: `יש אי שם
+מישהו חושב עלייך
+מישהו רוצה אותך נורא
+יש אי שם
+יש אי שם
+מישהו חולם עלייך
+מישהו אוהב אותך כל כך
+יש אי שם
+אז אל תבכי הלילה
+ראשך הניחי כאן
+כוכב נופל מאיר את לילך
+שואל לאן?
+ומה תבקשי מלמעלה?
+אם זה אותי - אז הנה אני
+שלך, מזמן
+שיר לך שר
+שיר עצוב סנטימנטלי
+שיר שלא משאיר אותך לבד
+שיר לך שר
+השחר מחכה כבר
+מעבר לפינה
+השמש מסתובבת עכשיו
+לעוד תנומה
+אני מסתכל על פנייך
+את חלומך מלטפת קרן אור
+קטנה
+יש אי שם
+מישהו חושב עלייך
+מישהו רוצה אותך נורא
+יש אי שם
+` },
+        { name: "אל תלכי מכאן", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=sJFfiL_Y1_E", lyrics: `אל תלכי מכאן, אל תקחי מכאן
+את עקבות הזמן האבוד שלך
+אדבר איתך על אוהב נשכח
+שליבו נוצח בראותו אותך
+אגלה לך איך, רק למענך
+מלך מאוהב את כיסאו עזב
+אל תלכי מכאן, אל תלכי מכאן
+אל תלכי מכאן, אל תלכי מכאן.
+
+לך אני אביא שלג באביב
+ופניני מטר ממחוזות ניכר
+ארץ אעבור ומפני הקור
+אעטוף אותך אציפך באור
+ולאהבה ממלכה אקים
+ואמציא חוקים ואכתיר אותך
+אל תלך מכאן, אל תלך מכאן
+אל תלך מכאן, אל תלך מכאן.
+
+אל תלך מכאן, לך אמציא שפה
+כה מטורפה, אבל כה יפה
+האמן לי את הכל אשכח
+תאונות קטנות של הכאב וברח
+ומילה רעה שאמרתי לך
+אושר בן שעה הוא שביר כל כך
+אל תלך מכאן, אל תלך מכאן
+אל תלך מכאן, אל תלך מכאן.
+
+כבר ראינו איך התחדשה האש
+והר געש מת שב והתלהט
+וראינו איך ארץ חרוכה
+התכסתה שדות התמלאה פריחה
+וראינו גם אופק שנדם
+איך הוא שוב בוער
+בשחור ודם
+אל תלך מכאן
+אל תלכי מכאן
+אל תלך מכאן
+
+אל תלך מכאן
+אל תלכי מכאן
+את עקבות הזמן
+האבוד שלך
+האמיני לי את הכל אשכח
+תאמין לי את הכל אשכח
+תאונות קטנות של הכאב וברח
+רק אל תלכי מכאן
+
+אל תלך מכאן
+אל תלכי מכאן 
+
+` },
+        { name: "זכיתי לאהוב", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=G2Mx2kYX4jw", lyrics: `וכשהשמש נמחקת בשמיים
+והלב מטפטף לי דרך העיניים החומות
+אז אני זוכר שיש ידיים שרוצות אותי קרוב
+אני יודע שזכיתי לאהוב
+
+וכשהרוח אחרי הצהריים
+היא מפזרת ענפים קטנים ובינתיים זה נעים
+אז אני זוכר שיש עיניים שרואות אותי קרוב
+ואני יודע שזכיתי לאהוב
+אני יודע שזכיתי לאהוב
+
+וכשהשמש יוצאת מעל המים
+ומתחיל עוד יום אפור ובינתיים אין סיבה
+אז אני זוכר שיש שפתיים שרוצות אותי קרוב
+אני יודע שזכיתי לאהוב
+אני זוכר שיש שפתיים שרוצות אותי קרוב
+ואני יודע שזכיתי לאהוב
+
+` },
+        { name: "בגללך", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=t52xi_AsO70", lyrics: `קוסם שולף שפן
+כמו מלצר שעורך שולחן
+אוהב אותך, אוהב אותך
+אוהב אותך
+
+כמתאבד שקופץ ממגדל
+כמו אסטרונאוט אבוד בחלל
+אוהב אותך, אוהב אותך
+אוהב אותך
+
+כמו קוסם ששולף שפן
+כמו מלצר שעורך שולחן
+אוהב אותך,אוהב אותך
+אוהב אותך
+
+מאבד את שיווי המשקל
+מאבד את עצמי ובכלל
+אוהב אותך, אוהב אותך
+אוהב אותך
+
+בגללך לילה לא לילה
+איך בגללך -
+אני למטה, למעלה
+איך בגללך -
+כלום לא הולך 
+
+` },
+  { name: "סיכוי | רונן קלאס", cat: ["תקווה"], youtube: "https://www.canva.com/design/DAGYU5rJjt0/dqvXKrf2Mo9f1I1tHq3hlQ/view?utm_content=DAGYU5rJjt0&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "זה החלום | אולב האוגה", cat: ["תקווה"], youtube: "https://www.canva.com/design/DAGYVwdu_Uw/nrh_1N8mQn0ZcQdkpDoD4w/view?utm_content=DAGYVwdu_Uw&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "כשאני מציירת לב | גלי רביץ", cat: ["תקווה"], youtube: "https://www.canva.com/design/DAGYUwqFQ1U/125Z_CiqvE_0bhWCn1Wx7Q/view?utm_content=DAGYUwqFQ1U&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "הן תבואנה | רחל נגב", cat: ["תקווה"], youtube: "https://www.canva.com/design/DAGYU1QkF9U/aPnz-K2vwKoSL3NHGVBT4Q/view?utm_content=DAGYU1QkF9U&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "אם יש לך ים בלב | שלומית כהן אסיף", cat: ["תקווה"], youtube: "https://www.canva.com/design/DAGYU2gQC7Y/tN0OB3i6zwtlM_577kYiTA/view?utm_content=DAGYU2gQC7Y&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "שבע שורות לזריחה | אמיר אור", cat: ["תקווה"], youtube: "https://www.canva.com/design/DAGYU9XaQuU/OZzXQt4ytt7FTEbOaWo2CQ/view?utm_content=DAGYU9XaQuU&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+        { name: "התיקח את ידי", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=lxRYHtUlAgA", lyrics: `התיקח, התיקח את ידי
+יחידי, תדבר בעדי
+אם ארע והיית עדי
+דבר בעדי, דבר בעדי.
+
+אם ארע וניתן בי סימן
+איך אדע להציל משרירות של הזמן
+איך אציל משרירות של הלב
+וממה שבלי דעת עולב
+איך אדע להציל תו והגה וצליל
+בלי לרכש וגם בלי להפריע
+וגם בהקיץ, מבלי להאיץ
+בלי להאיץ אגיע ותגע.
+
+כשאקח, כשאקח את ידך
+יחידה אדבר בעדך
+אם ארע והיה לי סודך
+אני בסודך, אני בסודך.
+
+אם ארע וניתן בי סימן...
+
+` },
+        { name: "אח מילת מפתח", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=b9Hs0LIVmvM", lyrics: `כשנתתי לך שעה
+לי נתת את חייך.
+כשנתתי לך דמעה
+את נתת לי חיוך.
+ושכחתי את ימי
+לפנייך, לפני.
+
+אח, איך קולי נאנח,
+אח, איזה קסם בינינו מונח.
+אח, כמה טוב לי ורך,
+חדר סגור שוב נפתח.
+
+כשנגעתי בכתפך
+את קרבת את שפתייך
+והרעד בגופך
+התגבר בתוכי.
+ועצמתי את עיני
+בידייך, בידי.
+
+אח, איך קולי נאנח,
+אח, איזה קסם בינינו מונח.
+אח, כמה טוב לי ורך,
+חדר סגור שוב נפתח.
+
+לתאר מה שבי צומח
+אין מילה בתנ"ך.
+אח היא מילה, כן מילת מפתח
+כשאני איתך.
+
+את יודעת שאני
+זה גם את, זה גם שנינו,
+זה בינך וזה ביני,
+כל השאר לא חשוב.
+והלב היה נרגש
+ונולדנו מחדש.
+
+אח, איך קולי נאנח,
+אח, איזה קסם בינינו מונח.
+אח, כמה טוב לי ורך,
+חדר סגור שוב נפתח.
+
+לתאר מה שבי צומח
+אין מילה בתנ"ך.
+אח היא מילה, כן מילת מפתח
+כשאני איתך.
+
+
+` },
+        { name: "לילה בחוף אכזיב", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=MFrjlagc8rE", lyrics: `הרוח והחושך והמים
+זוכרים מליל אתמול את צעדך
+הקצף שמחה את עקבותייך
+יודע שהיית כאן לבדך
+אני כעיוור אחרייך הולך
+רוח בחושך נושקת לפני המים
+שוב לא יאיר אלי בחוף בעברך
+צחור החבצלת בשחור שערך
+המים והרוח והחושך
+אמרו לי שעברת כאן יחפה
+מדוע לא הייתי כאן ללחוש לך
+חכי לי נעצבת ויפה
+אני כעיוור אחרייך הולך
+רוח בחושך נושקת לפני המים
+שוב לא יאיר אלי בחוף בעברך
+צחור החבצלת בשחור שערך
+החושך והמים והרוח
+עונים לי בחידה שאין לה סוף
+הו מה הם הקולות אשר קראו לך
+בלילה בלי ירח אל החוף
+אני כעיוור אחרייך הולך
+רוח בחושך נושקת לפני המים
+שוב לא יאיר אלי בחוף בעברך
+צחור החבצלת בשחור שערך
+אני כעיוור אחרייך הולך
+רוח בחושך נושקת לפני המים
+שוב לא יאיר אלי בחוף בעברך
+צחור החבצלת בשחור שערך 
+` },
+        { name: "לא יכולתי להגיד", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=_y0TGY-uBtM", lyrics: `את יודעת ודאי
+שכל השירים נכתבו ממך
+ובאהבה
+לא יכולתי להגיד לך
+יותר ממה ששיר
+ששיר אחד פשוט יכול לומר
+ולא אמרתי לך יותר ממה
+ששיר אחד פשוט יכול לומר
+הייתי מתאהב שב וחוזר
+אף פעם לא אמרתי שיר אחר
+כל לילה כשקמת הייתי רואה
+כוכב אחד נתלה
+בעצב שיערך
+וכך השיר נולד
+הייתי מאושר
+באהבה אז באתי לידך
+ולא אמרתי לך יותר ממה
+ששיר אחד פשוט יכול לומר
+הייתי מתאהב שב וחוזר
+אף פעם לא אמרתי שיר אחר
+כך היינו עד בוקר מדברים
+אחד עם השני
+היינו מדברים
+לא במילים גדולות
+ולא באנשים
+רק את אני והפשוט בשיר
+ולא אמרתי לך יותר ממה
+ששיר אחד פשוט יכול לומר
+הייתי מתאהב שב וחוזר
+אף פעם לא אמרתי שיר אחר
+ולא אמרתי לך יותר ממה
+ששיר אחד פשוט יכול לומר
+הייתי מתאהב שב וחוזר
+אף פעם לא אמרתי שיר אחר
+
+` },
+        { name: "אבל את", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=7VJ4piwmauA", lyrics: `שמעתי כבר כמעט את כל הסיפורים כולם
+את כל הסיפורים המופרעים שבעולם
+שמעתי סיפורים קטנים על מלחמות גדולות
+וסיפורים על אהבות שלא ידעו גבולות
+
+היו יפים כל כך יפים
+היו כל סיפוריי
+אבל את זה הסיפור הכי יפה של חיי
+
+יצאתי כבר כמעט לכל המסעות כולם
+לכל המסעות המרתקים שבעולם
+טיפסתי על צוקי הרים ירדתי גאיות
+ראיתי את כל הנופים ואת כל המראות
+
+היו יפים כל כך יפים
+היו כל מסעותיי
+אבל את זה המסע הכי יפה של חיי
+
+חלמתי כבר כמעט את כל החלומות כולם
+את כל החלומות המוזרים שבעולם
+חלמתי סיפורים שלא היו ונבראו
+חלמתי מסעות אשר לדרך לא יצאו
+
+היו יפים כל כך יפים
+היו חלומותיי
+אבל את זה החלום הכי יפה של חיי
+` },
+// שירים בודדים לפי קטגוריות שונות
+  { name: "כ''ף התקווה הטובה | תה", cat: ["תקווה"], youtube: "https://www.canva.com/design/DAGYXFxGKGU/hM7jw-bcnzLPP0c3c27npQ/view?utm_content=DAGYXFxGKGU&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "כאב השמחה | נתן זך", cat: ["מסע"], youtube: "https://www.canva.com/design/DAGaBxmrO1o/ov3x-EEaVbIJtZ6_HN_iCg/view?utm_content=DAGaBxmrO1o&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=hc2ae6cca07", isPoem: true },
+  { name: "אני תוהה על פשר הבדידות | תרצה אתר", cat: ["ילדות"], youtube: "https://www.canva.com/design/DAGaB4vENw8/VOd6PbCbC08hl9b6M3yneQ/view?utm_content=DAGaB4vENw8&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h82cbbabdb3", isPoem: true },
+
+  // קטגוריית התחלה
+  { name: "משק של כנפי התחלות | עידית חכמוביץ", cat: ["התחלה"], youtube: "https://www.canva.com/design/DAGYV1KrKeI/ShPf6m3htau1ayTQ-HlVfA/view?utm_content=DAGYV1KrKeI&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "אחד בספטמבר | עינת לביאד", cat: ["התחלה"], youtube: "https://www.canva.com/design/DAGYVwVJ_XA/51Sq6bjAPt07T7Q6RLMumQ/view?utm_content=DAGYVwVJ_XA&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "ימי הדבש והיונים | עידית חכמוביץ'", cat: ["התחלה"], youtube: "https://www.canva.com/design/DAGYV9PGt24/sXVuv0w-GY80urxfy1HQrA/view?utm_content=DAGYV9PGt24&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "תפילה לשנה החדשה | נתן אלתרמן", cat: ["התחלה"], youtube: "https://www.canva.com/design/DAGYV1lc6Cw/7e4HBMl9d89RyIya03Do3A/view?utm_content=DAGYV1lc6Cw&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "בשבוע האחרון של השנה | מירי וסטרייך", cat: ["התחלה"], youtube: "https://www.canva.com/design/DAGYVwy4wzU/oCzrbCNSJmvQtcVrY-LoCA/view?utm_content=DAGYVwy4wzU&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "השנה לא הולכת | שושי נורמן", cat: ["התחלה"], youtube: "https://www.canva.com/design/DAGYV3fm-e0/zVunQRNh7f5n90lX5FapTg/view?utm_content=DAGYV3fm-e0&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "כל שנה | לאה גולדברג", cat: ["התחלה"], youtube: "https://www.canva.com/design/DAGYVzOabu4/B5J9T0T4aYzndLrBoMwKhQ/view?utm_content=DAGYVzOabu4&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "כל שנה | ניסן פרידמן", cat: ["התחלה"], youtube: "https://www.canva.com/design/DAGYVx2_NHk/yfo9A3lJvU-CRYSMQKXCjw/view?utm_content=DAGYVx2_NHk&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+        { name: "אולי (אביב גפן)", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=t5u_pXDx7Ug", lyrics: `זה רק מתחזק והולך
+וכואב
+מסוכסך קשה
+עם הלב
+אני חושב אולי
+אני אוהב אותה יותר מדי
+פנס בודד בתוך רחוב האהבה
+ואם תראו ילדה
+עם עיניים איילה
+תמסרו שאני
+עוד מחפש אותה
+אני חושב אולי
+אני אוהב אותה יותר מדי
+פנס בודד בתוך רחוב האהבה
+אני חושב אולי
+אני אוהב אותה יותר מדי
+ולא אפסיק לשיר לה עד שהיא תחזור אלי
+והיא יודעת
+היא יודעת
+
+` },
+        { name: "עד סוף הקיץ", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=bUYzFaBWQSw", lyrics: `ניסיתי להדביק את צעדיה,
+כתפה שוב בכתפי כמעט נוגעת.
+חיכיתי לעיניה,
+חיכיתי לעיניה,
+מה עוד יכולתי לבקש
+באמצע הרחוב?
+
+עד סוף הקיץ
+אדע את התשובה,
+את פשר הקולות אלמד,
+את כל החלומות,
+אפתור את הפחדים
+בסוף הקיץ שוב אשב בין ידידים.
+
+אני רוצה פתאום לחזור הביתה
+אבל צילך שוב בצלי כמעט נוגע.
+הנה אנחנו שניים,
+שלובי צילי ידיים,
+מה עוד יכולתי לבקש
+באמצע הרחוב?
+
+עד סוף הקיץ...
+
+נדמה לי שראיתי את עיניה
+נחות עלי בדרך מול השמש
+באור בין הערבים
+היה לי רגע בית
+מה עוד יכולתי לבקש
+באמצע הרחוב
+
+עד סוף הקיץ...
+
+` },
+        { name: "אין לך דאגות", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=_qCtDKOAIvY", lyrics: `אתמול נסענו אל הים רק את אני ואלוהים
+לנוח מכל הטירוף הזה דקה
+ולא אמרנו שום דבר הרי זה ככה בחיים
+האמת תמיד יוצאת עם השתיקה
+ואת עומדת לידי את עייפה אני מבין
+וזה ימים שאין אותי ואין אותך
+אני גונב אותך לרגע ואומר לך בפנים
+יותר מכל דבר אחר אני שלך
+אין לך דאגות מה יכול להיות
+ככה זה בינינו רעש בלילות
+במחשבות
+כל העולמות מאירים עלינו
+כל זה בשבילנו
+הכול מהר ושוב לאט אומרים שככה זה תמיד
+זו לא טעות ההיגיון הזה מוזר
+אני כותב עלינו קצת כי ככה קל לי להגיד
+בסוף תמיד הכול נופל על הנייר
+` },
+        { name: "אנ'לא יודע איך לומר לך", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=oq-wSaSh-Do", lyrics: `אנ'לא יודע איך לומר לך
+מילים לא אומרות מאום
+אני סתם בחור ששר לך
+שירים לא יגידו כלום.
+
+אנ'לא יודע מה זה נצח
+מילים לא אומרות מאום
+אני סתם אחד שבטח
+לא יודע כלום.
+
+אולי הערב אין שום דרך
+יש רק פצע וכאב
+אנ'לא יודע איך לומר לך
+כמה שאני אוהב.
+
+לא יודע מה קרה לי
+מילים לא אומרות מאום
+ואני לבד ורע לי
+ואת לא אומרת כלום
+
+אני יושב פה, מחכה לך
+מחכה לך וכותב
+כי אנ'לא יודע איך לומר לך
+כמה שאני אוהב.
+
+` },
+        { name: "אם נישאר חלום", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=MGPuWM67sso", lyrics: `אם נישאֵר חלום אם נישאֵר חלום
+מה יכול כבר להיות
+אהבה אחת פחות בעולם ועם הזמן
+אם נישאֵר חלום אם נישאֵר חלום
+זה את זו פשוט נשכח
+כמו הקיץ שדעך נעלם מהעולם
+
+בואי לא ניתן לזה לקרות
+על אהבה שכזאת לא מוותרים
+בואי כי כל כך פשוט לראות
+שאהבה שכזאת שוב לא נפגוש כל החיים
+
+אם נישאֵר חלום אם נישאֵר חלום
+יעברו כל הימים
+ויהיו כל כך דומים זה לזה כמו חיילים
+אם נישאֵר חלום אם נישאֵר חלום
+מה יכול כבר להיות
+אהבה אחת פחות בעולם אבל הפעם
+
+בואי לא ניתן לזה לקרות
+על אהבה שכזאת לא מוותרים
+בואי כי כל כך פשוט לראות
+שאהבה שכזאת שוב לא נפגוש כל החיים 
+
+` },
+        { name: "עץ הרימון", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=5UWLxiaD4IU", lyrics: `עץ הרימון נתן ריחו
+בין ים המלח ליריחו,
+שב, חומתי, גדודך מנדוד,
+שב, תמתי, דודך מדוד.
+
+אוצרות אופיר וצרי גלעד,
+רכב מצריים שללתי לך, בת.
+אלף הזמר אתלה לך מגן
+מן היאור עד הירדן.
+
+את כלולה מכל כלות,
+את דגולה כנדגלות.
+שתיים עינייך כשתיים יונים
+וקול קולך פעמונים.
+
+לך התרועות, לך הזרים,
+לך כל שלטי הגיבורים,
+מה לי חיל אלף ומה רבבה?
+לבבי מת מאהבה.
+
+שב אל הקשת, שב החץ,
+שב הרימון אל ראש העץ,
+לך ואלייך החיל יוחל,
+בואי כלה, כי רד הליל.
+
+` },
+        { name: "עד שתחזרי אליי", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=rvaLwJRBagM", lyrics: `כל יום שעובר מאבד אותך יותר
+מתרחקת מחיי
+מחפשת לבדך
+את הדרכים החדשות
+את הכוח לשנות
+להתחיל מהתחלה
+לגלות עולם חדש
+עכשיו למצוא את המילים
+ולקרב את המרחק בינינו
+עד שתחזרי אליי אצא מדעתי
+אין לי יום ולילה כשאת לא כאן לצידי
+תני לי סימן אם את שומעת את קולי
+בחוץ עולה האור אבל הכול כבה בלב שלי
+כמה דמעות זלגו אף פעם לא תדעי
+מרוב החיפושים איבדתי את עצמי כל לילה
+מתחת דלת נעולה
+מכתב מארץ רחוקה
+כתבת שטוב לך שם עכשיו
+ומקווה שגם אצלי
+אבל תדעי שאני כאן
+אני אף פעם לא אשכח
+לך אני שר כל הלילות
+את השירים את השתיקות
+עכשיו למצוא את המילים
+ולקרב את המרחק בינינו
+עד שתחזרי אליי אצא מדעתי
+אין לי יום ולילה כשאת לא כאן לצידי
+תני לי סימן אם את שומעת את קולי
+בחוץ עולה האור אבל הכול כבה בלב שלי
+כמה דמעות זלגו אף פעם לא תדעי
+מרוב החיפושים איבדתי את עצמי כל לילה
+עד שתחזרי אליי אצא מדעתי
+אין לי יום ולילה כשאת לא כאן לצידי
+כמה דמעות זלגו אף פעם לא תדעי
+מרוב החיפושים איבדתי את עצמי כל לילה
+` },
+        { name: "באהבה שלנו", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=4tH_0mpVxWw", lyrics: `אני למד את שבינינו-
+שהחיפוש הזה נגמר
+אפילו דרך שתיקותינו
+אני יודע מה לומר
+באהבה שלנו
+כלום לא עוצר אותנו
+הכל יפה, הכל מותר
+היא תישאר איתנו
+והיא תבוא אלינו גם מחר
+
+אני רואה מה שהסתרנו
+ומחבק מכל משמר
+גם הסודות שלא אמרנו
+אני יודע איך לומר
+באהבה שלנו
+כלום לא עוצר אותנו
+הכל יפה, הכל מותר
+היא תישאר איתנו
+והיא תבוא אלינו גם מחר
+
+
+
+נשב ליד הים אחרי כל סערה
+נביט בציפורים חגות
+נחזיק ידיים,
+גם אם זה נראה
+שערפל בינינו
+
+נהיה כמו הדייג השב אל חכתו
+ומייחל לדג זהב
+ונבקש ממנו משאלות
+גם בנפילות
+שבדרכנו..
+
+אני קשוב ללא ידוע
+ולגורל המתוזמר,
+גם אם איני מבין מדוע
+ולא יודע איך לומר,
+באהבה שלנו
+כלום לא עוצר אותנו
+אולי מלמעלה לנו זה נבחר
+ומהו אותו הנצח
+אם לא לטעת פתח למחר?
+
+נשב ליד הים אחרי כל סערה
+נביט בציפורים חגות
+נחזיק ידיים,
+גם אם זה נראה
+שערפל בינינו
+
+נהיה כמו הדייג השב אל חכתו
+ומייחל לדג זהב
+ונבקש ממנו משאלות
+גם בנפילות
+שבדרכנו..
+שבדרכנו
+` },
+        { name: "פתאום", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=5-a9OvmeLDo", lyrics: `
+פתאום הרגשה ברורה
+חותכת כמו שירה
+מזל שחיכיתי עד היום
+פתאום תהומות תשוקה
+מילים שאחרי שתיקה
+תנועה שרואים רק מקרוב
+תני לי רגע להיות עוד לידך
+רציתי לומר לך איך
+הזזת אצלי הכול
+כמו מפגש אור השמש בגלים
+הקצב במילים
+הצבע במכחול
+הקצתי אל תוך חלום
+עינייך בכל מקום
+מזל שחיכיתי עד היום
+תני לי רגע להיות עוד לידך
+רציתי לומר לך איך
+הזזת אצלי הכול
+כמו מפגש אור השמש בגלים
+הקצב במילים
+חיכיתי שתבוא (חיכיתי שתבואי)
+פתאום הרגשה ברורה
+חותכת כמו שירה
+מזל שחיכיתי עד היום
+` },
+{ name: "בגלל הלילה", cat: ["עצוב"], youtube: "https://youtu.be/-Y0LuloTFtM?si=kpeLHyB1fiNdQz9V", lyrics: `בגלל הלילה
+בגללו
+אני כעת יושבת
+ולא נלקחת
+
+בגלל החושך
+בגללו
+אני נדמית לך
+חולמת או משתעשעת
+
+אינני נלקחת לשום מקום
+בכיתי בגלל דברים שאין להם שמות
+ובגללך למשל בכיתי רק לרגע
+מפני שהיו בי דמעות פתאום
+
+בגלל הלילה
+בגללו
+אני כעת יושבת
+ולא נלקחת
+
+בגלל החושך
+בגללו
+אני נדמית לך
+חולמת או משתעשעת
+
+לא בכיתי כדי שתלך
+רציתי להחליף את המילים
+ביקשתי ללכת מעט אחריך
+חשבתי שתלך בצעדים קטנים
+
+בגלל הלילה
+בגללו
+אני כעת יושבת
+ולא נלקחת
+
+בגלל החושך
+בגללו
+אני נדמית לך
+חולמת או משתעשעת
+
+האור החזק מפריע לי
+לבכות את צערך
+ואני רק תמונה נקיה בהירה
+אני רק תמונת אישה
+
+בגלל הלילה
+בגללו
+אני כעת יושבת
+ולא נלקחת
+
+בגלל החושך
+בגללו
+אני נדמית לך
+חולמת או משתעשעת` },
+  { name: "איסלנד", cat: ["עצוב"], youtube: "https://youtu.be/zaZUNFPmFB0?si=2zFub53U7eajLWi0", lyrics: `
+הנה שוב מתחיל הבוקר, שנינו שוב פוקחים עיניים
+הנה שוב השיר שלך את מתעוררת לעולם
+אני קם ראשון בינינו, יש דברים קטנים עדיין
+בואי ונפתור אותם, כדי שיהיה מושלם
+
+הנה שוב את מתמכרת, לרגשות ומספרת
+שחלמת עליי בלילה, שהבאתי לך פרחים
+נשיקות קטנות בבוקר, נשיקות קטנות בערב,
+תסתכלי החוצה הנה, השמיים מאירים.
+
+רק לפעמים באמצע צחוק, על הפנים
+משתוללת כאן סופה, כמו באיסלנד
+מה קורה לנו כשרע לנו בפנים?
+את חוזרת מהכפור
+אני בא חשוף באור
+ומחבק אותך חיבוק שלא נגמר
+ולוחש: "אלמלא היית כאן, אין לי שום מחר".
+
+הנה שוב מתחיל הבוקר, הנה שוב פוקחים עיניים
+אתה רחוק כמו סן-פרנסיסקו, את אומרת תתקרב
+נשיקות קטנות בבוקר, אני מנשק לך ת'עיניים
+ושואל תירצי קפה, ומתכוון לומר אני אוהב.` },
+  { name: "שמיים תחייכו", cat: ["עצוב"], youtube: "https://youtu.be/HY_IKaguBdE?si=_y57q48iZV6yD1lC", lyrics: `
+שמיים תחייכו
+אני כבר לא יכול
+וגם החזקים
+מפחדים ליפול
+איפה הכח
+ואיפה קונים חוכמה
+ואיך אנחנו
+מגייסים ת'אהבה
+
+כשהשמיים יפתחו
+לא נבנה יותר חומה
+אני אשב איתך
+על הגדר ביחד
+ורק תופים שקטים
+של אהבה
+יחזירו לנו
+את השקט והנחת
+
+כשהשמיים ישפטו
+היונה תתחיל לשאול
+למה לא קישטנו
+בעלה של זית
+ולמה לא הרגשנו
+שהיא כאן
+אז לך תסביר לה
+ששמרנו על הבית
+
+שמיים תחייכו...
+
+כשהשמיים יבקשו
+שנתחיל להתגבר
+מכאן כבר לא
+נוכל לברוח
+השמש שוב תשיר
+פזמון חוזר
+שכל יום בבוקר
+אי אפשר לשכוח
+
+כן שמיים עצובים
+זה לא יכול להמשך
+כי האור שבקצה
+כבר לא אורח
+ורק שמיים
+מחייכים לבן
+יכולים שוב
+לעשות אותי שמח
+
+שמיים תחייכו...
+
+
+ ` },
+{ name: "רק רגע | עטרה גבריאלי", cat: ["עצוב"], youtube: "https://www.canva.com/design/DAGcL43RONo/J-4P1mO2eQUtsoU6NtGJ2Q/view?utm_content=DAGcL43RONo&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=hff4fbf55ba", isPoem: true },
+  { name: "מהכיור | יערה בר", cat: ["עצוב"], youtube: "https://www.canva.com/design/DAGr1JuaABE/cRXknXcvkIdVzZPw-otegw/view?utm_content=DAGr1JuaABE&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h0a4ea1fadf", isPoem: true },
+  { name: "חצי תפוח | צופיה הרבנד", cat: ["עצוב"], youtube: "https://www.canva.com/design/DAGYXCbfDos/hbxy-sbDQY726J9-oPo_Tg/view?utm_content=DAGYXCbfDos&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "מעבר לכאב | נעמה יונג", cat: ["עצוב"], youtube: "https://www.canva.com/design/DAGYXCbfDos/hbxy-sbDQY726J9-oPo_Tg/view?utm_content=DAGYXCbfDos&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "שמרי נפשך | נתן אלתרמן", cat: ["עצוב"], youtube: "https://www.canva.com/design/DAGr1LtYj2Y/5LZ8fmS_6UeD3vztG7Wm7Q/view?utm_content=DAGr1LtYj2Y&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=ha0ebf99914", isPoem: true },
+  { name: "באותו גלגול קסום | זלדה", cat: ["עצוב"], youtube: "https://www.canva.com/design/DAGYXCdi2mM/XT1I8PLO0xuX2JaMnrDtrA/view?utm_content=DAGYXCdi2mM&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "ביציאה מהילדות | רונן קלאס", cat: ["עצוב"], youtube: "https://www.canva.com/design/DAGr1Fk0ZfE/jDj5rwOkV5aTPu2L3SlL2Q/view?utm_content=DAGr1Fk0ZfE&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h43bc219458", isPoem: true },
+  { name: "לאן היינו הולכים | נתן יונתן", cat: ["עצוב"], youtube: "https://www.canva.com/design/DAGYXLrmcsU/5cdbF-1isGkOoV7uYFsFAw/view?utm_content=DAGYXLrmcsU&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "סוף הנפילה | דליה רביקוביץ", cat: ["עצוב"], youtube: "https://www.canva.com/design/DAGr1FK6n1Q/1qVoL-mYwprTbvvegQ7i8g/view?utm_content=DAGr1FK6n1Q&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h0cff6b59fa", isPoem: true },
+  { name: "כפליים | עידית ברק", cat: ["עצוב"], youtube: "https://www.canva.com/design/DAGr1IbqDCc/mOPoxq0VuSTXM4h39urYxQ/view?utm_content=DAGr1IbqDCc&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h3e81e64429", isPoem: true },
+  { name: "ענף | עידית ברק", cat: ["עצוב"], youtube: "https://www.canva.com/design/DAGYXJT7ek8/--sKN0gFKwfXDifXbc1Wxw/view?utm_content=DAGYXJT7ek8&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "דבר קטן | טלי וייס", cat: ["עצוב"], youtube: "https://www.canva.com/design/DAGYW6ubxGE/5rrLW6Me97L_cVFs40G0Ow/view?utm_content=DAGYW6ubxGE&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "כשאני נעשית בודדה | שיבטה טויו", cat: ["עצוב"], youtube: "https://www.canva.com/design/DAGr1AnOJK4/QBevzEVeHPQ0IMivvfdzDw/view?utm_content=DAGr1AnOJK4&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h957399b165", isPoem: true },
+  { name: "כאב | עידית ברק", cat: ["עצוב"], youtube: "https://www.canva.com/design/DAGr1OGrV44/h3SOXdLC1DzT91s_JeMdoQ/view?utm_content=DAGr1OGrV44&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=hfdcf17c1f6", isPoem: true },
+  { name: "בוקר | מאיה ויינברג", cat: ["עצוב"], youtube: "https://www.canva.com/design/DAGr1A9o03U/NFEpN5ktUIhW64mdKR_UbA/view?utm_content=DAGr1A9o03U&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h7b024ee346", isPoem: true },
+  { name: "רק לב נשבר | זלדה", cat: ["עצוב"], youtube: "https://www.canva.com/design/DAGr1AgzUBw/7_jHhSykIWZR3ZFLX8trgw/view?utm_content=DAGr1AgzUBw&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=hb84393dd3b", isPoem: true },
+  { name: "העניין הוא | אלן באס", cat: ["עצוב"], youtube: "https://www.canva.com/design/DAGr1Bc-3EI/h4UbRCSwc1JpiYtcCJJkaA/view?utm_content=DAGr1Bc-3EI&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h50b76b6332", isPoem: true },
+  { name: "זה הזמן שכואב | נתן יונתן", cat: ["עצוב"], youtube: "https://www.canva.com/design/DAGr1GbvKtA/zkcXrh8u2lWnzeatKT5GgQ/view?utm_content=DAGr1GbvKtA&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h83e3757317", isPoem: true },
+  { name: "קשב | ט. כרמי", cat: ["עצוב"], youtube: "https://www.canva.com/design/DAGr1MM8R78/7_MCFpeAVEj7lkvZkhk_8g/view?utm_content=DAGr1MM8R78&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=hdc805b86b2", isPoem: true },
+  { name: "בבוקר הרהרתי | זלדה", cat: ["עצוב"], youtube: "https://www.canva.com/design/DAGr1G6uBfo/DAgxTRz34i4ro3j0gnta3A/view?utm_content=DAGr1G6uBfo&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=hd96936ce80", isPoem: true },
+  { name: "זמן עתיד | אלכס אפשטיין", cat: ["עצוב"], youtube: "https://www.canva.com/design/DAGr1ERVvXk/cVFTR_9BnIQjGyUCztUPuw/view?utm_content=DAGr1ERVvXk&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h4dfa39d6ac", isPoem: true },
+  { name: "למה בוכים | אסתר קל", cat: ["עצוב"], youtube: "https://www.canva.com/design/DAGr1AeWHOc/KXTaVVDuMJYfY9CE47Xtlg/view?utm_content=DAGr1AeWHOc&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h6da30b5121", isPoem: true },
+  { name: "תני לדמעות | נתן יונתן", cat: ["עצוב"], youtube: "https://www.canva.com/design/DAGr1NxX-Dw/r_8bVGjrTWIc8QPTtBYXCw/view?utm_content=DAGr1NxX-Dw&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=ha4b1274ac4", isPoem: true },
+  { name: "שלל שרב", cat: ["עצוב"], youtube: "https://youtu.be/ojBKxaVL5Fw?si=TSwXWymJCIPq01jo", lyrics: `
+
+תם השרב הגדול
+השמש רד לים הכחול
+ורוח חרישית מרגיעה
+פנים וצוואר נחיריים ודם.
+
+שני ציירים על החוף
+רואים לאור היום את הסוף
+ולהקת שחפים כמראה
+שביס אפרפר כלטיפה על הים.
+
+היא לא יודעת כמה תוכל למשוך
+היא לא יודעת כמה תוכל לנשוך
+וכבר חשבה לברוח מכאן
+זה לא עניין רק שאין לה לאן.
+
+והיא נרדמת בהקיץ
+עם הגב לים עם הראש לשם
+ולא אכפת שכבר יבוא
+כך עליה יעבור עם הגב לים
+עם הראש לשם.
+
+אור החשמל מדגדג
+ואת החושך זה מענג
+ואנשים יוצאים לחפש
+מקרה שיקרה
+אם אפשר במקרה.
+
+שני ציירים על הבר
+עוד לא מאמינים שנגמר
+ושביס הרקדנית מרחף
+על בטן גליה ולא במקרה.
+
+ובשדרות הרעד עובר גובר
+בחצרות הפחד נובר צובר
+פתאום היא מתרגשת נורא
+סף מאורע זה יקרה זה קרה.
+
+העיר נפתחת לפניו
+עם הגב לים עם הראש לשם
+לא נלחמת לעצור
+לא אכפת לה כבר לגמור
+עם הגב לים עם הראש לשם.
+` },
+  { name: "כל גל", cat: ["עצוב"], youtube: "https://youtu.be/5_dCTS7MrYw?si=MPDuNfu3UJ4kbRBm", lyrics: `
+
+כל שיר יש לו גם סוף, כל גל יש לו גם חוף
+כל אור בא עם צללים ,כל כאב יש לו צלילים
+כל מתוק יש בו גם מר, כל מה שטוב פעם נגמר
+כל צליל יש לו גם הד, כל חי יש לו מועד
+כל צחוק יש לו דמעה, כל קול יש לו דממה
+כל גל יש לו גם חוף ולכל שיר יש גם סוף` },
+{ name: "זה לזה | אברהם שלונסקי", cat: ["יחד"], youtube: "https://www.canva.com/design/DAGxqKKyI2o/uEIyeG1l2iP_T35Qc9hKSQ/view?utm_content=DAGxqKKyI2o&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=hb203dfd4bd", isPoem: true },
+  { name: "אורות | אהרן בס", cat: ["יחד"], youtube: "https://www.canva.com/design/DAG2bpmJWyY/xMW4WugjtU_z4i8L0lpQQA/view?utm_content=DAG2bpmJWyY&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=hd99bc64617", isPoem: true },
+  { name: "אחים | נועם חורב", cat: ["יחד"], youtube: "https://www.canva.com/design/DAG2bs6L2Lk/i6w7izkoPuwrRtF99P8aRw/view?utm_content=DAG2bs6L2Lk&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h99efb8724f", isPoem: true },
+  { name: "אם תפגוש אדם על סף השבר | סמדר ויינשטוק", cat: ["יחד"], youtube: "https://www.canva.com/design/DAGYXFEfols/2zSejgVa4E6zTHXQC7LZsQ/view?utm_content=DAGYXFEfols&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "שלומי | זלדה", cat: ["יחד"], youtube: "https://www.canva.com/design/DAGYUo0rcRY/8OUC-t4SaUGVKzYSevwPOw/view?utm_content=DAGYUo0rcRY&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "דלת | עידית ברק", cat: ["יחד"], youtube: "https://www.canva.com/design/DAG2bq0CKOE/kCwAKVcEg3s4m-w3cWczDQ/view?utm_content=DAG2bq0CKOE&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=he5ec6a554b", isPoem: true },
+  { name: "המערה | עידית ברק", cat: ["יחד"], youtube: "https://www.canva.com/design/DAG2bmn3xpQ/MTsSi5qdy7UvAC30eh3u2Q/view?utm_content=DAG2bmn3xpQ&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=he976cb9913", isPoem: true },
+  { name: "המקום שבו אנחנו צודקים | יהודה עמיחי", cat: ["יחד"], youtube: "https://www.canva.com/design/DAG2bkPD7kE/3DLPXcVECfGn1s3iH8wKZA/view?utm_content=DAG2bkPD7kE&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=hb5c105f0c7", isPoem: true },
+  { name: "לקום לבחור | אהרן בס", cat: ["יחד"], youtube: "https://www.canva.com/design/DAG2bl6PtLE/4XypJ-D8SIUdMQLHUxkRTg/view?utm_content=DAG2bl6PtLE&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h465d7c6770", isPoem: true },
+  { name: "תאר לך", cat: ["עצוב", "זכרונות חמים"], youtube: "https://youtu.be/OHPc4pi2pM0?si=RR0RdcEJKa4hsQ4Z", lyrics: `
+תָּאֵר לְךָ: רַק הָאָבָק לִוָּה אוֹתִי
+וְלֹא הָיָה לִי מְלַוֶּה אַחֵר.
+הוּא הָלַךְ אִתִּי לְגַן הַיְלָדִים
+וְהָיָה מְסַכְסֵךְ אֶת שַׂעֲרוֹתַי
+בִּימֵי יַלְדוּתִי הַחַמִּים בְּיוֹתֵר.
+
+תָּאֵר לְךָ מִיהוּ שֶׁלִּוָּה אוֹתִי,
+וּלְכָל חַבְרוֹתַי הָיָה אַחֵר.
+בַּחֹרֶף, בִּפְרֹס עַרְסָלִים אֲיֻמִּים,
+וְהָעֲנָנִים טוֹרְפִים אֶת צֵידָם,
+תָּאֵר לְךָ מִיהוּ שֶׁלִּוָּה אוֹתִי
+וְעַד כַּמָּה רָצִיתִי מְלַוֶּה אַחֵר.
+
+זֵרְעוֹנֵי הָעֵצִים שִׁקְשְׁקוּ, וּלְשָׁעָה
+נִתְאַוֵּיתִי לִשְׁכֹּן בִּיחִידוּת עִם הָרוּחַ.
+לֵילוֹת רַבִּים הָיִיתִי הוֹזָה
+עַל בָּתִּים אֲחָדִים, רְטֻבִּים מֵאַהֲבָה.
+תָּאֵר לְךָ כַּמָּה הָיִיתִי מְקֻפַּחַת
+שֶׁזֶּה הַמְלַוֶּה הַיָּחִיד שֶׁלִּי.
+
+בִּימוֹת הַחַמְסִין הָיִיתִי מַפְלִיגָה
+עַד עִיר בִּירָתָם שֶׁל הַלִּוְיְתָנִים.
+הָיִיתִי מְלֵאָה הֶפְקֵרוּת מְאֻשֶּׁרֶת.
+לֹא רָצִיתִי לָשׁוּב כָּל עוֹד בִּי רוּחִי,
+
+אוּלָם בְּשׁוּבִי הָיִיתִי כְּעוֹרֵב
+שֶׁנָּקֹטּוּ בוֹ קְרוֹבָיו הָעוֹרְבִים,
+וְלֹא הָיָה לִי שׁוּם מְלַוֶּה,
+וְרַק הָאָבָק לִוָּה אוֹתִי.	
+ ` },
+  { name: "מופקר כמדבר", cat: ["עצוב"], youtube: "https://youtu.be/eBD-JQlhVn0?si=Ox-lj5KlAFYUWCcZ", lyrics: `אשא קולי אל השמיים
+מלבד התפילה לא נותר לי דבר
+אולי אמצא מנוחה לנפשי
+רפואה לליבי הנשבר
+
+עיני עיני יורדה מים
+חסום מכל עבר אך עודני מבקש מעבר
+אולי אמצא נחמה לנפשי
+רפואה לליבי הנשבר
+
+ואני מופקר כמדבר
+לא יודע בין שמאלי לימיני
+שלח אורך ואמיתך
+המה ינחוני` },
+  { name: "בלדה למנקה הרחוב", cat: ["עצוב"], youtube: "https://youtu.be/3hLuX7IfFeI?si=OIFxPbcmx9OEjf-I", lyrics: `
+מי זה יוצא כל לילה אל הרחוב הריק
+כשרק פנס דולק
+ורק שיכור שורק
+הוא מטייל עם מטאטא וסל ביד
+מרים קופסה עם לב
+עדות לזוג אוהב
+
+והוא יושב לו על ספסל
+שם בתוך הגן
+בתוך הגן
+אוסף פרחים נובלים של נערים
+שנערות לא באו ברשתם מעולם
+הוא אוסף פרחים נובלים של נערים
+שנערות לא באו ברשתם מעולם
+
+והוא יוצא כל לילה אל הרחוב הריק
+אותו פנס דולק
+אותו שיכור שורק
+
+הוא מתבונן בכוכבים ומחפש
+שם את חייו שלו
+מוצא רק את צילו
+
+הוא יושב לו על ספסל
+שם בתוך הגן
+בתוך הגן
+אוסף פרחים נובלים של נערים
+שנערות לא באו ברשתם מעולם
+הוא אוסף פרחים נובלים של נערים
+שנערות לא באו ברשתם מעולם` },
+  { name: "ועמוק הים", cat: ["עצוב"], youtube: "https://www.youtube.com/watch?v=J-UG2wU9eFw", lyrics: `
+
+התוגה מבט אינסוף לה
+וקצר הזמן
+וגדול כים העצב
+בכינור קטן
+
+היא חיכתה לו יום וליל
+וליבה נכמר
+מתוקה חשכת היין
+והבכי מר
+
+למרחק הלך הנער
+עננים זכים
+מה אמר ליבו לדעת
+שם במרחקים
+
+בהירים לילות הכסף
+ואפל הדם
+וגבוה שם העשב
+ועמוק הים.	
+ ` },
+  { name: "נחמה", cat: ["עצוב"], youtube: "https://youtu.be/UuozN7b357w?si=UGepxQPvN4E5ObfO", lyrics: `
+ולכאורה עסקנו בשלנו
+רק בשלנו
+בלי לבקש גדולות ונצורות.
+שלווה מופרת
+וכבר אחרת
+ואין טעם לכסות
+כי בפתח נכנסות -
+התמורות.
+
+מי שצמא לכל מחווה של חסד,
+אוזנו תופסת -
+איך הקריאות חוצות את הרחוב
+שואל עדיין
+שואל מאין
+כן, מאין כוחות לשאוב.
+
+זה בזו נביט
+ונתמה שנית
+אם ראינו נכונה
+לפעמים אני
+לפעמים אתה
+כה זקוקים לנחמה.
+
+מי שחווה את בערת הקיץ,
+ליבו לבית
+ופני הנוף ראי לחרדותיו.
+את מי ישביע
+את מי ירגיע
+ועל מה יתפלל עד סתיו.
+
+זה בזו נביט...` },
+  { name: "עץ השדה", cat: ["עצוב"], youtube: "https://youtu.be/oMy_TAM-Ks4?si=K5225NBYbY4OI-Tj", lyrics: `
+
+כי האדם עץ השדה
+כמו האדם גם העץ צומח
+כמו העץ האדם נגדע
+ואני לא יודע
+איפה הייתי ואיפה אהיה
+כמו עץ השדה
+
+כי האדם עץ השדה
+כמו העץ הוא שואף למעלה
+כמו האדם הוא נשרף באש
+ואני לא יודע
+איפה הייתי ואיפה אהיה
+כמו עץ השדה
+
+אהבתי וגם שנאתי
+טעמתי מזה ומזה
+קברו אותי בחלקה של עפר
+ומר לי, מר לי בפה
+כמו עץ השדה
+
+כי האדם עץ השדה
+כמו העץ הוא צמא למים
+כמו האדם הוא נשאר צמא
+ואני לא יודע
+איפה הייתי ואיפה אהיה
+כמו עץ השדה
+
+אהבתי וגם שנאתי
+טעמתי מזה ומזה
+קברו אותי בחלקה של עפר
+ומר לי, מר לי בפה
+כמו עץ השדה.
+כמו עץ השדה.
+
+כי האדם עץ השדה.
+כי האדם עץ השדה.
+עץ השדה.` },
+  { name: "כמו ציפור מטורפת", cat: ["עצוב"], youtube: "https://youtu.be/3bv1tkw4_8c?si=4B_uN4f8IIn8_FfB", lyrics: `
+
+רוח זורע
+עלים על מדרכת,
+ואין איש יודע
+לאן את הולכת,
+עיר טרם ערב
+לוטשת עיניים,
+כשאת מצטמררת
+מרטט של קיץ...
+
+כמו ציפור מטורפת -
+את נוסקת לרום
+וצונחת כאבן,
+נוגעת בחום -
+לעולם לא נצרבת,
+פתע הרעד -
+ואת לא נשמרת
+נקשרת
+לתמיד
+
+ים של נובמבר
+גועש לרגלייך
+גלים נשברים
+על חופך כל הליל
+מלח של אשר
+סמוקת לחיים
+צוחקת בחושך
+חובקת שמיים
+
+כמו ציפור מטורפת
+את נוסקת לרום
+וצונחת כאבן
+נוגעת בחום
+לעולם לא נצרבת
+פתע הרעד
+ואת לא נשמרת
+נקשרת
+לתמיד
+
+גשם ורעם
+העיר מתעטפת,
+ואת עוד עם טעם
+שפתיו מרחפת,
+נרטבת במים
+נפרדת מסלע
+חוזרת לבית,
+הוא שם,
+מחכה לך...
+
+כמו ציפור מטורפת
+את נוסקת לרום
+וצונחת כאבן
+נוגעת בחום
+לעולם לא נצרבת
+פתע הרעד
+ואת לא נשמרת
+נשארת
+לתמיד` },
+  { name: "סיפור אינטימי - לו ידעת", cat: ["עצוב"], youtube: "https://youtu.be/pdbUbBDLuqQ?si=IfhdEcope9Y-I4yy", lyrics: `
+
+לו ידעת איך כל נים שבי ירא.
+אני רואה את השדות סופגים גשמים,
+אני שואלת את עצמי
+מתי מתי יבוא יומי
+להיקרא.
+
+על מצע האדמה
+תשוקה שלי הונחה.
+אני שואלת את נפשי להיות ברוכה.
+נותר גופי בצמאונו.
+אתה יודע את חומו ותמהונו
+ועוצם עלבונו.
+
+מכל נבט ועלעל נוטף הטל
+ובתוכי ממתין לו בכי מיוחל.
+אני נמשכת לתלמים,
+אני הופכת רחמים ותחנונים -
+חיים שלמים
+כל נים שבי ירא.` },
+  { name: "אמצע התמוז", cat: ["עצוב", "פרידה"], youtube: "https://youtu.be/p7RKqbm_8ig?si=dbFzCRfyF1918EwU", lyrics: `
+
+עצוב למות באמצע התמוז
+דגלי הקיץ נישאים אל על,
+על ראש התורן תור הומה ולא יחדל.
+כי על קיצך, ועל קצירך הידד נפל.
+
+עצוב למות באמצע התמוז
+דווקא כשהאפרסקים בשפע,
+וכל הפרי דווקא צוחק בסל.
+ועל קיצך, ועל קצירך הידד נפל.
+
+עצוב למות באמצע התמוז,
+עכשיו באמצע התמוז נמות
+אל בוסתני הפרי שהתייתמו.
+הידד אחר הידד, נפול יפול
+ועל קיצך, ועל קצירך, ועל הכל...	
+ ` },
+  { name: "יש מבול", cat: ["עצוב"], youtube: "https://youtu.be/jwXY6Uber4?si=BTys8cAcB59Y22IK", lyrics: `
+
+רק לעכשיו, עד אור ראשון
+מבחירה נטמון את הראש בחול
+המציאות, לא היא לא תעלם
+אבל רק לעכשיו, רק כדי להתנחם
+
+ואני הרי יודע, העולם בחוץ שוקע
+גם אם נעצום עיניים, יש מבול
+אבל כאן בתוך החדר, לכאורה הכל בסדר
+בואי נתנחם בשקר עד מחר
+
+אז בואי ננסה כל עוד אפשר
+נעמיד פנים כי זה מה שנותר
+תסתכלי עלי ותקשיבי לי, אנחנו יחד עכשיו
+דבר לא ייכנס, כך אולי לא יכאב
+
+ואני הרי יודע, העולם בחוץ שוקע
+גם אם נעצום עיניים, יש מבול
+אבל כאן בתוך החדר, לכאורה הכל בסדר
+בואי נתנחם בשקר עד מחר
+וגם את הרי יודעת, ולכן את לא נרגעת
+גם אם נעצום עיניים, יש מבול
+אבל כאן בתוך החדר, לכאורה הכל בסדר
+בואי נתנחם בשקר עד מחר
+
+רק לעכשיו, עד אור ראשון` },
+  { name: "לא פעם בקיץ", cat: ["עצוב"], youtube: "https://youtu.be/nT9VV3W5hqM?si=Y-plZytToULEDzr1", lyrics: `
+לא פעם בקיץ, עם רדת היום,
+לאור השקיעה הדועך,
+הלכתי אלייך ועת ארוכה
+הקשבתי לקול זמרתך.
+
+"קטן הוא ודל הוא חדרי
+ואני בו שרוי ערירי,
+קטן הוא ודל הוא חדרי
+ואני בו שרוי ערירי".
+
+וחי בי הזכר הזה הנוהר
+השקט הזה והרוך,
+ומתק העצב אשר זמרתך
+ידעה על הנפש לנסוך.
+
+"קטן הוא ודל הוא חדרי..."
+
+ויש כי נדמה לי, עם רדת היום,
+בשלוט בי תוגת דמדומים,
+עדיין כקדם קולטת אוזני
+הלחן ההוא התמים.
+
+"קטן הוא ודל הוא חדרי..."` },
+  { name: "בלדה לאישה", cat: ["עצוב"], youtube: "https://youtu.be/zvqARj7Mfto?si=ZeuCYD4eKAPCWIP0", lyrics: `אֲפִלּוּ עַנְנֵי הַגֹּבַהּ, לֹא יָכְלוּ לִשְׁתִיקָתָהּ
+הִיא הִבִּיטָה עַד בְּלִי שֹׂבַע, הִיא הִבִּיטָה וְיָדְעָה
+שֶׁכָּעֵת פּוֹרְחוֹת בָּעֵמֶק, שְׁלַל חֲבַצָּלוֹת הַבָּר
+וְלַמְרוֹת הַכֹּל, הַכֹּל נִגְמַר.
+אֲפִלּוּ עַנְנֵי אוֹקְטוֹבֶּר, הַסְּגֻלִּים אֶל מוּל שְׁקִיעָה,
+לֹא עָזְרוּ לָהּ אַף לְרֶגַע, לֹא עָזְרוּ לְהֵרָגַע,
+אַף כִּי שׁוּב פָּרְחוּ בָּעֵמֶק, שְׁלַל חֲבַצָּלוֹת הַבָּר
+לַמְרוֹת הַכֹּל, הַכֹּל נִגְמַר.
+אֲפִלּוּ הַסְּפָרִים בַּחֶדֶר, הַסָּגוּר וְהֶעָצוּב,
+כְּבָר יָדְעוּ הִיא לֹא בְּסֵדֶר, הִיא הוֹלֶכֶת לִבְלִי שׁוּב
+עוֹד פּוֹרְחוֹת הַרְחֵק בָּעֵמֶק, שְׁלַל חֲבַצָּלוֹת הַבָּר
+אַךְ לַמְרוֹת הַכֹּל, הַכֹּל נִגְמַר.﻿` },
+  { name: "באיזשהו מקום", cat: ["עצוב"], youtube: "https://youtu.be/ZEsMGOrizds?si=04pR9TGCgDtkDNSO", lyrics: `
+אך באיזשהו מקום בים העצב הגדול,
+דוחפת לה הרוח רפסודה רטובה,
+ועל ענן רוכב לו: מרחף לו רון.
+נער זך כמו מים, מחפש תשובה.
+אך באיזשהו מקום, בים העצב והכאב,
+ישנה איזושהי רפסודה, והיא נקראת אהבה,
+כתב שם רון לפני שהתאהב,
+נער זך כמו מים, מחפש תשובה.
+והחיים הרי קשים פה,
+בוקר, ערב, צהריים,
+האהבה,
+רועדת היא,
+במן ציפור ביד.
+ואנחנו נחלשים,
+הרוסים,
+עוד מעט נפליג מפה,
+לאיזשהו מקום.
+כי באיזשהו מקום, בים העצב הדפוק,
+יש רפסודה, היא נסחפת, היא תשוב,
+כן, באיזשהו מקום בעולמנו ההפוך,
+יש סיכוי למי שמנסה בכוחותיו האחרונים לשוט.` },
+        { name: "עטור מצחך", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=WZM4iXT3-ic", lyrics: `עטור מצחך זהב שחור
+(אינני זוכר אם כתבו כך בשיר'
+מצחך מתחרז עם עיניים ואור,
+(אינני זוכר אם חרזו כך בשיר'
+אך למי שתהיי
+חייו מלאי שיר.
+
+חלוקך הורוד צמרירי ורך.
+את בו מתעטפת תמיד לעת ליל.
+לא הייתי רוצה להיות לך אח,
+לא נזיר מתפלל לדמותו של מלאך
+ורואה חלומות עגומים של קדושה
+ולמולו את אישה...
+
+את אוהבת להיות
+עצובה ושותקת
+להקשיב לסיפור על קרוב על רחוק
+ואני, שלא פעם אביט בך בשקט
+אין קול ודברים
+שוכח הכל על אודות אחרים.
+שוכנת נפשי בין כתלי ביתך
+ושבויה בין כתלייך
+ממני נפרדת
+עת אני בגופי נפרד ממך.
+
+פרוש חלומי כמרבד לרגליך
+צעדי אהובה על פרחיו פסיעותיך
+לבשי חלוקך הורוד לעת ליל
+עוד מעט ואבוא אליך.
+
+עטור מצחך זהב שחור
+יקרב אל שפתי כחרוז אל שיר
+אז אלחש באזניך עד בוקר עד אור
+כשיכור...
+עטור מצחך זהב שחור.
+
+` },
+        { name: "אהבה כזו", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=zkyorHkaJUA", lyrics: `אהבה כזו כבר לא מוצאים
+שמורים בלב שלי שנים
+תמונות בין שקט בין מילים
+לב שבור הופך שירים
+שתיקה הופכת לה למנגינה
+
+אהבה כזו כבר לא רואים
+הולכים לאט ואוחזים ידיים
+בצדי השביל כולם עוברים
+אוספים שברים פיסות חיים
+דמעות הופכות לשיר ומנגינה
+
+כמו ירח מתמלא ומתרוקן
+אתה קרב ומתרחק
+אבל הלב שלי יוצא אליך
+ושוב בורח שוב חוזר
+אין יום אחד שיעבור בלי שאחשוב עליך	
+
+
+
+
+` },
+        { name: "ניצחת איתי הכל", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=pRQX6Xp2B48", lyrics: `מזל שיש אותך
+תמיד את מנגנת תמיד שלמה עם עצמך
+ברוך את מלטפת את מיתרי אהבתך
+איזה מזל
+
+מזל שיש אותך
+את מבינה אותי ואת מראה לי את עצמי
+מתלהב כמו ילד מתפנק בך
+ואז אני נשאר איתך
+
+בסוף כל לילה אני בא
+את רזי צניעותך את נותנת לי ללמוד
+וריחמת עלי כמו אם
+וניצחת איתי הכל
+
+מזל שיש אותך
+אני שקוע בנסתר שבך אוהב מה שגלוי
+אני עבד לחוכמה שלך ואין בך כלום שפוי
+איזה מזל איתך
+
+בסוף כל לילה אני בא...
+
+` },
+        { name: "הנך יפה", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=lyZCVjgyqV4", lyrics: `במיטתי כבר שבועות ביקשתי
+את שאהבה נפשי ולא מצאתיו
+חיפשתי בין כל רחובות העיר
+העמוסה שקרים הזאת ולא מצאתיו
+מצאוני השומרים הסובבים בעיר
+אך אהובי כמעט ולא מצאתי אותו
+אך לא ארפה ממנו עד שאביאו אל תוך עירי
+אל בית אימי ואל חדרי אל מיטתי
+
+הינך יפה רעייתי ושפתותייך חוט שני
+שינייך לבנות כמו אור הלבנה
+מי זאת עולה מן המדבר מארץ רחוקה
+נישאת על כנף ציפור גדולה הגיעה לביתי
+
+במיטתי כבר שבועות ביקשתי...
+
+הינך יפה רעייתי ושפתותייך חוט שני...
+
+הינך יפה רעייתי אני נגנב משתי עינייך
+ששורפות אותי כאש הלהבה
+מי זאת עולה מן המדבר מארץ רחוקה
+נישאת על כנף ציפור גדולה הגיעה לביתי 
+
+` },
+        { name: "קח לך אישה", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=dIfnDCAm6d0", lyrics: `אני רוכב, לא יתפסוני חי
+כן אני זוכר אותה איתי, רוכבת איתי
+אני עוזב, אולי כהו עיני
+והיא עומדת שם צוחקת אלי
+קח לך אישה ובנה לה בית
+קח לך, קח לך
+אני רוכב השמש בגבי
+כן, אני מרגיש אותך איתי כאילו עכשיו
+הזמן עוקב וכבר נוגע בי
+ואין כבר דרך להמשיך ולרכב
+קח לך אישה ובנה לה בית
+קח לך, קח לך
+קח לך אישה ובנה לה בית
+קח לך, קח לך
+אולי אשוב בצהרי היום
+כן, אני זקן יותר ואת זוכרת אותי
+זה לא עצוב כשמסתיים חלום
+זה לא עצוב כי את נשארת איתי, (כן)
+קח לך אישה ובנה לה בית
+קח לך, קח לך
+קח לך אישה ובנה לה בית
+קח לך, קח לך
+קח לך אישה ובנה לה בית
+קח לך, קח לך
+קח לך אישה ובנה לה בית
+קח לך, קח לך
+
+` },
+        { name: "שיר על נחלים", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=XYO_A1wd0MY", lyrics: `מי הנחלים
+מקיימים את הזרימה
+שנה אחר שנה,
+שנה אחר שנה.
+הם יצננו
+את רגלינו הדולקות,
+רגלינו הדולקות
+ולא את הנשמה.
+
+כמו על נחלים
+זרועותינו משתלבות
+וגשר מהוות
+לתום ולתקווה.
+הכאב הזה,
+הכאב המתלווה,
+גם הכאב הזה
+שייך לאהבה.
+
+אנשים יוצאים
+וחושבים להתראות
+וזו הכוונה,
+וזו הכוונה.
+פעם נקיים
+כי בפתק שבלב,
+בפתק שבלב
+הכתובת רשומה.
+
+` },
+        { name: "אישה נאמנה", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=TOR0BCA4SgA", lyrics: `לדברים שלך אמרתי,
+אין כל משמעות
+לחציים לא התכוונתי
+וכל השאר טיפשות.
+עד מתי את תקחי
+את כל מה שאומר לך ברצינות
+את אולי תסלחי,
+טעות רדפה טעות.
+
+כי אין צייר שמסוגל לצייר לי את יופייך
+אני גם לא אמצא פסל שייפסל את מבטך
+כל הכוחות שמחזיקים אותי בתוך הנשמה,
+הם את אישה נאמנה.
+
+עוד לא מצאתי את השקט
+את השקט בתוכי
+זו רק ידך המחבקת
+שמחזיקה אותי.
+לא אפול, לא אברח
+למענך ארצה להשתנות.
+אני יכול, את מלאך
+שמרי אותי קרוב.
+
+` },
+        { name: "גיליתי מחדש", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=NrhWmQk6DWA", lyrics: `פתאום גיליתי מחדש את אהבתי אלייך
+כמו פעם את נחשקת, שותה את מילותייך
+כמו הלך במדבר, באמצע קיץ חם
+פתאום קולך ערב, פתאום מראך נאוה
+פתאום אין שועלים, הם כבר לא משוטטים בכרמייך היפים
+פתאום גיליתי מחדש
+פתאום נפשי היטהרה
+ומוחי צלול כמים
+על ידי אמת קשורה
+ויש לי אור בין העיניים
+להם ולא ייראו, אבל
+אני רואה אותך יפה כלבנה
+כמו שמש חמימה
+כמו כלה בחופתה, ביום שמחת ליבה
+אני גיליתי מחדש
+לכל דבר יש עת, לא סתם חיכיתי
+ההכרה אז נחשפה, ואני בכיתי
+לכל דבר יש עת, לא סתם חיכיתי
+ההכרה אז נפרצה, ואני בכיתי
+פתאום גיליתי מחדש
+פתאום אני כמו תינוק שרק עכשיו נולד
+את צעדיי הראשונים עושה ישר לתוך ידייך
+על ראשי, כמו מברכות אותי
+ביום בואי אליך, ביום היוולדי, ביום שמחתי
+ביום שהאל שוב עמד לצידי
+אני נולדתי מחדש
+לכל דבר יש עת, לא סתם חיכיתי
+ההכרה אז נחשפה, ואני בכיתי
+לכל דבר יש עת, לא סתם חיכיתי
+ההכרה אז נפרצה, ואני בכיתי
+אני נולדתי מחדש
+` },
+        { name: "יד ביד", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=fbB7z6UKq1g", lyrics: `אם המים גועשים
+וחייך כה קשים
+אל תיפול ברוחך
+בוא גלה את עצמך
+רק בך עוצמה רבה
+כמעיין המתגבר
+יד ביד הן שיר חוזר
+שתי עיניך ועיני
+הן הכוח עד בלי די
+הן האור באפלה
+יד ביד אם רק תיתן לי יד
+יד ביד נצעד את כל הדרך
+יד ביד אם רק תיתן לי יד
+יד אם רק תיתן
+יד ביד לאורך כל הדרך
+יד ביד אם רק תיתן לי יד
+יד ביד נצעד את כל הדרך
+יד ביד אם רק תיתן לי יד
+יד אם רק תיתן
+יד ביד לאורך כל הדרך
+יד ביד
+יד ביד לאוהבים
+אין תקווה לבודדים
+יד ביד לחיילים
+אל הבית שוב חוזרים
+שוב חוזרים
+יד ביד לנדכאים
+עצובי מבט תוהים
+אל האור במרחקים
+אל האור שבמרומים
+לתקווה בחלומות
+יד ביד אם רק תיתן לי יד
+
+` },
+        { name: "שיר למענך", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=gOSdC62QZfg", lyrics: `אם לפעמים קשה מאוד המועקה
+האנשים נראים זרים ומתנכרים
+שירי יבוא כמו אדם שעל הסף חיכה
+כדי לקחתך אל החופים המוארים.
+
+אם לפעמים אתה מקדים להתעורר
+וקצה חלום כמו ספק מטריד אותך
+שירי יבוא זהיר מאוד אתך להיזכר
+שהבדידות שלי עברה בבדידותך.
+
+עוד שיר אחד אני שומר למענך
+אני רוצה להקיפך במילותי
+אני נותן לך את השיר
+עשי בו כרצונך
+ושעותייך יקרבו אל שעותי.
+
+אל תשכח השיר שלך הוא נאמן
+הוא יתחבר מצערי ותקוותי
+וכשתביטי בפני תדעי שכל הזמן
+אני כותב לך מכתבים במחשבתי.
+
+עוד שיר אחד אני שומר למענך...
+
+` },
+        { name: "עד סוף העולם", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=aSN3F99ZDq4", lyrics: `מאז שנפגשנו היה לי ברור
+שזו התחלה מתוקה של סיפור
+מרגע לרגע הבנתי יותר
+שכאן זה התחיל ולא יגמר
+
+רוצה להגיד לך כדאי שתדעי
+אני בעננים שאת לצידי
+וגם ברגעים שאני לא איתך
+יש מי שלנצח אוהב רק אותך
+
+ואין בעולם עוד כזאת אהבה
+כמו אז בתנ"ך כמו אדם וחווה
+
+אני רוצה שתדעי זה מכאן עד הסוף
+בטוב וברע אני אמשיך לאהוב
+אמריא לשמיים אחצה את הים
+אלך אחריך עד סוף העולם
+
+רוצה שתדעי זה מכאן עד הסוף
+בטוב וברע אני אמשיך לאהוב
+אמריא לשמיים אחצה את הים
+אלך אחריך עד סוף העולם
+
+כשאת מאושרת אז טוב לי בלב
+ואם את נשברת גם לי זה כואב
+כי את משלימה בי את מה שחסר
+אוספת אותי כשאני מתפורר
+
+הביטי אלי ותראי שאני
+חצוי וזו את החצי השני
+באש ובמים אהיה לך חומה
+אתן את חיי בשבילך נשמה
+
+` },
+        { name: "תלבשי לבן", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=7NgK4heG4NQ", lyrics: `בקיץ הזה תלבשי לבן
+תחשבי מחשבות בהירות
+אולי תקבלי מכתב אהבה
+אולי נעשה בחירות.
+
+אני אבחר בך ואת בי תבחרי
+וביחד נהיה לרוב
+אם בקיץ הזה תלבשי לבן
+ותתפללי לטוב.
+
+בקיץ הזה תלבשי לבן
+וככה תצאי לבלות
+בקיץ הזה נעשה חתונה
+ויהי חלקך עם הכלות.
+
+אני אבחר בך...
+
+נצא מן הדעת בקיץ הזה
+ואחר כך נדע שלווה
+יקרה לנו נס בקיץ הזה
+אם רק תלבשי לבן.
+
+` },
+        { name: "כמה אני אוהב אותך", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=oOFdWRZr2uM", lyrics: `ביום ראשון של השנה
+שמלה לאור הלבנה
+ישבנו אז קרוב קרוב
+אומרים תודה על מה שטוב
+מבושמים מתפוצצים
+והקטנים מתרוצצים
+קולות של צחוק מקיר לקיר
+הרעם בא ביום בהיר
+ואז לקול החבטה
+פתאום הקרקע נשמטה
+דממה בחדר נחתה
+כשניסיתי להביט בך
+כמה אני אוהב אותך
+כמה אני אוהב אותך
+כמה אני אוהב אותך
+אני מזכיר לעצמי שלא אשכח
+כמה אני אוהב אותך
+כמה אני אוהב אותך
+כמה אני אוהב אותך
+אני מזכיר לעצמי שלא אשכח
+החגיגה כבר נמהלה
+צהלולים של בהלה
+מתארגנים בהמולה
+ומצפים לגאולה
+צריך ללחוץ על הדוושה
+לפני שתהפכי קדושה
+בכל לשון של בקשה
+רציתי להגיד לך
+כמה אני אוהב אותך
+כמה אני אוהב אותך
+כמה אני אוהב אותך
+אני מזכיר לעצמי שלא אשכח
+
+` },
+        { name: "עכשיו התור לאהבה", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=pBldPVzxDLc", lyrics: `אחרי שסיימנו את מה שהתחלנו
+עכשיו התור לאהבה
+אחרי שקיימנו את מה שהבטחנו
+עכשיו התור לאהבה
+
+אז בואי כי יש לנו עוד זמן
+בואי ונמשיך מכאן
+מהמקום שבו עצרנו
+כי למה בעצם נוצרנו אדם וחווה
+עכשיו התור לאהבה
+
+אחרי שעשינו את מה שחלמנו
+עכשיו התור לאהבה
+אחרי שניסינו והחכמנו
+עכשיו התור לאהבה
+
+אז בואי כי יש לנו עוד זמן
+בואי ונמשיך מכאן
+מהמקום שבו עצרנו
+כי למה בעצם נוצרנו אדם וחווה
+עכשיו התור לאהבה
+
+רצנו כמו מטורפים
+ולא ידענו בשביל מה
+לב שבור וסדקים
+ודוקר על הנשמה
+עכשיו אנחנו עייפים
+נאחזים במה שבא
+את ראשך הניחי על כתפי
+עכשיו התור לאהבה
+
+עכשיו שנשארנו לבדנו
+עכשיו התור לאהבה
+עכשיו שנשארנו לבדנו
+עכשיו התור לאהבה 
+
+` },
+        { name: "פנים אל מול פנים", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=wfpEjXxGTlk", lyrics: `פנים אל מול פנים
+פגישה באמצע החיים
+הגענו אל עצמנו
+ממקומות כל כך שונים.
+העיר נראית אחרת
+כאילו לא היינו פה,
+הלילה את נשארת
+חכי איתי לבוקר שיבוא.
+
+אהבנו פעם באמת ובתמים
+אהבנו כמו שילדים יודעים
+עלי וגם עלייך רואים את השנים
+ואת יפה, פנים אל מול פנים.
+
+פנים אל מול פנים
+אולי רק פעם בחיים
+הזמן סוגר עלינו
+מעגל של שינויים.
+אז מה עבר עלייך
+ומה מביא אותך לפה,
+הלילה את נשארת
+חכי איתי לבוקר שיבוא.
+
+אהבנו פעם באמת ובתמים...
+
+` },
+        { name: "בתוך", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=H3K1JEx6ZGE", lyrics: `על נשמות שלי אתה שולט,
+על דקויות שבי פורט
+עת במבט אותן תמצא
+או בלחישה אחת רפה.
+אם בתנועה שהיא מוצנעת,
+מילה שנאמרה בלי דעת,
+חיוך חטוף או מסויים
+אתה באלה, בכולם.
+
+אני שקעים לכל קמריך
+אני ימים זורמים אליך
+אני ציפור אומרת שירה
+ובלעדיך אין בי מה...
+אני גשרים לכל מיליך
+כוכב נופל בלילותך
+בי יש נתיב כל ישותך
+אני טובעת בדמותך
+
+על אכזבות מהן כוחי ניטל
+וחלומות שלי קשים, אבל
+כשתדרים עצמו מאד
+אותך פיללתי לי בסוד.
+היו שרפות בי ויותר
+הפכתי מישהו אחר
+אני חומקת בשתיקה
+אתה הייה לי מצבה.
+` },
+        { name: "את המחר שלי", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=ZIsWjAP8coU", lyrics: `כל הדרכים מובילות
+ללכת אלייך
+אני בא לאהוב אותך
+ולתת מעצמי
+את ליבי ואת שמי
+להיות גוף אחד
+
+זר שושנים אדומות
+אפזר לרגלייך
+הן יובילו אותך אלי
+שתהיי בחיקי
+ותמיד תצחקי
+כל יום שנולד
+
+להביא בשבילך אהבה
+שאספתי בלב
+אהיה לצידך ברגעים של שמחה וכאב
+
+כי את המחר שלי
+את כל העולם שלי
+אל הקסם שלך
+באתי כעת לאהוב ולתת
+
+כאן תישאר באוויר הבטחה מקודשת
+במילים שלחשתי לך
+בשבועות עולמים
+עד כלות הימים
+כמו שיר אהבה
+
+הנה אני מדבר ואת מתרגשת
+עטופה בשמלת כלה
+טהורה כמלאך
+שמשמיים נשלח
+לתת לי תשובה
+
+
+` },
+        { name: "חלומות", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=8s8GlypTbtY", lyrics: `חלומות של אתמול
+הם שלהבות נרעדות
+לא יכול כל החושך
+לכבות.
+
+על מצע השלכת
+החלומות מלחשים
+רק פרחים מיובשים
+דוהים בין הדפים.
+
+חלומות של אתמול...
+
+אל תסב את פניך
+אתה מלא דברים כמוסים
+אל תגיף את התריסים
+חפש בין המילים.
+
+חלומות של אתמול...
+
+שיר בדרך אליך
+נרקם בסבלנות אין קץ
+הן תיקח ותאמץ אותו
+אל לבבך
+
+חלומות של אתמול
+הם שלהבות. 
+
+` },
+        { name: "בסוף זה הלחן", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=vDBgsZ1xOYg", lyrics: `בסוף זה הלחן ולא המילים
+כי מילים די מהר את שוכחת
+כולם בעיתון את קוראת תהילים
+ובסוף האמת מנצחת
+
+גם את כבר יודעת שאין פתרון
+שהכל מעורבב אור וחושך
+מתי כבר נפסיק לחפש הגיון
+ונמצא בגבולות את החופש
+
+בסוף זה אני ואת
+אני ואת
+לא משנה לאן
+נמשיך לנסוע
+לאן
+
+עוד רגע הסוף וכולם עייפים
+רק אצלך עוד מוצא את הנחת
+כי גם אם השקר מתוק לפעמים
+בסוף רק האמת משמחת
+
+בסוף זה אני ואת
+אני ואת
+לא משנה לאן
+נמשיך לנסוע
+בסוף זה אני ואת
+רק אני ואת
+גם אם עוד לא יודעים לאן
+נמשיך לנסוע
+לאן
+
+או או או לאן לאן לאן
+
+בסוף גם הנצח כולו רגעים
+נשמה בתוך גוף היא אורחת
+תגידי מה יש בסוף שכולם מפחדים
+זה נגמר ואז שוב שנינו יחד
+
+
+` },
+        { name: "אתה לי ארץ", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=ni5zFEj7FFg", lyrics: `אני פוסעת חרש בשביליך
+אני נוגעת בעשבי הזמן,
+אני לומדת את כל משעוליך
+חונה ליד כל מעין.
+
+אני הולכת במסע אליך
+האדמה עיקשת וצרובה,
+אני לאט פורחת בין סלעיך
+כמו איילה תועה בערבה.
+
+אני יודעת עוד רבה הדרך
+אבל אלך בה עד יכלה כוחי.
+אתה לי ארץ אבודה לנצח
+אך שורשיך כבר בתוך תוכי.
+
+תן לי זמן, הושט לי יד,
+עד נגלה ביחד את הארץ.
+אני יודעת עוד רבה הדרך,
+אך שורשיך כבר בתוך תוכי.
+
+אני מוצאת במסתרי החורש
+פינות בן לא דרכה עוד אהבה
+ובצילן אפול מוכת סחרחורת,
+הזאת הארץ הטובה?
+
+אני יודעת עד ימי יתמו
+לא, לא אבואה עד עמקי ליבך,
+אך מה יפה הדרך בה השארתי
+את פסיעותי שלי על אדמתך.
+
+אני יודעת עוד רבה הדרך...
+
+` },
+        { name: "צליל מיתר", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=oKLLyDOczbY", lyrics: `עם צליל מיתר שמתנגן
+אני חושב עלייך
+מרגיש כמה שזה עצוב
+להיות כאן בלעדייך
+לו רק היית פה
+הכל היה אחרת
+אצלי כבר כלום לא מובן
+אצלי בלב יש סדק
+תראי אותי כמו מטורף
+שרק רוצה אלייך
+או אולי סתם בחור עיוור
+שמדמיין לו את פנייך
+וזה קשה שאת פה לא עוברת
+אל תאמרי לי שאת לכאן כבר לא חוזרת
+לא אל תוותרי קבלי אותי אלייך
+כי כל יום שבא והולך הוא נצח בלעדייך
+תראי אותי כמו ילד שכואב לו
+חבקי אותי אני כבר מתמוטט פה
+בכל יום שבא והולך
+אני שוב קורא אלייך
+ומקווה שעוד תמצאי לי מקום
+בין זרועותייך
+תדעי שכאן יכול להיות אחרת
+אל תותרי עלי תאמרי שאת חוזרת
+לא אל תוותרי קבלי אותי אלייך
+כי כל יום שבא והולך הוא נצח בלעדייך
+תראי אותי כמו ילד שכואב לו
+חבקי אותי אני כבר מתמוטט פה
+לא אל תוותרי קבלי אותי אלייך
+כי כל יום שבא והולך הוא נצח בלעדייך
+תראי אותי כמו ילד שכואב לו
+חבקי אותי אני כבר מתמוטט פה
+חבקי אותי אני כבר מתמוטט פה
+
+` },
+        { name: "תרקוד", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=hObDThhR5CY", lyrics: `תרקוד, היא אמרה לי, תרקוד
+הברושים לא ידעו אם לצחוק או לבכות
+תרקוד כל עוד אתה יכול
+אני לא בנוי לשיעור מחול.
+
+ראשה הצעיר על ראשי
+לא תמצא כבר בעיר כאלה ברושים
+תאהב כל עוד אתה מתאים
+אגב, היא אמרה לי תאהב אותי
+
+עד היום די מוזר
+לא הבנתי דבר
+זה גילה המוקדם או גילי המאוחר
+עד היום בסביבות חמש ושלושים
+צל נופל מצמרות הברושים
+היא אומרת: עזוב, זו שקיעה שכזאת
+
+תרקוד, היא אמרה לי תרקוד
+הברושים בשמיים אנחנו עוד פה
+תרקוד מבלי להעצר
+אנחנו מפה לא נוכל לצאת
+
+עד היום די מוזר...
+
+מותר לאבד את הראש
+בגילה גם אני נגעתי בברוש
+מוטב לרקוד חצי דקה
+מוטב מאשר לאבד אותה
+
+עד היום די מוזר...
+
+עכשיו בין ברושים אחדים,
+זה אני שרוקד...
+די לבדי.
+
+` },
+        { name: "לשיר איתך", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=6kLEk3_Swhc", lyrics: `לך רציתי להודות מזמן,
+באורך החם נבטו שירי.
+כלנית הבאת לי מתימן,
+אל הגיא.
+
+כמו פרש אבוד סובב בגן
+ובידי פורחים שני שושנים,
+האחד אדום, שני לבן.
+
+שר אני איתך פתאום,
+זה כמו חלום, זה כמו חלום.
+שער משאלות נפתח,
+לשיר איתך, לשיר איתך.
+
+הלבנה אשר תלויה מעל
+מישירה עכשיו את מבטה.
+היא שלך הלילה אל תשאל,
+קח אותה.
+
+טוב לשיר איתך פתאום,
+לרקום חלום, לרקום חלום.
+שני קולות והבטחה,
+לשיר איתך, לשיר איתך.
+
+עד הבוקר בסירה אחת,
+יחד לחתור ולקוות,
+מחכים על מים למחר
+שיבוא.
+
+טוב לשיר איתך פתאום...
+
+` },
+        { name: "היא לא דומה", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=zXbcP3-wQhQ", lyrics: `היא לא דומה לאף אחת אחרת
+לאף אחת שעוברת ברחוב
+היא משונה וכשהיא מדברת
+קולה עושה לי משהו קרוב.
+
+היא לא רואה
+אני כאן כל הלילה
+עומד בצד ומסתכל
+איש מאוהב,
+עומד בצד ומסתכל.
+
+והלילה העיניים עייפות עד אור הבוקר
+השפתיים לוחשות ללא מנוח
+לא דומה לאף אחת
+.
+` },
+        { name: "מרוב אהבה שותק", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=f1LB-9FckzA", lyrics: `כשההוא אוהב את ההיא
+תמיד הוא אומר לה
+חוזר ואומר לה
+כמה היא אלוהית, כמה היא אלוהית
+כשענן אוהב עננה
+תמיד הוא אומר לה
+חוזר ואומר לה
+כמה את עדינה, את כל כך עדינה
+ורק אני מרוב אהבה שותק
+רק אני מרוב אהבה שותק
+ורק אני מרוב אהבה שותק
+רק אני מרוב אהבה שותק
+כשהזבוב אוהב ת'זבובית
+תמיד הוא אומר לה
+חוזר ואומר לה
+מכולן יפיפית מכולן יפיפית
+כשהפיל אוהב ת'פילה
+תמיד הוא אומר לה
+חוזר ואומר לה
+בואי בואי כלה בואי בואי כלה
+ורק אני מרוב אהבה שותק
+רק אני מרוב אהבה שותק
+ורק אני מרוב אהבה שותק
+רק אני מרוב אהבה שותק
+מרוב אהבה שותק
+כשהפסיק אוהב ת'נקודה
+תמיד הוא אומר לה
+שהוא פסיק על ידה שהוא פסיק על ידה
+ורק אני מרוב אהבה שותק
+רק אני מרוב אהבה שותק
+מרוב אהבה שותק
+שותק
+
+` },
+        { name: "הכל עובר", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=qAP4XWJxDaY", lyrics: `כבר הייתי די רחוק ממך
+ולא נותרו לנו מילים לדבר
+ורוח סחפה מפרש בודד
+בסוף הפכה אותו בודד יותר
+מכל חלום ורחש מתעורר
+הכל עובר
+כל מה שפעם היה ונשכח
+היום הוא לא חוזר
+זה רק כל קמט שבעור נחרט
+שהיום הוא כבר בוער יותר
+מתוך שאין דרך חזרה
+והכל עובר
+כל עוד יום רודף לו יום ולילה לילה
+וכל עוד אין חדש על פני האדמה
+טוב שרק נשארנו יחד
+וטוב שיש לנו למי לספר
+למרות הכל אין דרך חזרה
+והכול עובר
+כל פצע שהגליד ושוב נפתח
+היום צורב יותר
+הוא מתאחה ומתחדש מעצמו
+ושוב פורץ הכל ומתגבר
+כבר לא נשבר והופך למשבר
+והכל עובר
+כל עוד יום רודף לו יום ולילה לילה
+וכל עוד אין חדש על פני האדמה
+טוב שרק נשארנו יחד
+וטוב שיש לנו למי לספר
+למרות הכל אין דרך חזרה
+והכל עובר
+כל עוד יום רודף לו יום ולילה לילה
+וכל עוד אין חדש על פני האדמה
+טוב שרק נשארנו יחד
+וטוב שיש לנו למי לספר
+למרות הכל אין דרך חזרה
+והכל עובר
+ואת זוכרת איך פעם היינו
+מול הרוח וכוחה הגובר
+אחרי כל השנים הרעות
+חזרו שנים טובות רבות יותר
+טוב שרק נשארנו יחד
+וטוב שיש לנו למי לספר
+למרות הכל אין דרך חזרה
+והכל עובר
+
+` },
+        { name: "ילדה כמוך", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=nHFwd9gIzIw", lyrics: `סוף היום מגיע ואני קצת נח
+בפינת הבית במיטה שלך
+כשאת נכנסת את לא שמה לב
+שאני בשקט מביט בך וחושב
+את מתכוננת למסיבת כיתה.
+מול הראי כמו אישה קטנה
+אסוף פזור אולי צמות
+זה לא חשוב עם ילדה כמוך
+זה הזמן ללכת את כבר מוכנה
+ואנחנו יחד חוצים את השכונה
+את מספרת בקול פעמונים
+איך את לא סובלת את כל הבנים
+בין הבית והעבודה
+אני אסיר אבל אסיר תודה
+על האדמה לדרוך
+יד ביד עם ילדה כמוך
+הנה את נכנסת אל המסיבה
+את קצת מתביישת את לא המלכה
+את עדינה מדיי בשביל למלוך
+רק תדעי שאין שם עוד ילדה כמוך
+החלומות שלנו מתרחקים
+והלבבות שלנו נסדקים
+אבל תמיד אפשר למשוך
+זה לא קשה עם ילדה כמוך
+עולם קשוח מחכה לך שם
+אבל בכל זאת יש גם לעולם
+מין צורך להשתחוות
+לפעמים מול ילדה כמוך
+` },
+        { name: "כמו בלדה", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=mPdaoRAxTS0", lyrics: `אם זר קוצים כואב
+זה מה שאת אוהבת
+אלך אל המדבר
+ושם אלמד לכאוב
+ואם שירים אהבת
+רק שכתובים באבן
+בין הכפים אגור
+ובסלעים אכתוב.
+
+ואז כשנתכסה
+עם החולות בחושך
+וספר הדברים
+בחושך יתכסה
+תגידי לי מילים
+יפות מבכי ואושר
+הוא כנראה אהב אותי,
+האיש הזה.
+
+
+` },
+        { name: "אהבה יומיומית", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=uEAVEEk1Hlo", lyrics: `
+שְׁקָרִים שְׁקֵטִים שְׁקָרִים קְטַנִּים
+בְּתוֹךְ לִבֵּנוּ יְשֵׁנִים.
+עַל פְּנֵי חֲבַצָּלוֹת סְגֻלּוֹת
+וּשְׁלַל צִמְחֵי הַמַּיִם
+שָׁטִים הֵם הַס עַל פְּנֵי הַזֶּרֶם,
+שָׁטִים הֵם עֲצוּמֵי עֵינַיִם.
+שְׁקָרִים שְׁקֵטִים, שְׁקָרִים קְטַנִּים
+בְּתוֹךְ לִבֵּנוּ יְשֵׁנִים.
+דְּבָרִים פְּשׁוּטִים כְּמוֹ אַהֲבָה
+בְּתוֹךְ הַנֶּפֶשׁ נֶחְבָּאִים.
+עַל פְּנֵי כַּלָּנִיּוֹת שָׁנִי
+וּשְׁלַל פִּרְחֵי הָעֵמֶק
+פּוֹרְחִים הֵם הַס עַל פְּנֵי הַיֶּרֶק.
+פּוֹרְחִים הֵם עֲצוּמֵי עֵינַיִם
+כְּמוֹ אַהֲבָה, שְׁקָרִים קְטַנִּים
+בְּתוֹךְ הַנֶּפֶשׁ נֶחְבָּאִים.
+וְאוֹר בָּהִיר עוֹלֶה וְצָף עַל פְּנֵי הַחֶדֶר
+אַתָּה יוֹדֵעַ מִי אֲנִי, יוֹדַעַת מִי אַתָּה,
+הַכֹּל בְּסֵדֶר, הַכֹּל בְּסֵדֶר.
+הַבֹּקֶר בָּא כְּבָר, יוֹם חָדָשׁ,
+נֵצֵא לַדֶּרֶךְ.
+הַיּוֹם נֹאמַר תָּמִיד אֱמֶת
+עַד בּוֹא הָעֶרֶב. 
+` },
+        { name: "זרם המעיין", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=bdT0DBWCrxU", lyrics: `יש מנגינה ואותה לעולם לא אזכור
+החבויה חידתי ללא פיתרון
+
+זרם המעיין מלב ההר
+זרם המעיין ללב מדבר
+השמיע ניגון לי
+ניגון כה מוכר וכה יקר
+זרם המעיין ללב מדבר
+זרם המעיין והוא אמר
+אלייך נכספתי אני מאושר
+כך הוא אמר
+ליד המעיין בלב מדבר
+
+ומי יודע אולי קולו היה קולי
+ומי יודע את חידתי
+` },
+        { name: "חפש אותי", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=3PTF6PfVrN0", lyrics: `חפשי אותי
+בתוך בנין נטוש בכפר
+ובדרכים הנסתרות
+חפשי אותי
+בין השיחים על חוף נהר
+ובנקיקים ובמערות
+
+חפש אותי
+אולי אני בראש מגדל
+יושבת לי על פי תהום
+חפש אותי
+מאחורי עמוד חשמל
+חפש אותי בכל מקום
+
+חפשי אותי
+בתוך חורשה כחום היום
+אולי אני אילן עבות
+חפשי אותי
+ועל ליבי תוכלי לרשום
+את שמנו בראשי תבות
+
+חפש אותי
+בבוסתנים העזובים
+אולי אני חית בר
+נזלול יחדיו
+אבטיחים וענבים
+ואז נברח עד ראש ההר
+
+חפש אותי
+אני גרה בדפנה שש
+היום אני נראית נורא
+חפש אותי
+ותוכח לדעת ש -
+בתוך ביתי - אני גבירה!
+
+חפשי אותי
+אני נראה תמים כזה
+אני נראה כמו סתם חייל
+חפשי אותי
+תראי שבחזה הזה
+פועם ליבו של גנרל!
+
+חפש אותי
+במשחקי המחבואים
+נמאס לי לשחק לחוד
+
+חפשי אותי
+ואחרי שתמצאי
+נלך ביחד לאיבוד
+
+` },
+        { name: "משכן", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=ps24wAcXvoM", lyrics: `משכן אבנה לך בליבי למען תוכלי
+לנוח מנדודייך
+משכן אבנה לך בליבי למען תוכלי
+לאסוף שוב כוחותייך
+את צערך אני חש
+הן גם עלי רוחות הסערה נשבו
+את שביקשת אף אני ביקשתי בכל מאודי
+למצוא את מקומי ואין
+את שביקשת אף אני ביקשתי בכל מאודי למצוא את מקומי ואין
+חכי צפי תייחלי
+תקווה אל תאבדי
+שאי את קולך
+ובקשי גם על נפשי
+אך אל נא תקווה אל תאבדי
+כל הדרכים החסומות
+יפתחו לפנינו
+עוד יפלו מסכי הברזל
+הסוגרים על ליבנו
+גם הים הגדול הזה יכול הוא להיבקע
+אם רק נאמין
+חכי צפי תייחלי
+תקווה אל תאבדי
+שאי את קולך
+ובקשי גם על נפשי
+אך אל נא תקווה אל תאבדי
+כל הדרכים החסומות
+יפתחו לפנינו
+עוד יפלו מסכי הברזל
+הסוגרים על ליבנו
+גם הים הגדול הזה יכול הוא להיבקע
+אם רק נאמין
+
+` },
+        { name: "זמר לך ועליך", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=zcKH92--VoA", lyrics: `בוקר וערב לך ועליך
+לך ועליך שרו שירי
+סער ודומי צהל ובכי
+פצע וצורי נחת ודווי
+
+יש לא הבחנתי בקול מענך
+יש ונתקה השרשרת כמעט
+רגע ושבו ושרו עליך
+אהב ושאט
+
+לך ועליך, לך ועליך
+זמר יחיד הוא לאלף כינור
+סער ודומי צהל ובכי
+פצע וצורי אופל ואור
+
+יש לא הבחנתי בקול מענך...
+
+` },
+        { name: "למדני את השיר הפשוט", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=27Sh1iUCZuA", lyrics: `למדני את השיר הפשוט של הלחם
+ופרוס לי חלק משלומך.
+קחני עם אבק היומיום על השכם
+כשתראני לפניך.
+
+אני שהנחתי לרגש יחף
+לרחף,
+כבר יודעת כי
+התפתלה דרכי
+ומגובה רב ראשי עכשיו
+נרכן -
+כבר יודעת כי
+התפתלה דרכי
+ובאה עד כאן.
+
+למדני את השיר הפשוט של הלחם...
+
+חיי וחייך אורות וצללים
+מכילים
+בעיני שבת,
+בעיני חולין.
+לו מחר שלך ייגש אל אתמולי
+בעיני שבת,
+בעיני חולין,
+שלך ושלי.
+
+קחני עם אבק היומיום על השכם
+כשתראני לפניך.
+
+אני שהנחתי לרגש יחף
+לרחף,
+כבר יודעת כי
+התפתלה דרכי
+ומגובה רב ראשי עכשיו
+נרכן -
+כבר יודעת כי
+התפתלה דרכי
+ובאה עד כאן.
+
+למדני את השיר הפשוט של הלחם.
+
+
+` },
+        { name: "אחרי הכל את שיר", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=P4KnqxpoKkM", lyrics: `אחרי הכל את שיר,
+לא עוד בשר ודם,
+לא עוד אישה חיה,
+אבל את שיר קיים.
+והוא עטוף מילים,
+מילים ומנגינה,
+וקצב מסויים,
+אחרי הכל - את שיר קיים.
+
+אז לפעמים כשקר לי,
+בשקט מתיישב איתך,
+ושר בלי מילים -
+אני שר לי.
+אחרי הכל, את שיר, את שיר נכתב.
+כל המילים שאת לחשת בי,
+כל המילים שאת לחשת -
+הן שיר עכשיו,
+אוהבת, ועוד מה
+שחשת בי,
+מילים, מילים, מילים בשיר נכתב.
+
+אני קרוב בשיר
+כמו הנשימה,
+באהבה נפתח,
+ונסיים במה?
+ונסיים במי?
+אולי בך, אולי בי?
+אולי בלי מילים,
+אחרי הכל, עכשיו את שיר שלי.
+` },
+        { name: "וארשתיך", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=buyxA5iodVE", lyrics: `
+וארשתיך לי לעולם
+
+וארשתיך לי, לי בצדק
+ובמשפט ובחסד
+וברחמים
+
+וארשתיך לי
+באמונה
+וידעת את ה'
+
+` },
+        { name: "מכל האהבות", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=Wa0Nmruih_A", lyrics: `כל רגע שנשמר - זכרון ישן
+וכל מה שנשכח עם השנים
+כל שכבר עבר
+האם תזכור אותם
+האם תדע? אתה שם בכולם.
+
+כל מכתב שלא נכתב
+כל שנאמר
+בכל סימן אשר נגלה אלי ואומר אותך
+הבוקר שעולה, עלה נושר, ירח בחלון.
+
+מכל האהבות שיש לחלום ביקשתי לי אותך
+האם תשמע קולי קורא לך, האם תדע?
+האם תזכור שתיקות יפות את לחישת קולך
+את מגע ידך.
+
+מכל האהבות שיש לחלום ביקשתי לי אותך
+אתה רחוק ממני וליבי חסר אותך
+ולא ביקשתי לי דבר מלבד להיות שלך
+מלבד להיות איתך.
+
+` },
+        { name: "מסך עשן", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=eKMWLdwGe6M", lyrics: `
+אנחנו במסך עשן
+מנותקים מסדר וזמן
+ואת הגעת עד הנה דרך ארוכה
+נסירה דאגה, נסירה מועקה
+
+אנחנו במסך עשן
+מתנדנדים מפה לשם
+ואפילו שאני עיוור בחשכה
+אני הולך לי בדרכי בבטחה
+
+ועולמי מתחכך בעולמך
+וחלומי מסתבך בחלומך
+שני כדורי עשן
+מתגלגלים, משתכשכים ברוח הקלילה
+משתוללים הם בגבהים, שמחה גדולה
+
+וכוכבים נוצצים במבטך
+וגורלי כבר נקשר בגורלך
+שתי אלומות של אור
+גולשות ומתרגשות רוצות כבר הלאה לעבור
+גם אלוהים, כבר מתחשק לו לעזור
+
+שתי אלומות של אור
+גולשות ומתרגשות רוצות כבר הלאה לעבור
+גם אלוהים, כבר מתחשק לו לעזור
+
+אנחנו בעסקי נדל"ן
+ומקבלים הכל מן המוכן
+אחד תופר, שני עוזר, שלישי גוזר
+ויש אחד שאת החלומות פותר
+
+אנחנו בעולם החם
+מפטפטים על הא ועל דא
+וכבר קיבלתי פה ושם גם למידה
+לאן אני הולך ומאין אני בא
+
+ועולמי מתחכך בעולמך
+וחלומי מסתבך בחלומך
+שני כדורי עשן
+מתגלגלים, משתכשכים ברוח הקלילה
+משתוללים הם בגבהים, שמחה גדולה
+
+וכוכבים נוצצים במבטך
+וגורלי כבר נקשר בגורלך
+שתי אלומות של אור
+גולשות ומתרגשות רוצות כבר הלאה לעבור
+גם אלוהים, כבר מתחשק לו לעזור
+
+שתי אלומות של אור
+גולשות ומתרגשות רוצות כבר הלאה לעבור
+גם אלוהים, כבר מתחשק לו לעזור
+
+אנחנו במסך עשן
+מנותקים מסדר וזמן
+ואת הגעת עד הנה דרך ארוכה
+נסירה דאגה, נסירה מועקה
+ואת הגעת עד הנה דרך ארוכה
+נסירה דאגה, נסירה מועקה
+
+` },
+        { name: "ככה זה", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=qQ63NqCCRps", lyrics: `אל תחפש רחוק
+תישאר קרוב
+כי ככה זה
+לאהוב את עצמך
+לא מול המראה
+תיכנס לתוך
+כן זה יכול
+להאיר אותך
+
+תסתכל לה בעיניים
+תישך את השפתיים
+עד שזה יכאב לך קצת
+בתוך תוכך היא מחכה
+שתקפוץ לתוך המים
+ותפתח את העיניים
+עד שזה ישרוף לך קצת
+בתוך תוכך תדע
+
+בוא, בוא ותעזור
+לשפוך טיפה של אור
+לתוך החור
+החשוך הזה
+רק אל, אל תיסע רחוק
+לא אל תעזוב
+כי ככה זה לאהוב אותך
+
+` },
+        { name: "צליל מכוון", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=EDcQKuD8U0I", lyrics: `בואי הנה, בואי לכאן
+אני שולח לך צליל מכוון
+אחרי שנים של חוסר וודאות
+בואי הנה אל המילים
+אל הקצב, אל הצלילים
+מספיק חלום, הפכי למציאות
+
+כשעץ בגן מלבלב
+זה לא כואב להתאהב
+לכן, עומד ומנגן
+
+בואי הנה, בואי איתי
+כל כך פשוט להיות מעשי
+נצא ביחד, בטח נהנה
+שוברת לבבות קטנה
+אני שבור ללא תקנה
+וזו סיבה מספיק טובה
+אז בואי...
+
+כשעץ בגן מלבלב...
+
+בואי הנה, בואי לכאן
+אני שולח לך צליל מכוון
+אחרי שנים של חוסר וודאות
+שוברת לבבות קטנה
+אני שבור ללא תקנה
+וזו סיבה מספיק טובה
+אז בואי, כן...
+
+
+` },
+        { name: "הריקוד המוזר של הלב", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=DyS0o9-7Sus", lyrics: `היא כותבת לי שורות קצרות
+ואני, אני עונה במגילות
+המחוות שלה מאופקות
+ושלי עולות על גדותיהן
+היא מזמינה אותי לארוחת בוקר
+אני מזמין אותה לחנוכת בית
+היא אף פעם לא תהיה שלי
+אולי תהיה קצת לידי
+וגם זה לא בטוח
+כמה מתוק ומריר הכאב
+רק בגללו אני מוכן להתאהב
+בעיניים בורקות בחיוך רעב
+אני רוקד את הריקוד המוזר של הלב
+כל היום אני הולך ונזכר
+ברחובות של פאריז ואיך היה לנו קר
+התחבקנו דקות ארוכות מתוקות
+התעוררתי ושוב זה נגמר
+אבל היום
+היום אני יוצא
+היום אני עושה מעשה
+מישהו זרק לי גלגל הצלה
+ואמר אהבה זה דבר מדבק
+כמה מתוק ומריר הכאב
+רק בגללו אני מוכן להתאהב
+בעיניים בורקות בחיוך רעב
+אני רוקד את הריקוד המוזר של הלב
+כמה מתוק ומריר הכאב
+רק בגללו אני מוכן להתאהב
+בעיניים בורקות בחיוך רעב
+אני רוקד את הריקוד המוזר של הלב
+היא כותבת לי שורות קצרות
+ואני, אני עונה במגילות
+המחוות שלה מאופקות
+ושלי עולות על גדותיהן
+היא מזמינה אותי להזהר
+אני מזמין אותה להשאר
+היא מגיעה בשעה המדויקת
+ולרגע הכל מתאפשר
+כמה מתוק ומריר הכאב
+רק בגללו אני מוכן להתאהב
+בעיניים בורקות בחיוך רעב
+אני רוקד את הריקוד המוזר של הלב
+
+` },
+        { name: "לקחת את ידי בידך", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=VV2rGPHvB8g", lyrics: `לקחת את ידי בידך ואמרת לי
+"בואי נרד אל הגן"
+לקחת את ידי בידך ואמרת לי
+"דברים שרואים משם לא רואים מכאן"
+ניגנת לי שיר על הגיטרה וקולך רעד
+רוח בי קמה, רוח שרה, והזמן כאילו עמד
+ואני עוד זוכרת כל טעם וריח
+את חלקת השדה לאור הירח
+קול התן מן הואדי וכובד הפרי בבוסתן
+דברים שרואים משם לא רואים מכאן
+הייתי לבדי ודרכי אבדה לי
+ובאת, באת לי בזמן
+הייתי לבדי ודרכי אבדה לי
+דברים שרואים משם לא רואים מכאן
+נתת לי יד, הראית לי דרך להרבה דברים
+הבאת חיוך יפה כמו פרח וכוח להאמין
+ואני עוד זוכרת את השיר ששרת
+את החלק הטוב מכל מה שאמרת
+היי, מלאך ושטן, התשוב לעצור את הזמן?
+דברים שרואים משם לא רואים מכאן
+דברים שרואים משם לא רואים מכאן
+דברים שרואים משם לא רואים מכאן
+לקחת את ידי בידך ואמרת לי
+"בואי נרד אל הגן"
+לקחת את ידי בידך ואמרת לי
+"דברים שרואים משם לא רואים מכאן"
+דברים שרואים משם לא רואים מכאן
+דברים שרואים משם לא רואים מכאן
+
+` },
+        { name: "תשאירי לי מקום לחבק אותך", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=O9tkAhflQbo", lyrics: `אמרת לי אתמול
+שחלמת עלי בלילה
+זה דבר כל כך נחמד
+לדעת שמישהו חולם עליך
+גם אם זה חלום קצר
+ואם זו את
+זה אפילו עוד יותר נחמד
+
+תחלמי, תחלמי
+ותשאירי לי מקום לחבק אותך בחלום
+
+כשאת ישנה
+ומחייכת לעצמך
+אני שמח שאני שם
+לפעמים
+נחמד שחולמים עליך
+גם אם זה חלום קצר
+ואם זו את
+זה אפילו עוד יותר נחמד
+
+תחלמי, תחלמי
+ותשאירי לי מקום לחבק אותך בחלום
+` },
+        { name: "זו אותה האהבה", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=7szOSm6zqeU", lyrics: `כשהיינו צעירים
+את זוכרת,
+אז פרחה האהבה
+והיום אחרי שנים
+אין אחרת -
+זו אותה האהבה.
+
+"השתנית אהובי" -
+את אומרת
+וגם את אהובתי,
+"על הכל הייתי שוב,
+שוב חוזרת"
+כמה טוב שאת איתי.
+
+כשאת איתי שמחה וצוחקת
+אז אני צוחק איתך
+וכשאת פתאום בוכה וכואבת
+אז אני הולך איתך.
+
+"תחבק אותי עכשיו" -
+את אומרת
+אז גם את אהובתי.
+"על הכל הייתי שוב,
+שוב חוזרת"
+כמה טוב שאת איתי.
+
+` },
+        { name: "תן לי יד", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=TZvJdGjCJqU", lyrics: `
+תני לי יד
+אין לי מלבדך עוד בית
+אין לי מלבדך עוד אף אחד
+תני לי יד.
+
+תן לי יד
+כדי שלא אפחד בדרך
+כדי שלא אהיה יותר לבד
+תן לי יד.
+
+זה רק אנחנו שנינו
+זה רק אני ואת
+והעולם איננו נגדנו
+ולא בעד.
+
+וככה לפי יכולתנו
+יחד נאהב ונכאב
+אני ואת, ואת...
+
+תן לי יד
+כדי שלא אפחד בדרך
+כדי שלא אהיה יותר לבד
+תן לי יד.
+
+זה רק אנחנו שנינו
+זה רק אני ואת
+גם במרחק ביני ובינך
+את לא לבד.
+
+וככה כפי יכולתנו
+יחד נאהב ונכאב
+אני ואת, ואת...
+
+תן לי יד
+כדי שלא אפחד בדרך
+כדי שלא אהיה יותר לבד
+תן לי יד...	
+
+
+
+ 
+
+` },
+        { name: "אם רק תסכימי", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=ix_llr8_018", lyrics: `מישהו מוכן לנוע בשבילך
+אם רק תסכימי
+מה שלא יקרה יהיה לך טוב יותר
+
+מישהו מוכן ללכת לצידך
+אם רק תסכימי
+אם רק תפסיקי למהר
+
+מישהו מוכן לנוע לצידך
+אם רק תסכימי
+מה שלא יקרה יהיה לך קל יותר
+
+מישהו מוכן לגעת בליבך
+אם רק תסכימי
+אם רק תרשי לו לדבר
+
+פזמון:
+הכוכבים יפלו עלייך
+אם תסכימי
+גם הירח מעצמו ירד
+רוחות טובות יבואו רק אליך
+ישבו על צווארך
+
+מישהו מוכן לנוע לצידך
+אם רק תסכימי
+מה שלא יקרה יהיה לך קל יותר
+
+מישהו מוכן לגעת בליבך
+אם רק תסכימי
+אם רק תרשי לו לדבר
+
+פזמון:
+הכוכבים יפלו עלייך
+אם תסכימי
+גם הירח מעצמו ירד
+רוחות טובות יבואו רק אליך
+ישבו על צווארך
+
+מישהו מוכן לנוע לצידך
+אם רק תסכימי
+` },
+        { name: "מכתב של סתו", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=ScH_X0znWdM", lyrics: `אני כותב לך
+בחוץ הקיץ מת
+הלילה כבר עמוק עמוק
+הגידי
+מה קורה לי
+עם כל הזכרונות
+ששוב באים לי מרחוק
+
+אז תני לי קצת מליבך
+תני לי רק להשאר על ידך
+עם כל יום חדש למות מיופייך
+ילדתי שלי כואב לי ממך
+
+איך גדלת לי
+את כבר אישה קטנה
+חסרה לי כאן בעיר
+הגידי
+מה עשית לי
+אני כמו שבוי
+חוזר אליך עם כל שיר
+
+אז תני לי קצת מליבך...
+
+אני כותב לך
+והמילים אילמות
+אל תוך הליל נעלמות
+הקשיבי
+איך הרוח
+עורג לזכרונות
+רוקם הוא אלף מנגינות
+
+אז תני לי קצת מליבך...
+
+אז תני לי קצת מליבך
+האביב שלי ישוב עם צחוקך
+המחר שלי יבוא בצילך
+אהובה שלי שירי בשבילך
+` },
+        { name: "בשדה תלתן", cat: "אהבה", youtube: "https://www.youtube.com/watch?v=MuQ745D-jaE", lyrics: `לו מצאתיך לראשונה בקרון רכבת
+היה לבי נישא למרחקים
+לו מצאתיך בקרוסלה הסובבת
+היה לבי מכור למשחקים
+לו מצאתיך בחפירות באש צולבת
+כי אז דבקתי במדי החיילים
+ולו בנוה מדבר רחוק אוהבת
+כיאז חזרתי לבקש צל דקלים
+אבל אני פגשתיך בשדה תלתן, בשדה תלתן
+על כן לבי הלוך ילך מכאן, לשדה תלתן
+
+אם הוא מצא אותה עלי ספון בשיט
+אז היא לעד תביא לו ריח ים
+אם הוא מצא אותה ביער עם הציד
+ריח היער לאהבתם
+אם הוא פגש אותה בכרך בין אור לחושך
+אז הם ישובו אל חדרי המדרגות
+ואם זמרו להם צפירות חרושת
+הם יאהבו את המכונות השואגות
+אבל אני פגשתיך...
+
+על כן איני דוהר כקרון רכבת
+ואין לבי נשא למרחקים
+גם בשבתי בקרוסלה הסובבת
+לבי אינו מכור למשחקים
+כי גם בתוך החפירות באש צולבת
+עם העפר שעל מדי החיילים
+כמו לנוה מדבר רחוק, אוהבת
+בי כל דמי, בי כל דמי מייחלים
+אל רגע בו ארד לי מן הטנק, לשדה תלתן
+אל רגע בו אקח אותך מכאן ואשאך לשדה תלתן
+` } ,
+{ 
+            name: "מה שלומך אחות", 
+            cat: "יחד", 
+            youtube: "https://www.youtube.com/watch?v=wizvNSwUEwI", 
+            lyrics: `מה שלומך אחות הבוקר
+מה שלומך אחות
+מזג האוויר הזה
+מזכיר לי נשכחות
+טוב שהחלון פתוח
+יש לשמור על קור הרוח
+ועל הכוחות
+
+אין הרבה סיבות לשמוח
+בא יותר לבכות
+אין כמעט לאן לברוח
+יש עוד לחכות
+יד נעלמה כונסת
+גם את פירורי החסד
+גם את המכות
+
+בשעה שקשה לי לשיר
+והכל מתמוטט על ראשי
+התרשי לי לזכור
+ולהזכיר תמיד
+לך יש אותי
+לי יש אותך
+לנו יש אותנו
+
+יש דבר אחד שכבר
+ידוע לי על פה
+מה שלא נולד בדמע
+לא שווה הרבה
+מה שלא נולד בדמע
+הוא לא יקצר בזמר
+ולא יביא מרפא
+
+מאדם אני לקחתי
+ואליו אשוב
+וסביבי המיית הבית
+ולבבי קשוב
+וסביבי המיית הבית
+מרגיעה אותי בינתיים
+זה מה שחשוב
+
+בשעה שקשה לי לשיר...
+
+מה שלומך אחות הבוקר
+מה חדש אצלך
+איך על סביבותיו הרוח
+שוב סובב הולך
+תיכף יתגלו שמים
+אל תסתירי את פניך
+אל יחדל קולך
+` 
+        },
+        { 
+            name: "מישהו הולך תמיד איתי", 
+            cat: ["יחד", "אמונה"], 
+            youtube: "https://www.youtube.com/watch?v=2pN1v_iGJN4", 
+            lyrics: `היו ימים חמים ימי בצורת
+פני יבשו כסדק אדמה
+שדי קמל ולא נותר לקצור את
+שאלתי, לחשתי, בשביל מה?
+
+החורף שוב היכה בי קור כחרב
+והמבט כה סגרירי בשתי עיני
+ומסדקי קירות ניבט העצב
+שאלתי, לחשתי, עד מתי?
+
+אך לעת ערב עם רוח ערב
+עלה נושר לו על גג ביתי,
+אני יודעת אני שומעת
+מישהו הולך תמיד איתי.
+
+אני זוכרת בדידותי זועקת
+אליט פני בשתי כפות ידי
+את צערי חילקתי עם פת לחם
+שאלתי, האומנם ואם כדאי
+
+את תפילתי אשא כך הלאה הלאה
+עוד לוחשות שפתי מתוך עוני
+אני יודעת מישהו למעלה
+רואה אור עששית בחלוני
+
+` 
+        },
+        { 
+            name: "היה לי חבר היה לי אח", 
+            cat: "יחד", 
+            youtube: "https://www.youtube.com/watch?v=kEXAss9XaDA", 
+            lyrics: `במקום שאליו אני הולך
+היו רבים כבר לפני.
+השאירו שביל, השאירו עץ,
+השאירו אבן לרגלי,
+ומה אני אשאיר אחרי,
+האם אשאיר איזה דבר?
+איני רואה את צעדי!
+איני רואה את צעדי,
+ומי יראה אותם מחר?
+
+היה לי חבר, היה לי אח,
+הושט לי יד כשאקרא,
+היה לי חבר, היה לי אח,
+הושט לי יד בעת צרה,
+אני אחיך, אל תשכח!
+היה לי חבר, היה לי אח.
+
+במקום שאליו אני הולך
+היו נשים, היו גברים,
+ואהבה גדולה היתה,
+האם אני אמצא אותה?
+הם לא השאירו לי דבר
+לא אנחות וגם לא פרחים.
+הם לא השאירו לי דבר!
+הם לא השאירו לי דבר,
+מלבד אחים וחברים.
+
+היה לי חבר, היה לי אח...
+
+במקום שאליו אני הולך,
+אני נזהר שלא לשבור,
+אני נזהר שלא לדרוך,
+אני נזהר שלא לזכור,
+וטוב לי שאתה איתי,
+וגם אתה וגם אתה.
+פה תישאר אחרי לכתי!
+פה תישאר אחרי לכתי
+החברות אשר היתה.
+
+היה לי חבר, היה לי אח...
+
+` 
+        },
+        { 
+            name: "המעיל", 
+            cat: "יחד", 
+            youtube: "https://www.youtube.com/watch?v=Oa3429BqhBw", 
+            lyrics: `
+החברים שלי עשו לי מעיל
+מעיל בלתי רגיל
+הוא עוטף את הכתף והוא מסתיר את הגיל
+מעיל בלתי רגיל
+
+הוא מחמם בחורף, הוא מצנן בקיץ
+לפעמים הוא אוהל, לפעמים הוא בית
+והצבעים שלו הם קשת בענן
+מעיל שחבל על הזמן
+
+החברים שלי עשו לי מעיל
+מעיל כמו של יוסף
+ולמרבה ההפתעה והגיל
+הוא גם יודע לעופף (כלומר לעוף)
+
+ממעוף המעיל הכל נראה אחרת
+ממעוף המעיל זאת ארץ נהדרת
+והצרות נמוגות כעשן
+מעיל שחבל על הזמן
+
+ממעוף המעיל הכל טלאים-טלאים
+ממעוף המעיל הכל שמיכת פלאים
+חלקות שדה וגן, ונחל וערוץ
+נקי נקי בפנים, יפה יפה בחוץ
+
+החברים שלי עשו לי מעיל
+מעיל כמו של יוסף
+ולמרבה ההפתעה והגיל
+הוא גם יודע לעופף (כלומר לעוף)
+
+ממעוף המעיל רואים רחוק רחוק
+ואין לו קו אדום ולא סגול ולא ירוק
+ממעוף המעיל מה טוב ומה נעים
+כל הגבולות אפשריים
+
+החברים שלי עשו לי מעיל
+מעיל כמו של יוסף
+ולמרבה ההפתעה והגיל
+הוא גם יודע לעופף
+
+וכשמגיע זמן הנחיתה
+אנחנו נוחתים ישר בשדה חיטה
+הרמקולים כבר מתחילים לרעום:
+אני והמעיל נחתנו בשלום!
+
+וכבר החצוצרות במלוא ברק הצליל
+וכבר ההמנונים וכבר דמעת הגיל
+המנהיגים כבר מתחילים לנאום:
+אני והמעיל נחתנו בשלום!
+
+לה-לה-לה...
+
+החברים שלי עשו לי מעיל
+מעיל בלתי רגיל!
+` 
+        },
+        { 
+            name: "השיר הבא", 
+            cat: "יחד", 
+            youtube: "https://www.youtube.com/watch?v=n6ZFVbVAvZU", 
+            lyrics: `
+בסוף היום בקצה המסלול,
+מעברו האחר של ההר התלול,
+כשאתה אוסף את השברים,
+מה נשאר בעצם? רק כמה חברים.
+
+בתוך השחור, בלב הערפל,
+בעומקו הדומם של הים האפל,
+כשאתה רואה את השקרים,
+מה נשאר בעצם? רק כמה חברים.
+
+וכשנדמה שאור היום כבר לא ישוב
+אתה מבין פתאום מה באמת חשוב
+ויש בך רצון ויש לך סיבה
+לחשוב כבר על השיר הבא.
+
+מתוך הצל, מתוך המבוכה
+נפשך וליבך שוב מוצאים מנוחה.
+כשאתה חוזר אל השירים
+ולוחם בעצב, עם כמה חברים.	
+
+
+` 
+        },
+        { 
+            name: "בלילה על הדשא", 
+            cat: "יחד", 
+            youtube: "https://www.youtube.com/watch?v=z9kjeXwDbR0", 
+            lyrics: `https://www.youtube.com/watch?v=z9kjeXwDbR0
+
+נשב בחוץ, כל כך יפה, יפה הליל
+נשיר רעים, נשיר לקול צלילי מיתר
+שירים פשוטים, שירים יפים
+על אהבה וקיץ
+שירי הלב ההם, שירי הלב ההם
+שאין כמותם.
+
+ואל תשאל על מה נפשי עכשיו רוגשת
+הן אין דבר אשר אוהב, אוהב יותר
+מכך לשכב
+מסתם לשכב בלילה על הדשא,
+להתבונן בכוכבים,
+להתבונן ולזמר.
+
+כיפת כוכב האירי לי פנייך
+אשוט אלייך במפרש געגועים,
+אלי הטוב
+מה שמת בו, בקיץ
+אשר הופך
+אשר הופך אותנו כת משוגעים.
+
+במקהלה לילית שקטה ומאולתרת
+שרים שלושה, שרים גם ארבעה קולות
+והרעות,
+והרעות כגל אפל עוברת
+ומלטפת חרש,
+מלטפת חרש קלילות.	
+    
+`}, // פסיק שמחבר בין השיר הקודם לשירים החדשים
+    { name: "גחליליות", cat: "געגוע", youtube: "https://www.youtube.com/watch?v=ApbYcTiFcig", lyrics: `
+אני חוזרת אל היער ללקט גחליליות
+אורות קטנים השארתי בעוזבי
+מלים כבדות מצער, שלא יכלו לעוף
+שירים שלא אספתי בלכתי
+
+אני חוזרת לעבר ללקט גחליליות
+לבנות מהן סולם של כוכבים
+שבילים שלא הלכתי כי לא יכלו להיות
+אולי עוד מחכים שם בשבילי
+
+אם תבוא ליבי לשם
+תבוא אל העבר בלי לעצור
+נאסוף את כל הטוב
+נאסוף את כל התם
+נאסוף גחליליות ונחזור
+
+ילדה שם מחכה לי, היא מתאהבת בלי לראות
+גחליליות דולקות סביבה באור בוהק
+בואי שוב אלי, אשמור עלייך מצרות
+בואי וביחד נתחזק
+
+אני חוזרת לעבר, לא פוחדת מהזמן
+יודעת להבחין בין טוב ורע
+נאסוף את כל הטוב,
+את כל האור, את כל התם
+נביא אותם לכאן בחזרה
+
+אם תבוא ליבי לשם...` },
+    { name: "מישהו", cat: "געגוע", youtube: "https://www.youtube.com/watch?v=6CeaV0wU_54", lyrics: `מישהו, מישהו דואג
+דואג לי שם למעלה
+בא והדליק כמה כוכבים
+והם נופלים אחד אחד
+
+אנו סובבים בשתי דרכים שונות
+יום ולילה לאורכן
+עייפים ורעבים ומחכים לאות
+בנתיבי אבק וזמן
+אנו נפגש בסוף דרכים ושאלות
+נפגש בתום ימים רבים
+בתום הרבה לילות
+אני יודעת שאתה קרב עכשיו
+אביב חלף, קיץ נאסף
+והגשם שב
+
+מישהו, מישהו דואג
+דואג לי שם למעלה
+בא ואסף כמה כוכבים
+השיב אותם אחד אחד
+
+אנו סובבים בשתי דרכים שונות
+יום ולילה לאורכן
+עייפים ורעבים ומחכים לאות
+בנתיבי אבק וזמן
+אנו נפגש בסוף דרכים ושאלות
+נפגש בתום ימים רבים
+בתום הרבה לילות
+אני יודעת שאתה קרב עכשיו
+אביב חלף, קיץ נאסף
+והגשם שב` },
+    { name: "עדיין כאן", cat: "געגוע", youtube: "https://www.youtube.com/watch?v=32jPxYRvg5w", lyrics: `היית עלם שחור עינים ואני ילדה,
+הקשבתי לדבריך ושמעתי אגדה.
+בחליל, בתוף ובמצלתיים העולם נבנה,
+בשירים חולמים, שנה אחר שנה.
+
+אתה איתי הלילה, כמו לפני שנים,
+כשלמה רועה בשושנים.
+ושנינו יחד, צוחקים לזמן,
+עדיין כאן, עדיין כאן.
+
+ידענו סער ומבול וחילופי עונות,
+ואת אהבתה של הנאוה שבבנות,
+החליל צלול והד מסלע עוד עונה "אמן",
+ושירנו הישן שוב מתנגן.
+
+אתה איתי הלילה...` },
+    { name: "שיר לערב חג", cat: ["געגוע", "זיכרון"], youtube: "https://www.youtube.com/watch?v=Yn4rVx2S4l8", lyrics: `כבר ערב,
+האופק אדום ויגע,
+אתה בוודאי לא שומע,
+אתה בוודאי לא יודע,
+שהערב
+ערב חג.
+
+כבר ערב,
+העיר אורותיה הדליקה,
+צמרות אשליה הסמיקה,
+כן, חג יש בעיר ואני כאן
+מחכה
+לצעדך.
+
+עיר חמה ושוקקת
+ריבועי זהביה מדלקת
+ולפתע צמרותיה שמטה
+כי אתה
+לא איתה.
+
+שוב ערב,
+סביב זיקוקים וירח
+שטים על העיר ושמיה,
+אולי רק אתה היודע
+מה קרה כאן
+ומתי...
+
+כן, ערב
+שיכור משמחה ומבכי
+וכל נשמתי רק אליך
+לדעת שאלה חייך
+שעודך...
+שאולי...
+
+עיר חמה ושוקקת
+ריבועי זהביה מדלקת
+ולפתע צמרותיה שמטה
+כי אתה
+לא איתה.
+
+כבר לילה,
+העיר נרדמה על בניה,
+בקרן ירח דומע
+תלוי על כלונס מתנועע,
+נהם רוח
+רחש חול.
+
+כן, לילה,
+השקט עגול ורוגע,
+שלם ועמוק ויודע
+את כל הדברים, כי עיניה
+של העיר
+אומרות הכל.
+
+והעיר השותקת
+לכבודך כוכביה מדלקת,
+איזה שקט
+איזו עיר
+עצובה.
+
+עיר חמה ושוקקת
+ריבועי זהביה מדלקת
+ולפתע צמרותיה שמטה
+כי אתה
+לא איתה.` },
+    { name: "איך מסבירים געגוע", cat: "געגוע", youtube: "https://www.youtube.com/watch?v=akcujZ6kbss", lyrics: `והחדר שקט, ושקט מסביב
+קפה ועיתון וסיגריה
+ואיש לא יבין מה קורה לי בפנים
+ואיך ממשיכים מכאן הלאה
+
+והשמש כמו שמש
+עולה בכל יום
+וכל יום הוא מסע ידוע
+ואיש לא יבין מה נשבר לי בפנים
+ואיך מסבירים געגוע
+
+וכל מה שנשאר לחכות לחכות
+עוד ארוץ אחריה ימים ולילות
+ואני מחכה שתבוא
+רק עוד פעם עוד פעם תבוא
+
+וכל מה שנשאר משאלות משאלות
+ובכיתי עלינו ימים ולילות
+ואני מתפלל שתבוא
+רק עוד פעם זה כן או כבר לא
+רק עוד פעם זה כן או כבר לא
+
+והלילה הוא לילה
+מגיע בסוף
+וכל סוף הוא מסע ידוע
+ואיש לא יבין מה נשבר לי בפנים
+ואיך מסבירים געגוע
+
+וכל מה שנשאר לחכות לחכות
+עוד ארוץ אחריה ימים ולילות
+ואני מחכה שתבוא
+רק עוד פעם עוד פעם תבוא
+
+וכל מה שנשאר משאלות משאלות
+ובכיתי עלינו ימים ולילות
+ואני מתפלל שתבוא
+רק עוד פעם זה כן או כבר לא
+רק עוד פעם זה כן או כבר לא
+
+וכל מה שנשאר לחכות לחכות
+עוד ארוץ אחריה ימים ולילות
+ואני מתפלל שתבוא
+רק עוד פעם זה כן או כבר לא
+רק עוד פעם זה כן או כבר לא` },
+    { name: "השיר על הארץ", cat: "געגוע", youtube: "https://www.youtube.com/watch?v=ICILopmFjzE", lyrics: `
+
+בואו נשיר את השיר המטורף של הארץ
+בואו נשיר את השיר הצהוב של החול
+יחפנים מתהלכים לאורכה ולרוחבה של הארץ
+ועושים איתה אהבה, אנשים פורקי עול.
+
+איפה הארץ ההיא, שקראו לה קטנטונת?
+איפה אותה אהבה מגוללת בחול?
+אנרכיסטים הולכים בדרכים, לעורם רק כותונת
+ובוערת אש בראשם ששורפת הכל?
+
+תנו לי לשוב אל אותה הפינה הנידחת
+איפה אותם החיים עם שמחת הפשטות
+תנו לי מילים עזובות, מנגינה נשכחת,
+להוציא מבין הקוצים, קרעים של ילדות.
+
+תנו לי לשיר את השיר החולה, הקודח
+מאוהב וזרוק אמיתי בלי זהות וזכויות
+תנו לי לחזור בדרכים החולות אהבה לירח
+שוב לחזור ללכת יחף על שברי זכוכיות.` },
+    { name: "ילדות נשכחת", cat: ["געגוע", "ילדות", "בית"], youtube: "https://www.youtube.com/watch?v=cde-wpmkP-U", lyrics: `כביש ישן
+שביל בגן
+עץ ובית
+אבא כאן
+אמא שם
+כאן נשארתי
+מה שהייתי
+פעם מזמן
+מה שעכשיו
+ילדות נשכחת
+
+צריף ירוק
+לא רחוק
+בית הספר
+מי נשאר
+מי עבר
+מי עודנו
+מה שהיינו
+פעם מזמן
+מה עוד מביא אותי תמיד
+אל אותה ילדות נשכחת
+
+זוכר איך שהלכנו דרך קבע
+לאורך הרחוב המתרוקן
+דבר לא השתנה
+רק פה ושם דוהה הצבע
+אולי זה רק הלב שמזדקן
+
+עוד שנה
+כבר למדנו
+מי אני
+מי אתה
+כבר איבדנו
+מה שהיינו
+פעם מזמן
+מה עוד מביא אותך תמיד
+אל אותה ילדות נשכחת
+
+זוכר איך שהבטחנו בלי לדעת
+מתי ואיך נחזור להיפגש
+נדמה שרק אתמול
+אבל השמש כבר שוקעת
+אולי זה רק הלב שמתרגש
+
+שביל בגן
+עץ ובית
+אבא כאן
+אמא שם
+כאן נשארתי
+מה שהייתי
+פעם מזמן
+מה עוד מביא אותי תמיד
+אל אותה ילדות נשכחת` },
+    { name: "נוף ילדות", cat: ["געגוע", "ילדות"], youtube: "https://www.youtube.com/watch?v=OER8dtQPF14", lyrics: `בנוף הבתים הישנים
+אשר היו צילי בימי ילדות
+חלפו הרבה שנים
+חלפו הרבה שנים
+
+נוף הבתים כבר מתפורר
+וקירותיו נעלמים
+חלפו הרבה שנים
+חלפו הרבה שנים
+
+בגן העדן של ילדות
+אשר היה פורח
+הייתי חלק מהנוף
+היום אני אורח
+
+בגן העדן של ילדות
+אשר היה פורח
+הייתי חלק מהנוף
+היום אני אורח
+
+בגן העצים המתקלפים
+אשר היו צילי בימי ילדות
+כבר נשברו הענפים
+קפצה זקנה פתאום
+
+אני הולך ואת איתי
+והם כולם נעלמים
+קפצה זקנה פתאום
+איזה יום היום
+
+בגן העדן של ילדות
+אשר היה פורח
+הייתי חלק מהנוף
+היום אני אורח
+
+` },
+    { name: "סימני דרך", cat: ["געגוע", "בית"], youtube: "https://www.youtube.com/watch?v=gsw1z4xANfs", lyrics: `
+
+
+מי זוכר ומי יודע
+את הדרך אל ביתי
+מי אשר קולי שומע
+הוא יבוא הביתה איתי
+ענני נוצה ממעל
+והשלף לרגלי
+ודינדון פעמון הפלא
+השומר תמיד עלי
+
+אי משם, שר לו בדרך
+אי משם, שר פעמון
+אי משם, שובה הביתה
+בזמן הנכון!
+
+אם שכחתי את הדרך
+המוכרת משנים
+פה ושם בצד הדרך
+נשארו לי סימנים:
+חץ אחד הנה שלוח
+מצוייר בגיר לבן,
+לך לך אחר הרוח
+שתי פסיעות ורבע מכאן!
+
+אי משם...
+
+מחצבה בצד הדרך
+ועליה צל אילן
+ובאר אחת או שתיים
+לי לאות ולסימן
+עז אחת שחורה כלילה
+הלוחכת את השיחים
+רק למיטיבי הלכת
+השבילים הללו פתוחים
+
+אי משם...
+
+לא לבד אני בדרך
+ההולכת אל ביתי
+יש חבר אחד או שניים
+שהולכים הביתה איתי
+ובשמש השוקעת
+בדינדון פעמונים
+הם ידעו לפענח
+לי את כל הסימנים
+
+אי משם...` },
+    { name: "ניפגש בחלומות", cat: "געגוע", youtube: "https://www.youtube.com/watch?v=fpXGSAbgX1A", lyrics: `עוד נחזור להיפגש, להסתכל שוב בעיניים
+יש פקק תפילות כבד בנתיב של השמיים
+אבל החוט הדק בינינו אף פעם לא נקרע
+עוד נצחק שם על הכל, לא תהיה לנו ברירה
+
+עוד נצא שוב לטייל בבוקר של שבת
+נחזיר את השיגרה האבודה לאט לאט
+נקום מהספה, ננשום את האוויר
+למדנו עם הזמן שהכל כל כך שביר
+
+ובינתיים ניפגש בחלומות
+אני איתך בכל שעה, בכל הנשימות
+ואם אתה עמוק מתחת לשמיכה
+תשאיר לי את הדלת חצי פתוחה
+אני שולחת ידיים ארוכות
+הן מחבקות אותך עכשיו, הן מחבקות
+ורק תזכור שניה לפני שאתה נרדם
+שגעגוע הוא הדבק הכי חזק בעולם
+
+עוד נחזור שוב לשחק, להתפרק בחיבוק
+השניה הכי קשה היא אחרי הניתוק
+ושער הדמעות שלי נפתח שוב לרווחה
+כי יש עוגה, ויש נרות, אבל אין לי כאן אותך
+
+עוד נחזור להיפגש, נשכב סתם על הגב
+לא ניקח שום דבר כמובן מאליו
+וגם אם קצת נרגיש שעברו מיליון שנה
+נמשיך, כאילו כלום, כאילו כלום לא השתנה
+
+ובינתיים ניפגש בחלומות
+אני איתך בכל שעה, בכל הנשימות
+ואם אתה עמוק מתחת לשמיכה
+תשאיר לי את הדלת חצי פתוחה
+אני שולחת ידיים ארוכות
+הן מחבקות אותך עכשיו, הן מחבקות
+ורק תזכור שניה לפני שאתה נרדם
+שגעגוע הוא הדבק הכי חזק בעולם
+
+אני שולחת ידיים ארוכות
+הן מחבקות אותך עכשיו, הן מחבקות
+ורק תזכור שניה לפני שאתה נרדם
+שגעגוע הוא הדבק הכי חזק בעולם` },
+    { name: "שדות של אירוסים", cat: "געגוע", youtube: "https://www.youtube.com/watch?v=L3uG2knMb4s", lyrics: `
+שם היו בתים פזורים איים איים
+שם ילדותי ומה איתי
+אני אקדח טעון געגועים.
+וזה חוזר, את מבינה,
+חוזר אלי בחדר
+כל שיר הוא זכרון בלתי נמנע.
+
+באיצטדיון נדהם וצר מלהכיל
+עם כל בני האדם אני יושב,
+מחכה שהקונצרט יתחיל.
+הלהקה כבר מוכנה
+האצבע על ההדק
+כל שיר הוא זכרון בלתי נמנע.
+
+אז לא היתה לי מכונית גדולה
+אז לא ידעתי מה יש בשוליו
+של הרחוב היחידי
+שמעברו היו כמוסים
+סודות, שדות של אירוסים.
+
+שם היו בתים דומים בלילה, מי הבדיל
+ולפעמים משם באים אלי
+עוד ילדים אולי לא ילדים.
+זו לא אותה המדינה
+כבר לא אותו החדר
+כל שיר הוא זכרון בלתי נמנע.
+
+עכשיו על כביש מהיר במכונית שאת קנית
+אני נוהג זהיר מאנשים,
+מחלומות, מרוח גזענית.
+זו לא אותה המדינה
+כבר לא אותו החדר,
+רק שיר כמו זכרון בלתי נמנע.
+
+אז לא היתה לי מכונית גדולה...` },
+    { name: "ירח", cat: "געגוע", youtube: "https://www.youtube.com/watch?v=hGiNUsSHkr0", lyrics: `וזכרוני הראשון אם יופייך אינו מטעה אותי
+משליך גיטרה ואבי עלי צורח
+ואימי אומרת "זה החוטא שלי"
+ולוקחת אותי לטיול מנחם מול ירח
+
+וזכרוני השני אם עינייך אינן מטעות אותי
+עוזב את הבית אל סיכוני הזמן
+כששאלתי אותך "האם תהיי לי לעולמים?"
+ענית: "תביט לירח שם יש כבר אדם"
+
+ואחרי שנה שכרנו חדר מול ירח
+מתחיל לנגן בבר קודר ברחוב המסגר
+והם צרחו "תורידו ת'נמוך עם הטוקסידו"
+ורק אחד אמר: "ילד ילד, עוד תוריד את הירח בשבילם"
+
+הייתה תקופה כזו שהאושר בא בזעם
+צחקנו מהכל, שרפנו את מה שבא ליד
+לא נשאר לנו אלא לחבק את הצער
+להגיד "אתמול היה טוב ויהיה גם מחר"
+אתמול היה טוב, אתמול היה טוב
+אתמול היה טוב, ויהיה גם מחר
+אתמול היה טוב, אתמול היה טוב
+אתמול היה טוב, ויהיה גם מחר
+
+קשה לי להתרכז, כי יופייך עוד מהמם אותי (קשה)
+קשה להגיד חבל או לומר אולי (במקום זה)
+במקום זה אני רוקד וצועק לירח: "רד"
+ומאשים את העולם בכאביי
+
+לפעמים אני שוכח, איך התחלתי מול ירח
+כשאתה שוכח כן, כן, אתה מסכן
+יש גשם בשמיים אין ירח בינתיים
+וכשיצא נלך ביחד עד שנעלם
+
+הייתה תקופה כזו שהאושר בא בזעם
+צחקנו מהכל, שרפנו את מה שבא ליד
+לא נשאר לנו אלא לחבק את הצער
+להגיד "אתמול היה טוב ויהיה גם מחר"
+אתמול היה טוב, אתמול היה טוב
+אתמול היה טוב, ויהיה גם מחר
+אתמול היה טוב, אתמול היה טוב
+אתמול היה טוב, ויהיה גם מחר` },
+    { name: "לילות", cat: "געגוע", youtube: "https://www.youtube.com/watch?v=Bos9eDAEMFI", lyrics: `
+על גב דלתי טפחה שלוש טפיחות הרוח
+ועל הסף פתאום ראיתי את דמותך,
+דורות חלפו מאז ועוד ביתי פתוח
+ועוד לילי עורג לשוב ולראותך.
+
+על הספה תשבי, מיחם התה רותח
+ומן הרחוב עולה שאון של אור ועיר
+ורק בחלוני הברוש כפו שולח
+שורט את הלבנה כמו את ליבי - השיר.
+
+התזכרי לילות, תנים במשעולנו
+וכוכבים גבוהים וטל על הגפנים?
+הרוח שנשא אותך הלילה הנה
+נשא איתו מכאן משא יובל שנים.
+
+ואת יפה כמו אז על ערימת השחת
+וברק עינך כאז - קורץ ומערים
+ואם נותרת לבד, הן עוד נשובה יחד
+ללכת בדרכם העצובה של השירים.
+
+נשוב אל התלתן, אל משעולי הלחם
+זימזום הממטרות בין שמש לבין צל
+רעינו השכוחים קוראים לנו ללכת
+רעינו היפים מעמק יזרעאל.
+
+נשובה אליהם שטופי שמחה ודמע
+אל המסע נצא, עוד תרמילנו קל
+האם זוכרים אותנו עוד שבילי העמק,
+האם כאז בעמק עוד נוצץ הטל?` },
+    { name: "גבעה אחת", cat: "געגוע", youtube: "https://www.youtube.com/watch?v=ZUz1A1Ew5GE", lyrics: `היה היתה גבעה אחת שטופת-פרחים, טללים הישקוה
+היה היתה ביקתה אחת, צריף עץ יחיד במרחבים
+עתה, בנטות צילו הזמן על זיכרונות וגעגוע
+הן רועדות בערפל עם רוח זע בעשבים
+
+ברזל ישן, גשמים וטל החלידו להב-מחרשת
+כל הכלה והכומש שב להיות פשוט עפר
+פתאום תחוש איך יד הזמן על עפעפיך מגששת
+ומניחה שנים כבדות עלי כתפך העייפה
+
+בבות-עיניך עצומות
+תקשיב עמוק אל תוך חייך
+על גבעתך האפורה רוטט מסך הערפל
+יחף תפסע, ומהורהר
+על הדשאים ומעליך
+ירחפו בנטות היום עטלפים מעוף יפה
+
+תוסיף לנדוד במשעולים, רחוק מחסד-נעוריך
+אבל קרוב מהם לנהות אל השנים הראשונות
+אל גבעתך, אל היפה, אשריך, איש, אם אחריך
+עוד תישאר גבעה כזאת שטופת פרחים וזיכרונות
+
+בבות-עיניך עצומות
+תקשיב עמוק אל תוך חייך
+על גבעתך האפורה רוטט מסך הערפל
+יחף תפסע, ומהורהר 
+על הדשאים ומעליך 
+ירחפו בנטות היום עטלפים מעוף יפה
+
+
+היה היתה גבעה אחת שטופת פרחים
+טללים הישקוה
+היה היתה בקתה אחת, צריף עץ יחיד
+במרחבים` },
+    { name: "כמו אל מים", cat: "געגוע", youtube: "https://www.youtube.com/watch?v=IOv2WidTfB4", lyrics: `צף על קרן סהר
+בוא אלי יפה עיניים
+בנשימת תינוק רכה
+קרן יער רחוקה שרה
+קח אותי
+
+אור כוכב פורח
+כתם שמש מתלקח
+בצלילי המצולה
+כשומע מקהלה שרה
+
+בוא יפה עיניים
+בספינות חלל
+ובריח גוף
+כעין חשמל ונוגה
+בואה, בוא כמנגינה שלא נשכחת
+בוא אלי פשוט כמי הנחל
+כמו אל מים
+
+בואה, בוא כמנגינה שלא נשכחת
+בוא אלי פשוט כמי הנחל
+כמו אל מים
+
+צף על קרן סהר
+בוא אלי יפה עיניים
+בנשימת תינוק רכה
+קרן יער רחוקה שרה
+
+בוא יפה עיניים
+בספינות חלל
+ובריח גוף
+כעין חשמל ונוגה
+
+בואה, בוא כמנגינה שלא נשכחת
+בוא אלי פשוט כמי הנחל
+כמו אל מים
+בואה, בוא כמנגינה שלא נשכחת
+בוא אלי פשוט כמי הנחל
+כמו אל מים
+
+בואה, בוא כמנגינה שלא נשכחת
+בוא אלי פשוט כמי הנחל
+בוא אלי פשוט כמי הנחל
+כמו אל מים
+בואה, בוא כמנגינה שלא נשכחת
+בוא אלי פשוט כמי הנחל
+כמו אל מים` },
+    { name: "כבר עבר די זמן", cat: "געגוע", youtube: "https://www.youtube.com/watch?v=TwFxbNnV010", lyrics: `
+
+
+וכבר עבר די זמן מאז שהיינו פה
+שים לב איך משהו פה השתנה
+שינו את הבמה זוכרת איך חיינו פה
+בין שיר לשיר בין דמעה למנגינה
+
+כתבתי למישהי מכתב
+מכתב אבוד בלי כתובת
+על השולחן נותרה פיתקה של האהבה
+כתבתי לה "אני אוהב אותך
+אוהב עד מוות אני אוהב אותך עד אהבה"
+
+תשב תשב ניסע להופעה שנית נשכח מאיפה באנו
+חושב חושב מסע כזה לעננים ודאי יועיל גם לנו
+אנחנו כמו שירים מתנהלים בקצב
+ראינו אנשים בוכים בעצב
+דיברנו כבר אלפי מילים ברצף
+אז מה רצינו להגיד בעצם?
+
+וכבר עבר די זמן
+המוזיקה עוד כאן
+בלילה השמיים מתקרבים
+רוקדת משוגעת
+מצלצל לזה שנם
+בוא נעלה להוריד את הכוכבים
+
+וכבר עבר המון
+חבר ת'מיקרופון
+בעיר בפריפריית העולם
+עולים שוב לבמה
+תמיד יש אותו חלום
+שלא יגמר לי אף פעם
+
+תשב תשב ניסע להופעה שנית נשכח מאיפה באנו
+חושב חושב מסע כזה לעננים ודאי יועיל גם לנו
+אנחנו כמו שירים מתנהלים בקצב ראיתי אנשים בוכים בעצב
+דיברנו כבר אלפי מילים ברצף אז מה רצינו להגיד בעצם
+
+וכבר עבר די זמן מאז הצילום ההוא
+התחתנתי בינתיים למה אתה לא עובר?
+האהבה היא משהו לפעמים היא עוד טעות
+על המלחמה אני לא רוצה לדבר
+
+אנחנו כמו שירים מתנהלים בקצב
+ראינו אנשים בוכים בעצב
+דיברנו כבר אלפי מילים ברצף
+אז מה רצינו להגיד בעצם?
+
+וכבר עבר די זמן
+שים לב איך משהו פה השתנה` },
+    { name: "על הספסל שבשכונה", cat: "געגוע", youtube: "https://www.youtube.com/watch?v=zeNQF_3y7H4", lyrics: `
+
+
+ערב מול החלון שלי
+עוד יום יורד שוקע בי
+שוב מתקלפים געגועים
+כמו מעל הקירות
+
+ככה איך החיים חולפים
+אין זמן כבר להרגיש בפנים
+מה טוב ומה כמעט נעים
+לקחת זמן לנשום
+
+והשירים פתאום חוזרים
+עולים, עולים
+הלב שלי סדקים
+
+תמיד חולמת בלילות
+הלב נפתח, שעות יפות
+יושבים קבוע מנגנים שם ערב ערב
+על הספסל שבשכונה
+ללמוד לעוף לראשונה
+אם רק היה אפשר לחזור הייתי רצה
+
+תמיד חולמת בלילות
+מה שיכולנו להיות
+הזמן מביא לי געגוע ערב ערב
+על הספסל שבשכונה
+ללמוד לעוף לראשונה
+אם רק היה אפשר לחזור הייתי רצה` },
+    { name: "השדות ליד הבית", cat: ["געגוע", "ילדות", "בית"], youtube: "https://www.youtube.com/watch?v=mPhURtkl28U", lyrics: `
+
+
+השדות ליד הבית
+העיניים הגדולות
+של הים והשמים
+הגבעות העגולות
+
+ופני נוטות לשמש
+לנגיעה לא אלימה
+הבריאה כולה נושמת
+חברית וחמימה.
+
+אם עזבתי, אם סרבתי
+אם נגרפתי בזרמים,
+לשדות ליד הבית
+עוד שמרתי אמונים.
+
+ריח קיץ, ריח ים.
+זו ילדות זה העולם
+
+אחר כך נופל החיץ
+מתברר לאט לאט
+השדות ליד הבית
+לפעמים הם עיר מקלט.
+
+והרוח שלא נחה
+מפסלת בכורכר
+יצירה בלתי נשכחת
+שיופיה לא ישוער.
+
+אם עזבתי, אם סרבתי
+אם נגרפתי בזרמים,
+לשדות ליד הבית
+עוד שמרתי אמונים.
+
+הבריאה כולה נושמת
+עסוקה בעוצמתה
+ופני נוטות לשמש
+הנוגעת בשריטה.
+
+אם עזבתי......
+
+ריח קיץ, ריח ים.
+זו ילדות זה העולם` },
+    { name: "ילד השדה", cat: ["געגוע", "ילדות"], youtube: "https://www.youtube.com/watch?v=pM1YVnmIQ7U", lyrics: `
+כשהילדים נמים זה לא תמיד
+שהם רוצים לישון
+הם לא רוצים לדעת
+כשהאצבעות עוברות
+בתוך שערותיך הרכות
+הן רק רוצות לגעת.
+
+הייתי פעם ילד השדה
+אף פעם לא בוכה
+ורוצה הכל לשכוח
+לראות את העשב שגדל
+איך נחל מתפתל
+ובתוך חלום לשקוע.
+
+כשהמחשבות עוברות
+בתחנות הראש מבלי לצפור
+כמו מתוך קדחת
+זרם של מילים סתומות
+שוטף את הגבולות בין כן ולא
+אני רועד מפחד.
+
+הייתי פעם ילד השדה...
+
+עכשיו אני לבד
+אוחז ברגעים שנשארו
+שעוד רוצים לגעת
+רחוק מן השדה
+אני עוד מחפש
+את השבילים
+שאז גילה הנער.
+
+הייתי פעם ילד השדה...` },
+    { name: "ציפור בלי שמים", cat: "געגוע", youtube: "https://www.youtube.com/watch?v=avVDaeqPtAo", lyrics: `
+כמו ציפור בלי שמיים
+לא יכולתי להיות
+לא מצאתי בי כוח
+שוב לקום שוב לקוות
+
+כמו סירות על המים
+את הים לא יכולות לחצות
+שמעתי קול שקורא לי
+אל תפסיקי לנסות
+
+כל הלילות, ירח בחלון
+ובלעדיך איך אפשר לישון
+הלוואי היית פה קרוב
+כל הלילות, ירח בחלון
+ובלעדיך איך אפשר לישון
+הלוואי היית פה קרוב
+
+שלא יראו בעיניים
+מחשבות, מחשבות
+עד שיגיע הלילה
+להחזיק את הדמעות
+
+כל הלילות, ירח בחלון
+ובלעדיך איך אפשר לישון
+הלוואי היית פה קרוב
+כל הלילות ירח בחלון
+ובלעדיך איך אפשר לישון
+הלוואי היית פה קרוב
+הלוואי היית פה קרוב	
+ ` },
+    { name: "דמעות שקופות", cat: "געגוע", youtube: "https://www.youtube.com/watch?v=J7cC_zTOixQ", lyrics: `
+
+אתה סולח לי על מה שלא ביקשתי
+ושוב פותח בי כל מה שלא סגרתי
+הלוואי ויום אחד אצליח
+לקרוא מה שכתבתי
+
+תשמח בי לפחות על קצת, על הבינתיים
+אתה מאיץ בי להיות, אני נופלת פעמיים
+הלוואי ויום אחד אצליח
+שוב להרגיש בבית
+
+אני בוכה דמעות שקופות
+כל המלח בעולם
+הגשם מתוק, ישטוף ישטוף
+געגועיי אליך
+וזה כואב שמשתנה
+האהבה לפעמים היא נס
+תציל אותי אני כאן לפניך
+
+ויש אנשים שבאים הולכים
+תראה מכל דבר אני מתחזקת	
+ ` },
+    { name: "דברים שרציתי לומר", cat: ["געגוע", "פרידה"], youtube: "https://www.youtube.com/watch?v=vWFKdqvdLO4", lyrics: `
+יש דברים שרציתי לומר ואינם נענים לי
+המילים שבחרתי אינן הטובות מכולן
+עמוקים מיני ים הסודות שאינם מובנים לי
+שאולי לא אבין, לא אבין לעולם
+
+לא בכל הדרכים שרציתי ללכת הלכתי
+בדרכים שהלכתי טעיתי ודאי לא פעם אחת
+ועצבות מהלה כל שמחה, כל שמחה ששמחתי
+כמו ביקשתי דבר, דבר שאבד
+
+חלומות שחלמתי והם מקיצים בי עדיין
+שבריהם בעיני נשטפים מפני בדמעה
+ולילות יסורים לא ספורים שהטבעתי ביין
+כאובד בדרכי, בדרכי הרעה
+
+אך בכל הדרכים מעולם לא אבדה לי דרכנו
+וגם אם לפעמים סערו מסביב הרוחות
+ואהבתי אותך והיה לנו טוב, טוב עד גדותינו
+והיה לנו רע ואהבתי אותך לא פחות` },
+    { name: "הייתי בגן עדן", cat: "געגוע", youtube: "https://www.youtube.com/watch?v=j2ZJufHIgp8", lyrics: `ולי קראת פרח ועיניים
+אני זוכרת הייתי נשמה
+רק איתך מעל ריחפתי בשמיים
+פתאום נפלתי לבד לאדמה
+
+לא נותר דבר מלבד הגעגוע
+הזמן עובר לאט לאט שעה, שבוע
+כבר שנה כמעט והעולם רגוע
+ורק קולי זועק עכשיו תגיד מדוע
+
+הייתי בגן עדן
+ועכשיו הלב פצוע
+וזה סיפור כל כך ישן
+וידוע
+ולי קראת פרח ועיניים
+אני זוכרת הייתי נשמה
+רק איתך מעל ריחפתי בשמיים
+פתאום נפלתי לבד לאדמה
+
+החיים זרמו הכל היה קבוע
+איך שרנו אז, בשני קולות בלי זעזוע
+והיו לילות של צחוק ושעשוע
+אבל עכשיו יש בקולי מיתר קרוע
+
+הייתי בגן עדן
+ועכשיו הלב פצוע
+וזה סיפור כל כך ישן
+וידוע
+ולי קראת פרח ועיניים
+אני זוכרת הייתי נשמה
+רק איתך מעל ריחפתי בשמיים
+פתאום נפלתי לבד לאדמה
+
+ולי קראת פרח ועיניים
+אני זוכרת הייתי נשמה
+רק איתך מעל ריחפתי בשמיים
+פתאום נפלתי לבד לאדמה
+נשמה` },
+    { name: "שיר תשרי", cat: ["געגוע", "עונות"], youtube: "https://www.youtube.com/watch?v=I166985NY5w", lyrics: `השמיים משתנים
+לעיני החקלאים
+השכנים מתכוננים
+לימים הנוראים
+
+מישהו חושב עליך
+ורושם את מעשיך
+בוא הביתה במהרה
+עם הרוח הקרירה
+בוא הביתה במהרה
+עם הרוח הקרירה
+
+מנדרינות מבשילות
+בפרדס במועדן
+המורות משתעלות
+והולכות לישון מוקדם
+
+כבר ראיתי נחליאלי
+ואולי זה רק נדמה לי
+ועוד חמסין נשבר אתמול
+גם החופש הגדול
+עוד חמסין נשבר אתמול
+גם החופש הגדול
+
+מה יקרה ומה יחלוף?
+שואלים הכתבים
+כשלאורך כביש החוף
+מתייצבים החצבים
+
+מה בעיתוני הערב
+מבשרת הכותרת?
+בוא הביתה במהרה
+עם הרוח הקרירה
+בוא הביתה במהרה
+עם הרוח הקרירה` },
+    { name: "צריך לחזור הביתה", cat: "געגוע", youtube: "https://www.youtube.com/watch?v=vG0aVZlwbDU", lyrics: `
+
+צריך לחזור הביתה, מאוחר
+שלא תדאג, אני אוהבת רק אותך.
+זה רק מרוץ המחוגים של השעון
+מזכיר לי את האוטובוס האחרון.
+
+פוחד להישאר כאן לבדך?
+אתה שואל אותי, מה יהיה מחר -
+ראת את שדה הכוכבים, את הפריחה
+שמע פעימת הלב שלי בלכתך.
+
+תיגע בטל, תיגע, תגיד את שמי,
+ענן כיסה את הירח הדרומי.
+ציפור לילת צרחה בחושך ופרחה
+צריך לשוב, אחי, הביתה, מאוחר.
+
+שמע, אהובי, את קול הוואדי מרחוק:
+מלא שומר, מלא טיון, מלא ריחות
+אבל בבית מכבים כבר את האור
+צריך לשוב כבר, אהובי, צריך לחזור	
+ 
+` },
+    { name: "עומד בשער", cat: "געגוע", youtube: "https://www.youtube.com/watch?v=wKF6wM7IN0I", lyrics: `
+
+שמעתי שאתה חוזר את כל הדרך
+ראיתי מלאכים עורכים שולחן לבן המלך
+גם ראיתי סולם, געגועים יורדים ועולים
+שמעתי רוחות שמלטפות את העלים
+ראיתי אותך, זה לא חזיון תעתועים
+
+שמעתי שהים הכריז על יום שמח
+ראיתי את הכוכבים והירח מרקדים
+גם הם יודעים בחזרה להתגלגל
+שמעתי שהשמש היא בעצם צל
+ראיתי מגדל מזדעזע ונופל
+
+תבוא, אנחנו מחכים לך יותר מדי שנים
+אנחנו השתגענו אין לנו יותר פנים
+רק הולכים ומתכלים כל הזמן, אז תבוא
+כן תבוא, לא נשארו כלים כדי שנוכל אותם לשבור
+אנחנו לא יודעים מי פה צלול
+מי השיכור שתמיד נופל לבור, מן הסתם
+אז תבוא, כן תבוא.
+
+שמעתי שאתה ממש עומד בשער
+ושכל שה תמים יוכל לגור ביער ושמעתי
+שגם הלב הזה יותר לא ימות
+דמיון יחתום הסכם שלום עם מציאות
+כל הצלילים יהיו לשיר אחד פשוט
+
+תבוא, אנחנו מחכים לך...` },
+    { name: "עד שתחזור, עד שתשובי", cat: "געגוע", youtube: "https://www.youtube.com/watch?v=se_C2VDD1bM", lyrics: `אם את עוד שם תבקשי משאלה
+ואני אבקש חזרה
+ואם אתה שומע את קולי בחלום
+אני לא אוותר עליך
+
+והימים עוברים
+והלילות קשים
+הלב מדמם והנפש שלי כבר שבורה
+
+עד שתחזור
+לא ארפה לא אנוח
+ועד שתשובי
+אחפש אותך ברוח
+כותבת עוד מכתבים
+אולי עוד יבואו
+ימים טובים
+שרנו את השיר שאת הכי אוהבת
+
+יצאנו בבוקר לראות את הזריחה
+להרגיש קצת יותר בחיים
+הריח שלך עוד נמצא במיטה
+מרגישה אותך בין הסדינים
+
+הלב כבר נהיה אפור
+לקחו לי את הגיבור
+הם שוב שואלים איפה אבא ואין לי תשובה
+
+עד שתחזור
+לא ארפה לא אנוח
+ועד שתשובי
+אחפש אותך ברוח
+כותב לך עוד מכתבים
+אולי עוד יבואו
+ימים טובים
+שרנו את השיר שאת הכי אוהבת
+
+ושוב בחלום אתה רוקד נעלם
+ושוב מסתירה את הדמעות מכולם
+צועקת בוכה משמיעה לעולם את קולך
+אני צריכה אותך
+
+עד שתחזור
+לא ארפה לא אנוח
+ועד שתשובי
+אחפש אותך ברוח
+כותבת עוד מכתבים
+אולי עוד יבואו
+ימים טובים
+שרנו את השיר שאת הכי אוהבת
+עד שתחזור
+עד שתשובי
+כותבת עוד מכתבים
+אולי עוד יבואו
+ימים טובים
+שרנו את השיר שאת הכי אוהבת` },
+    { name: "געגוע", cat: "געגוע", youtube: "https://www.youtube.com/watch?v=6AU-cjJ_-4A", lyrics: `
+געגוע
+עננים משתנים
+געגוע
+בעלים הנושרים
+בתמונה דהויה
+אהבה ישנה
+
+געגוע
+תראי
+איך עוברות השנים
+געגוע
+פתאום הפכנו גדולים
+אין כבר סודות בלחישה
+אור דולק מתחת שמיכה
+
+עם כל מה שנסגר לי בפנים
+נישאתי ברוח
+על כנפי כל השנים
+סודות ושקרים
+הלב הפצוע
+מחכה ליד החמה
+איך כל השנים
+נישאתי ברוח
+עם כל מה שנסגר לי בפנים
+סודות ושקרים
+הלב הפצוע
+מחכה ליד החמה
+
+געגוע
+השכונה הישנה
+געגוע
+לחזור בריצה
+ריח ערב שבת
+הכול חוזר אליי לאט
+ושוב הכול סוער` },
+    { name: "אני וסימון ומואיז הקטן", cat: ["געגוע", "ילדות"], youtube: "https://www.youtube.com/watch?v=4uDy_A8zXPM", lyrics: `
+
+ולפעמים כשאני כך לבדי
+אני חוזר לסמטאות ילדותי
+אל נעורי שנעלמו עם השנים
+לחברים שלי ההם הישנים
+אני חוזר אל הצבעים והקולות
+אל העיניים התמימות והגדולות
+אני חוזר אל השכונה אל עץ התות
+אל עפיפון אדום אדום קשור לחוט
+היינו ילדים וזה היה מזמן
+אני וסימון ומואיז הקטן
+
+אני זוכר קולנוע רקס ביומיות
+ומרחוק פעמונים של כנסיות
+ואיך רדפנו על גגות אחרי יונים
+לעוף איתן רצינו עד לעננים
+ובגן השעשועים על נדנדות
+נשבענו אמונים לכל הילדות
+שיחקנו סמל וסוס ארוך וראשיות
+המלחמות היו אז לא אמיתיות
+היינו ילדים וזה היה מזמן
+אני וסימון ומואיז הקטן
+
+בנעלי שבת עם כובע של בארט
+ובעברית יפה עם עין ועם חית
+דהרנו על ענן עשוי מכריות
+ובאקדח פקקים הטבענו אוניות
+הייתי טרזן , וסימון ארול פלין
+ומואיז הקטן קפץ כמו גונגה דין
+ובלילות החורף הקרים מאוד
+היינו מתכסים בכל החלומות
+היינו ילדים וזה היה מזמן
+אני וסימון ומואיז הקטן
+
+עברו שנים מאז עכשיו העיר גדולה
+מסימון לא שומעים אפילו לא מילה
+ומואיז הקטן לאן הוא נעלם
+וגם קולנוע רקס כבר לא קיים
+אבל אני כשאני כך לבדי
+אני חוזר לסמטאות ילדותי
+אל נעורי שנעלמו עם השנים
+לחברים שלי ההם הישנים
+היינו ילדים וזה היה מזמן
+אני וסימון ומואיז הקטן.	
+ ` },
+    { name: "דרישת שלום", cat: "געגוע", youtube: "https://www.youtube.com/watch?v=jWYdFMXWSk4", lyrics: `
+מחורצים ענפי הזית
+כפני הוותיקים,
+געגועים צובטים עדיין
+כשהדרורים נוסקים.
+הילדים שקועים בינתיים
+בסוד המשחקים,
+טירונים חולמים על בית
+וזקנים על מרחקים.
+
+בואי רוח ים
+עם טפיחת כנפי יונה
+והביאי מאי שם
+עוד דרישת שלום חמה.
+בואי נכונה
+אל הלחי השחומה,
+בואי רוח ים
+עם טפיחת כנפי יונה.
+
+שעת ערבית לאט נגמלת
+מלהט החמה,
+חלון נפתח, נפתחת דלת
+ובשכונה תכונה.
+עוד ההורים זקוקים לילד
+ועיר לשאונה,
+ואנחנו זה לאלה
+והשיר למנגינה.
+
+בואי רוח ים...
+
+ויד סמויה כמו אוספת
+את כל המכאובים
+אף משאלה לא מתעייפת
+לראות זמנים טובים
+למצוא שמחה בסוף העצב
+לחיות בין אוהבים
+אם קרובה את, שעת החסד,
+היכנסי לכאן ושבי.
+
+בואי רוח ים...
+ ` },
+    { name: "הנה באתי הביתה", cat: ["געגוע", "בית"], youtube: "https://www.youtube.com/watch?v=9enn5OaF-Hk", lyrics: `אל המכולת הקטנה
+אל הדירה הישנה
+אל המפתח הגנוב
+אל איש אחד שלא ישוב
+
+אל הסודות המתוקים
+אל הסיבות למעשים
+אל הדמעות שעוד יורדות
+אל המבוכה והחידות
+
+אל הברושים אל הכבישים
+אל צבע שמן על בדים
+אל שיטוטים בלי מטרה
+אל זוג עיניים במראה
+
+אל הזדמנות שלא ניתנה
+אל החמלה והטינה
+אל פתקאות באבנים
+אל פתח צר אל אלוהים
+
+הנה באתי הביתה...
+הנה באתי הביתה...
+
+אל הקרבה והקרבות
+אל הדלתות הנטרקות
+אל השמחה המאופקת
+אל שאלות ללא תשובות
+מה שיכול היה לקרות
+אל הכביסה המלוכלכת
+
+מן האמת העצומה
+שוב נפקחות עיני
+אל משהו בי שלא נשטף במים
+אל מנגינה של צחוק ושל כאב
+שאולי לא שמתי לב
+היא מתנגנת בי עדיין
+
+הנה באתי הביתה...
+הנה באתי הביתה...
+הנה באתי הביתה...
+הנה באתי הביתה...
+
+אל המסגרת הקרועה
+אל הספק באהבה
+אל רגע של שפיות חדה
+אל השלום, אל השלווה
+אל השלם שבשבור
+אל הצריך והאמור
+אל מה שלא יכול להיות
+אל הברכה שבחיבור
+
+אל גן העדן העצוב
+אל בית הכלא האהוב
+אל הטייס האוטומטי
+אל ערימה של הבטחות
+שנשכחו עם השנים
+אל האולי והכמעטים
+שהם כל מי שאני
+
+הנה באתי הביתה...
+הנה באתי הביתה...
+הנה באתי הביתה...
+הנה באתי הביתה...
+
+מחור קטן של תריס שבור
+אפשר לראות הרים גדולים
+נשפכים אל הכינרת
+את הרחוב המתפתל
+אל סף הדלת השואל
+אל התחלה שלא נגמרת` },
+    { name: "עד שובך", cat: "געגוע", youtube: "https://www.youtube.com/watch?v=A5hwFWcTiAo", lyrics: `
+
+אני נשברת מול חלקי מילים
+שמות של ערים זרות, של מקומות
+זווית חיוך ברחוב, שקיעה בים
+אני לא צריכה הרבה
+
+הכל מזכיר לי את ההבטחה
+העמדתי פנים מולך שהיא בשבילך
+הבטחתי שעד הסתיו בטח תשוב לכאן
+הסתיו עבר
+
+אם אתה פתאום מתגעגע
+אז שתדע שאני כל כך
+מחכה לך
+אין בי פעימה עד שובך
+
+אני מודדת באלפי דרכים את המרחק ממך
+כאילו כך יש לי יותר שליטה
+כך קל יותר הגעגוע
+
+מקיפה הכל בתזכורות
+עלה נושר, פזמון חוזר
+הזמן עובר ומקרב אותך אלי
+
+אם אתה פתאום מתגעגע
+אז שתדע שאני כל כך
+מחכה לך
+אין בי פעימה עד שובך
+אין בי פעימה
+
+אם אתה פתאום מתגעגע
+אז שתדע שאני כל כך
+מחכה לך
+אין בי פעימה עד שובך
+אין בי פעימה עד שובך` },
+    { name: "באביב את תשובי חזרה", cat: "געגוע", youtube: "https://www.youtube.com/watch?v=znzvCQn-Lgw", lyrics: `על ראשינו שוב נושרות טיפות של גשם
+רוח סתיו עלי זהב בכל פיזרה
+שוב נמתין לשמש נצפה ונחכה ש
+באביב היא תשוב בחזרה
+
+ערוכים החצבים על אם הדרך
+בשדה גם סתוונית התעוררה
+כל הנרקיסים קיפלו עלים אספו כותרת
+באביב הם ישובו חזרה
+
+לה לה לה לה לה לה לה
+באביב הם ישובו חזרה
+
+כבר סובב לו נחליאלי בגננו
+בשדותינו עפרוני אומר שירה
+כל תורי הבר התעופפו מחלוננו
+באביב הם ישובו חזרה
+
+וגם את שנעלמת בבוא הגשם
+שפרחת פתאום כרוח סערה
+לא נזיל דמעות ולא נקרא לך שוב מפני ש
+באביב את תשובי חזרה
+
+לה לה לה לה לה לה לה
+באביב את תשובי חזרה
+
+נחכה לך בחדרנו כל החורף
+נחכה לך ובשמך תמיד נקרא
+לא נצא אחרייך לחפש כי אין כל צורך
+הן באביב את תשובי חזרה
+
+על ראשינו שוב נושרות טיפות של גשם
+רוח סתיו עלי זהב בכל פיזרה
+אנו עוד נמתין לך נצפה ונחכה ש
+באביב את תשובי חזרה
+
+לה לה לה לה לה לה לה
+באביב את תשובי חזרה` },
+    { name: "עד שתחזרי אליי", cat: "געגוע", youtube: "https://www.youtube.com/watch?v=rvaLwJRBagM", lyrics: `כל יום שעובר מאבד אותך יותר
+מתרחקת מחיי
+מחפשת לבדך
+
+את הדרכים החדשות
+את הכוח לשנות
+להתחיל מהתחלה
+לגלות עולם חדש
+
+עכשיו למצוא את המילים
+ולקרב את המרחק בינינו
+
+עד שתחזרי אליי אצא מדעתי
+אין לי יום ולילה כשאת לא כאן לצידי
+תני לי סימן אם את שומעת את קולי
+בחוץ עולה האור אבל הכול כבה בלב שלי
+כמה דמעות זלגו אף פעם לא תדעי
+מרוב החיפושים איבדתי את עצמי כל לילה
+
+מתחת דלת נעולה
+מכתב מארץ רחוקה
+כתבת שטוב לך שם עכשיו
+
+ומקווה שגם אצלי
+אבל תדעי שאני כאן
+אני אף פעם לא אשכח
+לך אני שר כל הלילות
+את השירים את השתיקות
+
+עכשיו למצוא את המילים
+ולקרב את המרחק בינינו
+
+עד שתחזרי אליי אצא מדעתי
+אין לי יום ולילה כשאת לא כאן לצידי
+תני לי סימן אם את שומעת את קולי
+בחוץ עולה האור אבל הכול כבה בלב שלי
+כמה דמעות זלגו אף פעם לא תדעי
+מרוב החיפושים איבדתי את עצמי כל לילה
+
+עד שתחזרי אליי אצא מדעתי
+אין לי יום ולילה כשאת לא כאן לצידי
+כמה דמעות זלגו אף פעם לא תדעי
+מרוב החיפושים איבדתי את עצמי כל לילה` },
+    { name: "אחרי כל השנים", cat: "געגוע", youtube: "https://www.youtube.com/watch?v=_thtynUlfU0", lyrics: `אחרי כל השנים אני עוד כאן
+באותן הסמטאות
+יושב פה באותו קפה קטן
+ליד הדלת
+ומאותו שולחן חצי זווית
+מציץ אותו חלון ישן
+זוכרת איך השקפנו לרחוב
+עם רדת ערב
+
+ואני כבר כמעט גדול
+ואת מזמן כבר לא אותה ילדה
+ראשי זרק שיבה שנים הם כמו שניה
+ואני כבר כמעט גדולה
+איך כל העיר הזו שינתה צורה
+רק זיכרון ישן נשאר כמו שהיה
+
+ולפעמים אני עוברת כאן
+שוב באותן הסמטאות
+יושבת על ספסל שבשדרה
+ומסתכלת
+ומאותה פינה חצי זווית
+מציץ אותו חלון ישן
+זוכר איך שאהבנו בלי מילים
+עם רדת ערב` },
+    { name: "נערי בים ביתו", cat: ["געגוע", "זיכרון"], youtube: "https://www.youtube.com/watch?v=GbaEynaYzzw", lyrics: `
+
+נערי ירד לים,
+בשמחה ירד.
+הבטיח להביא משם
+אלמוגים בצבע דם,
+אך ליבי חרד.
+
+נערי כתב מים,
+בשמחה כתב,
+"עוד תראי, אביא לך גם
+חוט פנינים מקצף ים"
+אך לבי נקף.
+
+נערי בים ביתו,
+רק שחפים לוו אותו,
+רק שחפים על פני הים
+מבינים שפתו.
+השחפים קולם נדם,
+נערי ירד לים.
+
+נערי אהב הים,
+בשמחה אהב,
+"עוד תראי, לשנינו שם
+בית יהיה וגן"
+רק ליבי כאב.
+
+נערי לא שב מים,
+נערי לא שב,
+אלמוגים בצבע דם,
+חוט פנינים מקצף ים,
+איפה הוא עכשיו.
+
+נערי בים ביתו...` },
+    { name: "שירי ילדות", cat: ["געגוע", "ילדות"], youtube: "https://www.youtube.com/watch?v=U4OV0aJB-W0", lyrics: `
+אני זוכר שירים בגן
+כשהייתי ילד.
+איך שפן כל כך קטן
+קיבל נזלת.
+בין הרים ובין סלעים
+טסנו ברכבת
+טוב לשיר - היה נעים
+"לקום וגם לשבת"
+טוב לשיר - היה נעים
+"לקום וגם לשבת".
+
+השירים, המשחקים -
+איפה הם עכשיו?
+אולי לפני אולי בצדדי,
+אולי מאחורי הגב.
+
+אני זוכר ארגז בחול
+ארמונות בנינו
+ציור ציירנו במכחול
+אכלנו ושתינו
+איך רקדנו יד ביד
+מעגל עשינו
+טוב לשיר - היה נחמד
+כשעוד קטנים היינו
+טוב לשיר - היה נחמד
+כשעוד קטנים היינו.
+
+השירים, המשחקים...
+
+אני זוכר אותם ימים
+הכל ברור כשמש.
+זה אולי היה מזמן
+אך זה נראה כמו אמש.
+השירים המשחקים
+ששרתי ושיחקתי
+הם איתי בתוך תוכי
+אותם עוד לא שכחתי.
+הם איתי בתוך תוכי
+אותם עוד לא שכחתי.
+
+השירים, המשחקים...` },
+    { name: "זמר נוגה", cat: "געגוע", youtube: "https://www.youtube.com/watch?v=Tb43Fy-RGJw", lyrics: `
+
+
+הֲתִשְׁמַע קוֹלִי, רְחוֹקִי שֶׁלִּי,
+הֲתִשְׁמַע קוֹלִי, בַּאֲשֶׁר הִנְּךָ –
+קוֹל קוֹרֵא בְּעֹז, קוֹל בּוֹכֶה בִּדְמִי
+וּמֵעַל לַזְּמַן מְצַוֶּה בְּרָכָה?
+
+תֵּבֵל זוֹ רַבָּה וּדְרָכִים בָּה רָב.
+נִפְגָּשׁוֹת לְדַק, נִפְרָדוֹת לָעַד.
+מְבַקֵּשׁ אָדָם, אַךְ כּוֹשְׁלוֹת רַגְלָיו,
+לֹא יוּכַל לִמְצֹא אֶת אֲשֶׁר אָבַד.
+
+אַחֲרוֹן יָמַי כְּבָר קָרוֹב אוּלַי,
+כְּבָר קָרוֹב הַיּוֹם שֶׁל דִּמְעוֹת פְּרִידָה,
+אֲחַכֶּה לְךָ עַד יִכְבּוּ חַיַּי,
+כְּחַכּוֹת רָחֵל לְדוֹדָהּ.	
+ ` },
+    { name: "אתה פה חסר לי", cat: ["געגוע", "פרידה"], youtube: "https://www.youtube.com/watch?v=UIVNwqTXwT0", lyrics: `
+גשם כיסה את אספלט הכביש
+ביום הכי קר בשנה,
+ומעיני שלי, טפטוף מקומי,
+כי יש סדק בלב אהבה.
+
+כשהלכת מכאן, לא ידעת לאן
+מסגרת פני בחלון.
+אבל גם בתמונות, לפעמים הדמויות
+מקשיבות לתקתוק השעון.
+
+ואולי, אתה פה חסר לי.
+אתה כאן, אתה שם,
+ובכל זאת אתה פה חסר לי.
+ואולי, אתה פה חסר לי...
+
+אתה אידיוט אמיתי אם חשבת אותי
+שאבוא וארוץ עד אליך,
+וכלום לא קרה כשאתה לא בסביבה.
+(כן) הכל די רגיל בלעדייך.
+
+הייתי בכיף מחבקת אותך,
+מחכה לך בין הסדינים.
+אני שונאת אנשים, (אנשים חלשים)
+שבמקום לדבר הם זזים.
+
+ואולי, אתה פה חסר לי...
+
+(מה יקרה אם פתאום תבוא אלי
+ותייפה את הכל?
+רגע של שקט, בחוץ שוב הגשם
+ממשיך על הכביש עוד ליפול?)
+
+ואולי, אתה פה חסר לי...	
+ ` },
+    { name: "ארץ ערבה", cat: "געגוע", youtube: "https://www.youtube.com/watch?v=0Sthi4pUhqs", lyrics: `מעל הרים ואדמה
+אד דמותך בא מתוך הבוקר
+ציפור דואה אל השממה
+ואני איתה
+
+בחום השמש הכתומה
+ידענו אהבה תמה, סוערת
+כן, אני זוכרת
+את הנקיקים המתחוורים
+בזוהר כוכבים
+סלעי אדום אותם נתת לי מזכרת
+
+קח אותי לארץ ערבה
+אל אדמת מדבר צמאה שהרוותה את ימינו
+כך לנשוב אל יופי הדממה
+אני עדיין שמה, עוד אני מחכה
+
+אל תוך הלילה הגדול
+ששׂבע אש וגם עופרת
+יצא הלך הוא ואין קול
+לא ישוב משם
+
+האם ישמור לי עוד החול
+את זכר האתמול
+ועקבותינו שמחק הרוח
+העוד זוכרת השיטה
+איך תחת חופתה
+שתתנו שנינו מליבנו הפתוח
+
+קח אותי לארץ ערבה
+אל אדמת מדבר צמאה שהרוותה את ימינו
+כך לנשוב אל יופי הדממה
+אני עדיין שמה, עוד אני מחכה, הו
+
+קח אותי לארץ ערבה
+אל אדמת מדבר צמאה שהרוותה את ימינו
+כך לנשוב אל יופי הדממה
+אני עדיין שמה, עוד אני מחכה
+עד שוך הלהבה
+קח אותי לארץ אהבה` },
+    { name: "לאן לאן לאן", cat: ["געגוע", "פרידה"], youtube: "https://www.youtube.com/watch?v=fVlg1Js2E0s", lyrics: `
+ושואל מה את עושה, והם אומרים שהם לא יודעים,
+ומחפש תירוץ לדבר עלייך,
+ואחד מציע שאסע, בעקבות הידועים,
+ולוקח ת'מכונית ונוסע אחרייך.
+בכניסה לכביש המהיר, שסוללים כל החיים,
+המכונית היא בית בעולם של קוקה קולה,
+קונה לך ממתקים שאהבת למצוץ, כי זה טעים,
+בשביל כוס קפה איתך, הייתי שם גם אלף דולר.
+
+אני נוסע, לא יודע,
+לאן, לאן, לאן,
+את היית בשבילי הכל,
+וזה לא היה מזמן.
+
+ושומע את קולך כמו אז, בין הדלת והחוץ,
+צועקת "אלוהים, רחם עלי, שים לי קצת יוד",
+חצי חיים עברו, ואיפה הם, מחשב בזהירות,
+כמה עוד נשאר לבנאדם לחיות.
+על דרך עפר ספוגת גשמים, עולה כדי לקצר את המסלול,
+המכונית היא לפעמים כמו גונדולה.
+חושב על כל המיואשים, שהתאהבו והתחתנו,
+בשביל כוס קפה איתך הייתי שם גם אלף דולר.
+
+אני נוסע, לא יודע,
+לאן, לאן, לאן,
+פעם היית בשבילי הכל,
+וזה לא היה מזמן.
+
+ושואל אם ראו אותך, אף אחד כבר לא ראה,
+ומחפש תרוץ לדבר עלייך.
+מטח יריות של מטורף אחד על ראש הממשלה,
+אני בוכה עליו כשאני בוכה עלייך.
+מכל החרא בעולם, תראי איך אני נראה,
+הולך עם כאב בצד מרוב אהבה שלא עוברת,
+ולאט לאט נרדם במכונית, כי לפעמים היא גם מיטה,
+וחולם על כוס קפה איתך, על מה את חולמת?
+
+אני נוסע, לא יודע,
+לאן, לאן, לאן,
+את היית בשבילי הכל,
+וזה לא היה מזמן.` },
+    { name: "קצפת", cat: ["געגוע", "ילדות"], youtube: "https://www.youtube.com/watch?v=lAaJn0y6Occ", lyrics: `
+בלב העיר שבה נולדתי,
+עובדים זרים בורחים מהר,
+ליד התיכון שבו למדתי,
+אפילו הגשם לא עוצר.
+
+מול הפרסומת לקצפת,
+מול הים ומול האניות
+באה לי תמונה מימי בית ספר
+ילדים משחקים באשליות.
+
+כאן התנשקנו ליד השפך
+כאן כתבתי על המחברות:
+"אין כמו בדידות שמתחלפת
+בלהרגיש שאתה רצוי בסוף."
+
+כאן פעם דרכו לי על החלומות
+(מול הירח מתבכיין).
+בצהרי היום שמשות גדולות
+כאן לא פחדתי להזדקן.
+"הייתי משלם לראות אותך
+נתלית לי עוד פעם על הגב
+כי לא נעים
+מה שרואים עכשיו..."
+
+בלב העיר שבה נולדתי
+בתוך הכביש המתעקל,
+ליד התיכון שבו למדתי
+פעמון הזמן עוד מצלצל.
+(גלינג גלונג גלינג גלונג)
+
+מול הפרסומת לקצפת,
+מול הים ומול האניות,
+כל מה שבא נכנס לנפש,
+שלל דעות קדומות ואפליות.
+כאן העולם הפך לנשף,
+כאן רקדתי על המחברות.
+כי אין כמו בדידות שמתחלפת
+בלהרגיש שאתה רצוי בסוף.
+
+כאן פעם חייתי על כוכב אחר,
+(מול הירח מתבכיין).
+"רק תאהבי אותי" הייתי מתחנן,
+בבוקר רצתי להילחם.
+הייתי משלם לראות אותך,
+נתלית לי עוד פעם על הגב,
+כי לא נעים מה שרואים עכשיו.
+בלב העיר שבה נולדתי,
+אחרי שנים אני עובר,
+ליד התיכון שבו למדתי,
+אולי אלך להסתפר...` },
+    { name: "מרחק הזמן", cat: "געגוע", youtube: "https://www.youtube.com/watch?v=3giUlLMTcKc", lyrics: `המצב-רוח מעונן
+רוקדת עם שדים
+מחוץ לשער של הגן
+שבו היינו ילדים
+לא נפרדים כשחורף בא
+אפשר לקפוא מאהבה
+
+עבר כבר זמן, הזכרונות
+נזלו אל השירים
+משוררים בונים סירות
+כדי לחצות את החיים
+ולפעמים כשאין סיבה
+מאמינים שכל הרע בא רק לטובה
+
+מרחק הזמן
+רק מקרב אותי אליך
+עדיין כאן
+חושבת עליך
+
+מחר יגיע יום יפה
+ואור חדש יאיר
+אישה ואיש בבית קפה
+עוברים על המחיר
+מתי יוצאים מהקופסה?
+בשביל לראות איתך עולם לא צריך טיסה
+
+מרחק הזמן
+רק מקרב אותי אליך
+עדיין כאן חושבת עליך
+
+לא לבקש יותר
+לא להתפתות
+לא להסתחרר
+כבר לא נפזר מסביב ללב קוצים
+גם במבול קודר
+גם במצב-רוח הכי סוער
+הכוכבים יוצאים
+
+מרחק הזמן
+רק מקרב אותי אליך
+עדיין כאן
+חושבת עליך
+חושבת עליך` },
+    { name: "שיעור מולדת", cat: ["געגוע", "ילדות"], youtube: "https://www.youtube.com/watch?v=ib2bHprtGzA", lyrics: `
+
+אז בבית הספר
+על הקיר תמונה
+והאיכר חורש בה
+את האדמה
+וברקע, הברושים
+שמי שרב חיוורים
+האיכר יצמיח לנו לחם
+שנהיה גדולים.
+
+והמורה אומרת:
+"עוד מעט כבר סתיו".
+בשיעור מולדת
+היא מראה חצב.
+היורה יבוא עכשיו
+שפע טיפותיו
+כוילון שקוף על פני העמק
+הפורש שדותיו.
+
+כך זה היה, פשטות רכה
+זה הצטייר בילדותנו
+שהיתה יפה.
+
+וכך בדמיוננו התרבו פלאות
+הפטישים ניגנו
+מחרשות רנות
+יש יוגבים ויש כורמים
+ארץ של רועים -
+כך זה הצטייר בילדותנו
+שהיתה יפה.` },
+    { name: "שושנים עצובות", cat: ["געגוע", "זיכרון"], youtube: "https://www.youtube.com/watch?v=egtOB8arAN0", lyrics: `שם בהרים שמעל הכפר שלנו
+יש שם גן של שושנים
+מחר אצא לי השכם בבוקר
+עם ציוץ הציפורים
+אביא לאהובי משם פרח
+משדה האדומים
+אדע, אני שלו והוא שלי לעולמים
+
+ירדתי מההר לכפר שלנו
+בשערי שושנים
+אך אהובי לא בבית
+שקט בין החדרים
+שם בנהר שליד הכפר שלנו
+אהובי בלילה לא חזר
+מצא לו אהובה אחרת וליבי נשבר
+
+הו, אלוהים תעשה שיבוא
+מחכה ביום ובלילה
+לא, אין לי כח שעוד יום יבוא
+שושנים עצובות, והוא לא פה
+
+אלוהים תעשה שיבוא
+מחכה ביום ובלילה
+לא, אין לי כח שעוד יום יבוא
+שושנים עצובות, והוא לא פה
+
+הו, אלוהים תעשה שיבוא
+מחכה ביום ובלילה
+לא, אין לי כח שעוד יום יבוא
+שושנים עצובות` },
+    { name: "פתאום כשלא באת", cat: "געגוע", youtube: "https://www.youtube.com/watch?v=H9ln4Uw2D2I", lyrics: `עכשיו אחרי יומיים-שלושה
+שנסעת ולקחת את כל מה שהייתי איתך
+גיליתי תמונות על הקיר הלבן
+וכמה עננים באפור על תקרת המטבח
+
+ממש באותו היום שנסעת
+צלצל השעון והעיר את הבית כולו
+ושמש חורפית בתריסים נכנסה
+וראיתי פנים בקפה דומות-לא-דומות
+
+כי פתאום כשלא באת
+אני רציתי כל כך
+ופתאום כשלא באת
+נעשה לי קר
+והדלקתי את האור
+בחדר הסמוך
+וחיכיתי לך שעות
+בלי אויר וגוף
+
+אחר כך גלשה התקרה לרצפה
+והשחקים נמלאו ציפור
+ונסעתי רחוק כמו יונה של בר
+והייתי חולם והייתי ער
+
+לאט-לאט כבה האור לבדו
+ונותרתי חשוך, והייתי לבד
+מן הקיר הלבן גלשו התמונות
+עצובות-עצובות, כי פתאום כשלא באת
+
+כי פתאום כשלא באת
+אני רציתי כל כך
+ופתאום כשלא באת
+נעשה לי קר
+והדלקתי את האור
+בחדר הסמוך
+וחיכיתי לך שעות
+בלי אויר וגוף
+
+ופתאום כשלא באת
+אני רציתי כל כך
+ופתאום כשלא באת
+נעשה לי קר
+והדלקתי את האור
+בחדר הסמוך
+וחיכיתי לך שעות
+בלי אויר וגוף` },
+    { name: "ערב כחול עמוק", cat: "געגוע", youtube: "https://www.youtube.com/watch?v=Nn3cPvTE5vg", lyrics: `
+ערב כחול עמוק
+תולה עגיל אדמדם לרושם
+ומעשן תפרחת
+קטורת של אזדרכת
+ומרחש בלחש
+אולי הפעם
+אולי הפעם
+
+כמה כחול הערב
+כמה עמוק אלוהים יודע
+למה שלא תפתיע
+חד וחלק בפתח
+כמשחר בלי הרף
+לרוות עוד פעם
+לרוות עוד פעם
+
+כל הכחול לעצב
+כל העמוק אין קצה
+בא לי בזאת הפעם
+ליפול על חרב למות עליך
+למות, למות עליך
+לזכר ערב שלא יחזור
+
+ערב כחול עמוק
+תולה עגיל בצורת ירח
+רק תעמוד בפתח
+בלי הודעה מוקדמת
+כמשחר לטרף
+לרוות עוד פעם
+לרוות עוד פעם
+
+כל הכחול לעצב
+כל העמוק אין קצה
+בא לי בזאת הפעם
+ליפול על חרב למות עליך
+למות, למות עליך
+לזכר ערב שלא יחזור` },
+    { name: "גשם הקשב לנשים", cat: "געגוע", youtube: "https://www.youtube.com/watch?v=rq3tJyJUV1g", lyrics: `עד רדת הערב, גשם.
+הקשב לנשים בחלון,
+עד רדת החושך. גשם, הקשב
+לנשים הצופות בווילון.
+
+גם לנו אדמה שמחכה
+למשהו מלמעלה.
+גם בנו יש אימה וזעקה
+למשהו פורח… וכן הלאה…
+
+עד סוף השבוע, גשם.
+הקשב לנשים בחלון,
+עד קץ השבועיים. גשם, הקשב
+לנשים העומדות ומחכות.
+
+גם לנו בחצר גינה קטנה
+ריקה מזוהר דשא.
+גם אנו מצפות עד אין בינה
+למשהו ברוך כמו הגשם.
+
+גם בתוכנו מחכה, שותקת,
+חלקת ארץ קטנה, חרבה.
+והגשם שלנו איחר לרדת.
+הגשם שלנו
+טרם בא.
+
+אך הגשם שלנו יבוא
+עננים כבר זעים במרחק.
+הגשם שלנו קרב, קרב
+בצעדי ענק.
+
+הקשב לנשים בחלון.
+גשם אדיר ונוהר.
+הקשב, איך קוראות הן בזו אחר זו –
+הוא חוזר
+הוא חוזר
+הוא חוזר.
+
+` },
+    { name: "החולמים אחר השמש", cat: "געגוע", youtube: "https://www.youtube.com/watch?v=xfAYFEw3_ig", lyrics: `
+בין הברושים והכרם שנית נעבור.
+בין הערביים שוטפות סנוניות את העמק.
+ערב יפה וחמים
+שט על גגות ותלמים,
+אנו כמו כל החולמים
+אחר השמש.
+
+לו על כתפינו נשאנו שנית תינוקות
+לו רק יצאנו שנית לחרוש ולזרוע
+לו רק יכולנו לקצור
+לו רק לצאת ולבצור
+לו רק ידענו לנצור
+חדוות הנוער.
+
+שקט ורק צעדינו נותרו על השביל.
+לילה ירד על צמרות הברושים ועלינו.
+טל על שיחי ההרדוף
+על הבריכות והסוף,
+טל על ראשך הכסוף
+ועל עינינו.
+שקט ורק צעדינו נותרו על השביל.
+
+בין הברושים והכרם שנית נעבור...` },
+    { name: "ימי בנימינה", cat: ["געגוע", "ילדות"], youtube: "https://www.youtube.com/watch?v=FWCogy07MQw", lyrics: `
+מה קרה לילד שדיבר אל כוכבים
+שהמתיק סודות עם סביונים ושחפים
+שספר כל נמש חרש ובחול נרדם -
+מה קרה לו יום אחד שקם ונעלם?
+
+אני רוצה לחזור
+אל הימים הכי יפים שלי
+הימים היחפים של בנימינה -
+כן, אני זוכר, הכל זרם לאט,
+השמש לא מיהר
+אנשים אמרו שלום,
+חבר היה חבר.
+
+"היורה ירד מחר הבט בלבנה"
+"איך היה יבול הענבים השנה?"
+"היכנסו הערב יש ריבה מתות גינה",
+"ובלילה תתכסו כי תהיה צינה."
+
+אני רוצה לחזור...
+
+ועכשיו אם יום או ליל, אם רע לי ואם טוב
+אין לי רגע זמן לשבת ולחשוב.
+לפעמים אני כמעט מדעתי יוצא
+כל ימי אני הולך לשם ולא מוצא.
+
+אני רוצה לחזור...
+
+מה קרה לילד שנרדם בחול החם
+שיום אחד, לפתע, קם ונעלם?
+ ` },
+    { name: "נוסטלגיה", cat: "געגוע", youtube: "https://www.youtube.com/watch?v=FdkI5p2TzQg", lyrics: `
+אני ידעתי שתבוא
+עם בוא הערב תארוב
+ותחבק חיבוק ישן
+נוסטלגיה
+
+את ששכחתי היא תזכור
+את זכרוני תשטוף באור
+תיקח אותי קצת לאחור
+נוסטלגיה
+
+אל ימים יפים
+שעוד היה לאן ללכת
+הבטנו בשקיעה
+הבטחנו שלא נשתנה
+מאז הזמן עבר
+והזמן רצה אחרת
+מביטים אחור ונזכרים
+
+אני ידעתי שתבוא
+דווקא כשריק כשאיש לא פה
+ותלטף את שיערי
+נוסטלגיה
+
+נכון היה יותר יפה
+או שזה רק ההווה
+שנראה כל כך חיוור
+נוסטלגיה` },
+    { name: "I follow rivers", cat: "געגוע", youtube: "https://www.youtube.com/watch?v=SPGGdijkArc", lyrics: `Oh, I beg you, can I follow?
+Oh, I ask you, why not always?
+Be the ocean, where I unravel
+Be my only
+Be the water where I'm wading
+You're my river running high
+Run deep, run wild
+I, I follow
+I follow you, deep sea, baby
+I follow you
+I, I follow
+I follow you, dark doom, honey
+I follow you
+He a message, I'm the runner
+He the rebel
+I'm the daughter waiting for you
+You're my river running high
+Run deep, run wild
+I, I follow
+I follow you, deep sea, baby
+I follow you
+I, I follow
+I follow you, dark doom, honey
+I follow you
+You're my river running high
+Run deep, run wild
+I, I follow
+I follow you, deep sea, baby
+I follow you
+I, I follow
+I follow you, dark doom, honey
+I follow you
+I, I follow
+I follow you, deep sea, baby
+I follow you
+I, I follow
+I follow you, dark doom, honey
+I follow you` },
+    { name: "תמיד זה געגוע", cat: "געגוע", youtube: "https://www.youtube.com/watch?v=VY9poczd_0E", lyrics: `ומאז שאת כבר לא כאן ואבדתי בזמן
+לא יכולתי בך לגעת אז כתבתי לך שירים
+
+אם יש מקום שאת שומעת
+שתדעי שאת נמצאת
+בכל מקום שכבר היינו ואצלי עמוק בלב
+
+ותמיד זה געגוע והלב שבור פצוע
+הלוואי היו כנפיים שייקחו אותי אלייך
+ותמיד זה געגוע והלב שבור פצוע
+שתישא אותי הרוח עד אלייך, עד אלייך
+
+משבוע לשבוע הזמן אצלי לא מרפא
+בלעדייך אין לי בית רק קירות וחלונות
+
+ומאז שאת כבר לא כאן לחפש סיבות לקום
+והגוף הזה כבד לי ולא עובר היום
+
+ותמיד זה געגוע והלב שבור פצוע
+הלוואי היו כנפיים שייקחו אותי אלייך
+ותמיד זה געגוע והלב שבור פצוע
+שתישא אותי הרוח עד אלייך, עד אלייך
+` },
+    { name: "מחר הוא יחזור", cat: ["געגוע", "זיכרון"], youtube: "https://www.youtube.com/watch?v=04d6miH-fW4", lyrics: `
+עכשיו הכל נרגע, כל הטור המיוגע
+משתחרר מהחגור, מתקלף מהמדים
+רחוק בערפל, איזה כלב מיילל
+ומעבר לגבעות קו האופק מאדים
+עמוד האוהל נע שם עמוק בשק שינה
+הוא שוכב עיניו פקוחות מקשיב לבוקר שנעור
+יש שקט באויר, הוא חושב קולות של עיר
+ומחר הוא יחזור
+
+לאורך המסע בכל מה שהוא עשה
+הוא ספר את השעות בשבילים הכי קשים
+איך ירוץ במדרגות אל ריח של עוגות
+אל האור בחדרים, אל שלווה של יום שישי
+ליד המדורה יש קפה על הכירה
+עוד מעט הוא יתעורר מעט קרוב יותר לעיר
+
+באדמה אין ריח מלחמה
+רק עשב בר מכה בסלע שורשים
+מעליו טיפות רכות של סתיו,
+הכל ממשיך לנוע מסודר וממשי
+
+היא בטח ישנה באותה דירה קטנה
+ששכרו ליד הים כשהכל ממש התחיל
+אולי היא לאיטה מתעוררת במיטה
+או יוצאת אל הרחוב אבודה בתוך מעיל
+ואם היא רק תרצה , הוא יסביר היא תתרצה
+ואולי אם הוא יופיע בדלתה יהיה כמו אז
+
+באדמה אין ריח מלחמה...
+
+עכשיו הכל נרגע, יד באוהל בו נגעה
+הוא נעור בבת אחת קם אל תוך ההמולה
+רחוק בערפל איזה כלב מיילל
+ומעבר לגבעות עוד יום חדש עלה.` },
+    { name: "אם היית רואה אותי עכשיו", cat: "געגוע", youtube: "https://www.youtube.com/watch?v=D7JlEElRQqA", lyrics: `
+והאמת היא שכבר לא מתגעגעת
+חיים שלמים הרי כבר באו אחרי
+למדתי להילחם, למדתי גם לוותר
+והאמת היא שמזמן כבר לא חושבת
+על מה היה אפשר ואם היה יותר
+למדתי להירגע, שוב לתת, שוב לקבל
+
+אם היית רואה אותי עכשיו
+היית בטח גאה בי,
+אולי היית פחות מתבייש בי
+היית רואה שאני עכשיו כבר שלמה
+
+והאמת היא שעכשיו כבר לא זוכרת
+לאן הזמן הזה עבר ונעלם
+למדתי להיאחז,
+לשכוח מכולם
+
+אם היית רואה אותי עכשיו
+היית בטח גאה בי,
+אולי היית פחות מתבייש בי
+היית רואה שאני עכשיו כבר שלמה` },
+    { name: "צלילי קסטה רחוקים", cat: ["געגוע", "בית"], youtube: "https://www.youtube.com/watch?v=2ZvDBy5s1SE", lyrics: `
+פלורידה היתה זורמת יערות אביב
+ובמבול צפים שני אנשים זרים
+בתוך תיבת סובארו
+ופתאום בין הוא לבין אני
+פתחה בניגונים
+קסטה אכולת געגועים
+וכל האז וכל השם זרם עם השירים.
+
+הפלורידה הזאת הפרחונית
+לא ראתה אפילו בחלום
+דליקת שדה של חרציות
+טירוף פרגים של דם וארגמן
+שיטה פורחת זהובה
+שמשגעת אפלולית פרדס זקן
+ושכוח אל בקצה המושבה
+
+הבית זה מקום
+שאם אתה חייב לשוב אליו
+תמיד פתוחה בו דלת לקראתך
+שירים הם לפעמים
+האהבה האחרונה
+לבית שרחק.
+
+עכשיו שם בטח לילה
+פנסי הוויה-מאריס
+נדלקים לאורך כביש החוף
+הדיונות מחשיכות
+חבלי כביסה תופחים
+ברוח ים מלוחה
+אמא שלי אמרה לי:
+ילד כשתהיה רחוק שם לבדך,
+החברים הכי טובים שלך יהיו געגועיך.
+
+תשים עכשיו קסטה
+שנגמע את סם המנגינות
+מתוק ומר
+הבית זה מקום
+שאם אתה צריך לשוב אליו
+תמיד פתוחה בו דלת לקראתך
+שירים הם לפעמים האהבה
+האחרונה לבית שרחק.
+
+הבית זה מקום
+שאם אתה חייב לשוב אליו
+תמיד פתוחה בו דלת לקראתך
+שירים הם לפעמים
+האהבה האחרונה
+לבית שרחק.` },
+    { name: "והנה אני חוזר", cat: ["געגוע", "בית"], youtube: "https://www.youtube.com/watch?v=VCMqY6Xg8EY", lyrics: `
+והנה אני חוזר,
+אל המקום ממני באתי.
+היה שם פעם,
+נוף כפרי.
+
+אנשי אדמה,
+חולצה רקומה,
+וריח של עשב טרי.
+
+והנה אני חוזר,
+אל השבילים בהם הלכתי.
+גלגלים חרטו סימן.
+
+בין הברושים,
+השורשים,
+מנצחים את הזמן.
+
+אני חוזר, אל הבאר,
+אל המעיין שמפכה
+משחר ילדותי.
+אני עובר בתחנות,
+אל התמונות הישנות,
+אני חוזר ומגלה שם אותי.
+
+והנה אני חוזר,
+אל הבתים בהם הייתי.
+מישהו נולד שם במקומי.
+
+ילד אחר,
+מה הוא חושב,
+איך הוא מתעלם מקיומי.
+
+אני חוזר, אל הבאר,
+אל המעיין המפכה
+משחר ילדותי,
+אני עובר בתחנות,
+אל התמונות הישנות,
+אני חוזר ומגלה שם אותי.
+
+והנה אני חוזר,
+ומספר מניין באתי.
+גם אתה ילדי,
+תשוב לכאן.
+
+בעצם כולם,
+חוזרים אל עצמם,
+כדי לעצור את הזמן.
+
+מלחמה אבודה,
+לעולם לא נדע,
+אלוהים לא נותן שום סימן.
+אלוהים לא נותן שום סימן.` },
+    { name: "בוא בשלום", cat: "געגוע", youtube: "https://www.youtube.com/watch?v=WDBwuV-fAiE", lyrics: `
+ציפורי הצפון כבר הגיעו
+מתערבל האבק בגבעות
+אחותנו הרוח עברה בדרכים
+ואנחנו צמאים לאות.
+
+בוא בשלום החורשה מזכירה
+בטרם חלקה אחרונה תזרע
+ובטרם יוגף חלון
+אנא שוב אלינו בשלום.
+
+בוא בשלום נפתחות חצרות
+ערכנו שולחן והדלקנו נרות
+ובטרם יושר מזמור
+נחכה לך שתחזור.
+
+מתרפק האזוב על האבן
+כתינוק על אימו היחידה
+אחותנו הרוח עברה בשדות
+והגשם בכף ידה.
+
+בוא בשלום החורשה מזכירה...
+
+כוכבים ישבצו את האופק
+הירח ישלים מחסורו
+אחותנו תפגוש בטלה האובד
+בערגה תלטף צמרו
+
+בוא בשלום החורשה מזכירה
+בטרם חלקה אחרונה תזרע
+ובטרם יוגף חלון
+אנא שוב אלינו בשלום.` },
+    { name: "כמו אז", cat: "געגוע", youtube: "https://www.youtube.com/watch?v=PBMg6yvjOHU", lyrics: `וכל הדרך, כן, כל הדרך
+כשהם צחקו, נרדמתי שם
+לא מצטער שלא הערת אותי
+חלמתי שהכל כמו אז
+
+עולם מתמוטט, מרוב אמביציות
+מרוב שאהבתי, לא אהבת
+מסע בדימיון כי שם הכי טוב
+חלמתי שהכל כמו אז
+
+כמו אז מצאתי לי בחושך
+סיגריה להדליק, כמו אז
+כמו אז ישבתי לי בחושך
+שם את נמצאת איתי וכמו אז
+שם את נמצאת איתי כמו אז
+
+היה עוד אור, חמש בערך
+לא זמן אהבה, לא זמן וידוי
+לא, לא שיכור, כרעתי ברך
+אמרתי לא שמח, לא עצוב
+תתחתני איתי שוב?
+
+כמו אז נתתי לך בחושך
+טבעת ענקית, כמו אז
+כמו אז ישבנו שוב בחושך
+שם את נמצאת איתי כמו אז
+שם את נמצאת איתי וכמו אז
+כמו אז נתתי לך בחושך
+טבעת ענקית, כמו אז
+כמו אז אהבת אותי בחושך
+שם את נמצאת איתי כמו אז
+שם את נמצאת איתי כמו אז
+....
+וכל הדרך, כן, כל הדרך
+לא מצטער שלא הערת אותי` },
+    { name: "כשתשוב", cat: "געגוע", youtube: "https://www.youtube.com/watch?v=A5ZSv-D9AzU", lyrics: `
+עוד ימים אבודים ולילות בודדים
+והבית הריק רק הרוח שורק
+ואתה שהולך, דרכך ארוכה
+לו הבטת...אני כבר לך מחכה.
+
+כשתשוב, עייף מן המסע, מן הדרכים
+ארוץ אליך עמוסת פרחים
+תחזור שנית כמו אתמול אלי, אל לילותי
+תרקום את כל אורך בתוך חיי
+
+כשתשוב, לשמוע את קולך כמו מרחוק
+אותך לדעת ואיתך לצחוק
+לחלום אותך איתי, אוהב, שובר את שתיקותי
+לכתוב את כל חייך בחיי... כשתשוב.
+
+עוד אלפי כוכבים וספסל אוהבים
+ושדות ירוקים כאן איתי מפכים
+מה תגיד כשתחזור, זה בכלל לא חשוב
+לא צריך עוד מילים העיקר שתשוב
+
+כשתשוב, עייף מן המסע, מן הדרכים...` },
+    { name: "ספינת הזכרונות", cat: "געגוע", youtube: "https://www.youtube.com/watch?v=gDpt1XX5bVs", lyrics: `
+ניע ניע. הספינה קרובה.
+דרך זכרונות שטה ועולה.
+יש מי שהולך ולא יחזור,
+יש הנודדים בין חושך לאור.
+
+דרך המלך היא על פי התהום,
+משביליה באתי הלום.
+בסופו של יום עובר.
+
+הזמן כל כך שובר,
+בין כל התלאות רץ ולא חוזר,
+ובדרך בה הלכתי אליו
+קמו רחובות הומים מאדם.
+את מערות החול שלנו בכפר
+לא מצאתי. כבר מאוחר,
+מה יהיה מחר?
+
+את עדיין זוכרת את שבילי הסתיו!
+עננים כיסו על דרך טרם שעזבת,
+ומשחר עוברת על פני העונה!
+ממתינה, לא ממהרת מחכה שנה.
+
+(ש)הכמהים לשמש הרחוקה
+אט ישובו אט מאיי עולם.
+שטו נדדו מאין לאן?
+ובדמיונם הפליגו לכאן.
+בנמל היעד עוד יביטו בוהים,
+בלילות באים בימים.
+לנו מחכים.
+
+את עדיין זוכרת...` },
+    { name: "אחרי 20 שנה", cat: "געגוע", youtube: "https://www.youtube.com/watch?v=mEBVCtYbvso", lyrics: `
+את עוד מנגנת
+גיטרה ישנה
+את עוד מתכוונת
+מבין המיתרים
+לטוב שבשירים
+עוד לא נכתב.
+
+אחרי עשרים שנה
+שוב אינני ילד
+תמו נעורי
+שיבה זרקה במלך
+רק את עודך עימי
+איתך שוב אל עצמי
+אני חוזר.
+
+עוד אותו הצליל
+עוד אותו הטעם
+שמור כמו יין, יין טוב
+מתנגנת בי
+מנגינה בוקעת
+מבין אצבעותי
+לכי לך אל הרחוב.
+
+ושוב עולה השיר
+ושוב עד כלות הנפש
+פרי געגועי
+ימי רימון וגפן
+ורוח בי עוד שר
+רועד אותו מיתר
+עשרים שנה.
+
+עוד אותו הצליל...
+
+אחרי עשרים שנה
+היה היה לי רע
+את שיר המעלות
+האם אתה שומע
+אשיר עד יום מותי
+נושאת את תפילתי
+המנגינה.` },
+    { name: "חלומות שמורים", cat: ["געגוע", "בית"], youtube: "https://www.youtube.com/watch?v=-Lpnhwnya8Y", lyrics: `אי שם עמוק בתוך תוכנו
+טמונים קולות וזכרונות
+מראות רבים שכבר שכחנו
+ספרי פלאים ומנגינות
+
+כל זכרונות ימים ימימה
+החלומות הראשונים
+וכל מילה של אבא אמא
+שנאמרה לפני שנים
+
+אי שם עמוק בתוך תוכנו
+טמונים קולות וזכרונות
+מראות רבים שכבר שכחנו
+ספרי פלאים ומנגינות
+
+עולם מופלא של ילדותנו
+רדום בפנים בצל צלילים
+איתנו הוא עד יום מותנו
+חבוי בתוך תילי מילים
+
+ולפעמים שריד של ריח
+או צליל מוכר או קצה מילה
+משיב אליך גן פורח
+מחזיר אל קו ההתחלה
+
+ושוב אתה חולם כילד
+ושוב אתה תמים כאז
+אתה נזכר בכל התכלת
+הכל נשמר דבר לא גז
+
+אי שם עמוק בתוך תוכנו
+טמונים קולות וזכרונות
+מראות רבים שכבר שכחנו
+ספרי פלאים ומנגינות` },
+    { name: "בלעדייך", cat: ["געגוע", "פרידה"], youtube: "https://www.youtube.com/watch?v=QSPCWk89NDw", lyrics: `
+
+כששוב עצוב בחוץ
+והסתיו ללב לחוץ
+בלעדייך
+ואני רוצה בך
+ואת כל כך רחוקה
+לא רוצה להיות לבד עכשיו
+אני קורא לך ואת לא עונה
+את עזבת, הלכת מכאן.
+
+כי בלעדייך כל העיר הזאת ריקה
+והרחובות בה יתומים.
+ברגע של געגועים
+ברגע של דממה
+אקרא לך -
+שובי אל העיר הזאת
+עכשיו אלי.
+
+כשבפנים עצוב וקר
+והלילה שוב נגמר
+בלעדייך
+ואני מרגיש עצוב, רחוק ומנותק
+כמה עצב יש באהבה
+אני לבד פתאום בבית זר
+ואני אוהב אותך.
+
+כי בלעדייך כל העיר הזאת ריקה
+והרחובות בה יתומים.
+ברגע של געגועים
+ברגע של דממה
+אקרא לך -
+שובי אל העיר הזאת
+עכשיו אלי.
+
+כשהלכת אמרתי - בואי
+רציתי שתשארי כאן לידי
+לאהוב תמיד
+לאהוב אותך תמיד.
+
+כי בלעדייך כל העיר הזאת ריקה
+והרחובות בה יתומים.
+כשאני מלא געגועים
+ואת לא לידי
+אקרא לך -
+שובי אל העיר הזאת
+עכשיו אלי.	
+מילים לשיר בלעדייך - האלבום הראשון - גידי גוב
+האלבום הראשון
+(1978)
+
+ ` },
+    { name: "בסוף כולם חוזרים הביתה", cat: ["געגוע", "בית"], youtube: "https://www.youtube.com/watch?v=o6n1PQp9J3Q", lyrics: `
+
+
+לאותם ריחות מאז, לסירים יושבים על גז
+לשיר ההוא מפעם שעושה לך עור ברווז
+לירח הצהוב, לתחנה בקצה הרחוב
+לחיבוק הזה מאמא שעושה לך טוב
+
+בסוף כולם חוזרים הביתה
+אל הדרך הפתוחה
+לתמונות של משפחה
+אל גשם של ברכה
+בסוף כולם חוזרים הביתה
+לשבתות של מנוחה
+לילדות שנשכחה
+
+
+לקולות המעוואל, לזקנים שעל הספסל
+לדוכן שאז היית מגרד בו את המזל
+לריבים של השכנות, ללחיים האדומות
+לעץ שאז חרטנו בו ביחד ת'שמות
+
+בסוף כולם חוזרים הביתה
+אל הדרך הפתוחה
+לתמונות של משפחה
+אל גשם של ברכה
+בסוף כולם חוזרים הביתה
+לשבתות של מנוחה
+לילדות שנשכחה
+לעצמך` },
+    { name: "ביקור מולדת", cat: "געגוע", youtube: "https://www.youtube.com/watch?v=me3e7dVvKfc", lyrics: `חזרתי הביתה אחרי עשרים שנה
+במבט ראשון דבר לא השתנה
+שני סוסים קשורים לעץ התאנה
+קרטון על הבטון עם חץ לחתונה
+
+רקפות עוטפות זרי סלעים כהים
+שלוליות מקרקרות את שיר הצפרדעים
+הזקנים יושבים בחוץ ומדברים
+ספלים סדוקים של תה, בסקוויטים עם חורים
+
+אבל לאן נעלמו הילדים
+ששיחקתי איתם
+איפה כל הילדים
+איפה הם כולם
+
+תרנגולות, פרות ופה ושם כבשים
+שפן בורח כמו שפן לתוך הפרדסים
+מרבד תלתן רטוב נוצץ באור ירוק
+שועל שקרן בוכה בואדי לא רחוק
+
+אבל לאן נעלמו הילדים
+ששיחקתי איתם
+איפה כל הילדים
+איפה הם כולם
+אבל לאן נעלמו הילדים
+ששיחקתי איתם
+איפה כל הילדים
+ואיפה הם כולם
+מי לקח לי אותם
+
+אבל לאן נעלמו הילדים
+ששיחקתי איתם
+איפה כל הילדים
+ואיפה הם כולם
+מי לקח לי אותם` },
+    { name: "בארץ להדם", cat: "געגוע", youtube: "https://www.youtube.com/watch?v=2r8xIuCvwlw", lyrics: `
+בארץ להד"ם, נשמע תמיד הדם
+של נבל וקתרוס וחלילים
+וחרש על ידם, בארץ להד"ם
+מכים תופי געגועים גדולים
+
+קח אותי עכשיו לשם, דרך לא אדע
+אל ארץ זו חמדתי - ארץ להד"ם
+
+בארץ להד"ם, פורחים בכל הודם
+פרחי החמנית וההדר
+בארץ להד"ם, יורדים במועדם
+השלג והטל והמטר
+
+קח אותי עכשיו לשם...
+
+בארץ להד"ם, פוסע לו אדם
+ואור גדול זרוע על יומו
+וכל תינוק נרדם, בארץ להד"ם
+וארץ להד"ם בחלומו
+
+קח אותי עכשיו לשם...` },
+    { name: "את חכי לי ואחזור", cat: "געגוע", youtube: "https://www.youtube.com/watch?v=60BRXV5fE0o", lyrics: `
+את חכי לי ואחזור,
+אך חכי היטב.
+את חכי לי גם בקדר
+מסגריר הלב.
+את חכי לעת כפורים,
+את חכי בחום,
+את חכי עת אחרים
+ישתכחו עד תום.
+
+את חכי, חכי, ולו
+לא יבוא מיכתב.
+את חכי אם גם ילאו
+המחכים לשוא.
+
+את חכי לי ואחזור,
+וארור הסח
+בבטחה גמורה לאמור:
+"מת הוא... ונשכח"...
+יאמינו אם ואב,
+כי אינני חי,
+ייעפו חכות לשוא
+כל רעי, אחי.
+
+וישתו כוס יין מר,
+זכר נשמתי...
+את חכי וכוס נמהר
+אל נא, אל תשתי!
+
+את חכי לי ואחזור,
+חי אחזורה, חי!
+המה ישתאו לאמור:
+"נס הוא בודאי!"
+המה לא חיכו, ואיך
+בין תבין נפשם
+כי רק את בחכותיך
+הצלתיני שם.
+
+איך נצלתי, - זאת נדע
+רק אני ואת:
+כי יותר מכל אדם
+לחכות ידעת.` }, // סגירת השיר הקודם
+    { 
+        name: "מודה אני", 
+        cat: "הודיה", 
+        youtube: "https://www.youtube.com/watch?v=GI4GsYyofas", 
+        lyrics: `
+מודה אני
+לפניך ולך
+על כל החסד והאמת והטובה והרעה והטובה
+שעשית עמדי
+ועם ביתי
+
+ועם קרובי וידידי ועם בני עמי
+ועם ארצי, ועם כל העולם והאדם
+אשר בראת.
+
+בלאט, חרש חרש
+אט אט, טופפות
+עתידות עתידות לקראתנו,
+ואת מחייכת אלי מתוך השינה.
+
+יהיה לנו טוב, טוב מטוב, טוב מאוד,
+זה מתחיל כבר בבוקר בבוקר
+את צוחקת אלי
+מתוך מתוך השינה	
+ ` 
+    },
+    { 
+        name: "מה שאני צריכה", 
+        cat: "הודיה", 
+        youtube: "https://www.youtube.com/watch?v=2sq_G_c_7lU", 
+        lyrics: `
+
+
+בחוץ שקעה השמש
+קו האופק כבר נמחק
+את הסופות העייפות שלי
+אני השארתי במרחק
+ריח בית חם, משכר
+נכנס לי ללב
+ומשכיח בי עכשיו כמעט
+את כל מה שכואב
+
+מספיק חיוך קטן שלכם
+כדי לדעת שזכיתי
+ובמבט שלכם אני רואה
+את הדרך שעשיתי
+מי כמוכם מכיר בי כל זיכרון
+וכל רגע בזמן
+בסוף יום אני חוזרת אליכם
+והשאר נראה קטן
+
+כי זה מה שאני צריכה
+מבט עיניים, מנוחה
+את הפשטות שבשמחה, ומשפחה
+
+אז שוב תודה,
+כי אם אני סתם בודדה
+או קצת נשברת, אבודה
+אתם יודעים איך להדליק אצלי תשמש
+כמו ילדה, מהתחלה
+ורק איתכם אני נושמת
+אני שלמה
+אני שלמה
+
+אם אני כבר לא יודעת
+איך לחזור
+אני אוספת רגעים קטנים
+כמו אוויר כדי לנשום
+מי כמוכם מכיר בי כל זיכרון
+וכל רגע בזמן
+בסוף יום אני חוזרת אליכם
+והשאר נראה קטן
+
+כי זה מה שאני צריכה
+מבט עיניים, מנוחה
+את הפשטות שבשמחה
+ומשפחה
+
+אז שוב תודה,
+כי אם אני סתם בודדה
+או קצת נשברת, אבודה
+אתם יודעים איך להדליק אצלי תשמש
+כמו ילדה, מהתחלה
+ורק איתכם אני נושמת
+אני שלמה
+רק איתכם אני שלמה
+
+אז שוב תודה,
+כי אם אני סתם בודדה
+או קצת נשברת, אבודה
+אתם יודעים איך להדליק אצלי תשמש
+כמו ילדה, מהתחלה
+ורק איתכם אני נושמת
+אני שלמה
+אני שלמה	
+ ` 
+    },
+    { 
+        name: "כלום זה לא סתם", 
+        cat: "הודיה", 
+        youtube: "https://www.youtube.com/watch?v=8KnKnd-cvRo", 
+        lyrics: `כלום זה לא סתם
+לא תשֹבע לא תשֹבע העין לראות
+בתענוג עיוור אני רץ לאט במקום
+כאילו סתם מדרכה רטובה
+עיתונים מאתמול
+לא לא אשכח
+תהום
+ואותך קוראת לי לחזור
+
+שלחת לי אור אחד גדול
+ביום בהיר אפשר לראות
+אור אחד גדול
+ביום בהיר אפשר לראות עד אינסוף
+דילגת איתי בלי ליפול
+מעל אבנים חלקות
+לא לא אשכח
+תהום
+ואותך קוראת לי לחזור
+שלחת לי אור אחד גדול
+ביום בהיר אפשר לראות עד אינסוף` 
+    },
+    { 
+        name: "למדני אלוקי", 
+        cat: "הודיה", 
+        youtube: "https://www.youtube.com/watch?v=4sJN6cWA264", 
+        lyrics: `לַמְּדֵנִי, אֱלֹהַי, בָּרֵך וְהִתְפַּלֵּל
+
+עַל סוֹד עָלֶה קָמֵל, עַל נֹגַהּ פְּרִי בָּשֵׁל,
+
+עַל הַחֵרוּת הַזֹּאת: לִרְאוֹת, לָחוּשׁ, לִנְשֹׁם,
+
+לָדַעַת, לְיַחֵל, לְהִכָּשֵׁל.
+
+לַמֵּד אֶת שִׂפְתוֹתַי בְּרָכָה וְשִׁיר הַלֵּל
+
+בְּהִתְחַדֵּשׁ זְמַנְּךָ עִם בֹּקֶר וְעִם לֵיל,
+
+לְבַל יִהְיֶה יוֹמִי הַיּוֹם כִּתְמוֹל שִׁלְשׁוֹם.
+
+לְבַל יִהְיֶה עָלַי יוֹמִי הֶרְגֵּל.` 
+    },
+    { name: "Here Comes The Sun", cat: "תקווה", youtube: "https://www.youtube.com/watch?v=2ysWB1S0FQs", lyrics: `
+Here comes the sun, doo-doo-doo
+Here comes the sun
+And I say, "It's all right"
+Little darlin'
+It's been a long, cold, lonely winter
+Little darlin'
+It feels like years since it's been here
+Here comes the sun, doo-doo-do
+Here comes the sun
+And I say, "It's all right"
+Little darlin'
+The smile's returning to the faces
+Little darlin'
+It seems like years since it's been here
+Here comes the sun
+Here comes the sun
+And I say, "It's all right"
+Sun, sun, sun, here it comes
+Sun, sun, sun, here it comes
+Sun, sun, sun, here it comes
+Sun, sun, sun, here it comes
+Sun, sun, sun, here it comes
+Little darlin'
+I feel that ice is slowly melting
+Little darlin'
+It seems like years since it's been clear
+Here comes the sun, doo-doo-doo
+Here comes the sun
+And I say, "It's all right"
+Here comes the sun, doo-doo-doo
+Here comes the sun
+It's all right
+It's all right` },
+    { name: "נפילתי", cat: ["תקווה", "אמונה"], youtube: "https://www.youtube.com/watch?v=NpbNsy_o-is", lyrics: `זוֹ נְפִילָתִי הַסּוֹפִית
+וְהַיּוֹם מַתְחִיל חֻרְבָּן
+
+כָּל דָּבָר קוֹרֶה מִכָּאן וָאֵילָךְ
+זוֹ הִיא עֵת מַבּוּל
+
+יָצְאָה סִירָה אֶל חוֹף
+זֶהוּ זְמַן מַבּוּל
+וְהוּא הַכֹּל יִשְׁטֹף
+
+כֻּלָּם זוּגוֹת זוּגוֹת
+וְשׁוּב אֲנִי לְבַד
+
+לוּ רַק הָיִינוּ אָז יוֹדְעִים
+מָה הָיָה לָנוּ בַּיָּד
+
+כָּעֵת עוֹלֶה מִפְלַס הַיָּם
+נִשְׁאַר רַק לְחַכּוֹת
+תְּהִי לְזִכָּרוֹן יָשָׁן
+אֲשֶׁר נוֹתַר בַּמְּצוּלוֹת
+
+צִפּוֹר אוּלַי תָּבִיא
+עָלָה שֶׁל זַיִת אוֹ סִימָן
+בָּרָקִיעַ הָאָפֹר
+תַּפְצִיעַ קֶשֶׁת בֶּעָנָן
+
+עוֹד תַּגִּיעַ אֲדָמָה
+וּבַיִת וּמִשְׁכָּן
+וְתַגִּיעַ אַהֲבָה
+גַּם אִם יִקַּח קְצָת זְמַן
+עוֹד תַּגִּיעַ אַהֲבָה
+גַּם אִם יִקַּח קְצָת זְמַן` },
+    { name: "על הדרך", cat: ["תקווה", "אמונה"], youtube: "https://www.youtube.com/watch?v=1Y5pF7iqsJc", lyrics: `
+על הדרך שעולה אל אמת הלב
+מנסה להגיע ואליו להתקרב
+סימנים על השבילים
+עד אליו הם מובילים.
+והרוח מתחילה בי לנשב.
+
+אני שומע בתוכי את הלב קורא.
+להמשיך וללכת עד שאגלה
+חסדי שמיים בהירים
+את צעדיי הם מלווים.
+והרוח ממשיכה בי לנשב.
+
+כמו המים שזורמים
+אל מקורם שבים
+ואנחנו מבקשים
+אהבת חיים
+במקום שיש אמת
+שם הלב שקט.
+
+בכל אחד יש צליל
+שמחזיר אותו קרוב לשביל
+אל הלב....
+
+כמו המים...` },
+    { name: "אותו היום", cat: "תקווה", youtube: "https://www.youtube.com/watch?v=TosmJR0dAKw", lyrics: `ודע בני יקירי, כי שומר אני את כל -
+שבילי תלאות הדרך שתמיד עברת.
+ואין מילים בפי לתאר אהבתי - אליך,
+בן יקר אוצרו של אבא.
+
+על כסאי יושב ומחשב כל צעדיך,
+גם אם רב הנסתר על הנגלה.
+ומחכה ליום בו תתגשם אהבתנו,
+ובהיכלי אבוא ואראה.
+
+פזמון:
+שרק יבוא אותו היום שרק יבוא,
+וכל הרחובות ילבשו חג.
+שתעלה אותה תפילה שתעלה,
+ותחבר אותנו אל מקום חדש.
+
+
+ומכיר אתה אבי בכל קשיי הדרך,
+ורוצה אתה בהם - לכך הם שם.
+ובכל מאודי מכוון אליך אבא,
+גם מתוך הערפל של העולם.
+
+וברגעי הירידות שם מתקרבות דרכנו,
+נא חזק ידיי, שלח לי הסולם.
+ומחכה ליום בו תתגשם עתירתנו,
+ואבוא אליך יחד עם כולם.` },
+    { name: "לו יהי", cat: "תקווה", youtube: "https://www.youtube.com/watch?v=c6zN9U7mxrM", lyrics: `עוד יש מפרש לבן באופק
+מול ענן שחור כבד
+כל שנבקש לו יהי
+
+ואם בחלונות הערב
+אור נרות החג רועד
+כל שנבקש לו יהי
+
+לו יהי, לו יהי
+אנא לו יהי
+כל שנבקש לו יהי
+לו יהי, לו יהי
+אנא לו יהי
+כל שנבקש לו יהי
+
+אם המבשר עומד בדלת
+תן מילה טובה בפיו
+כל שנבקש לו יהי
+אם נפשך למות שואלת
+מפריחה ומאסיף
+כל שנבקש לו יהי
+
+לו יהי, לו יהי
+אנא לו יהי
+כל שנבקש לו יהי
+לו יהי, לו יהי
+אנא לו יהי
+כל שנבקש לו יהי
+
+מה קול ענות אני שומע
+קול שופר וקול תופים
+כל שנבקש לו יהי
+
+לו תישמע בתוך כל אלה
+גם תפילה אחת מפי
+כל שנבקש לו יהי
+
+לו יהי, לו יהי
+אנא לו יהי
+כל שנבקש לו יהי
+לו יהי, לו יהי
+אנא לו יהי
+כל שנבקש לו יהי
+
+בתוך שכונה קטנה מוצלת
+בית קט עם גג אדום
+כל שנבקש לו יהי
+זה סוף הקיץ סוף הדרך
+תן להם לשוב הלום
+כל שנבקש לו יהי
+
+לו יהי, לו יהי
+אנא לו יהי
+כל שנבקש לו יהי
+לו יהי, לו יהי
+אנא לו יהי
+כל שנבקש לו יהי` },
+    { name: "מחכה (ריטה)", cat: "תקווה", youtube: "https://www.youtube.com/watch?v=hAX2ku9ifEs", lyrics: `ום אחד זה יקרה
+בלי שנרגיש, משהו ישתנה
+משהו ירגע בנו, משהו יגע בנו
+ולא יהיה ממה לחשוש.
+
+וזה יבוא כמו קו חרוט על כף יד
+זה יבוא בטוח בעצמו
+כאילו היה שם תמיד
+וחיכה שנבחין בו
+
+וזה יבוא, אתה תראה
+הידיים הקפוצות יתארכו
+והלב השומר לא להיפגע יפעם בקצב רגיל
+זה יבוא, כמו שהטבע רגיל
+להיות שלם עם עצמו
+
+יום אחד זה יקרה
+בלי שנרגיש, משהו ישתנה
+משהו יגע בנו, משהו ירגע בנו
+ולא יהיה ממה לחשוש
+
+וזה יבוא כמו קו חרוט על כף יד
+זה יבוא בטוח בעצמו
+כאילו היה שם תמיד
+וחיכה שנבחין בו
+
+וזה יבוא, אתה תראה...
+
+וזה יבוא, אתה הרי יודע
+לא הכל יטלטל אותנו
+לא הכל יכה
+ומה שייפתח לנו
+מחכה` },
+    { name: "הכל פתוח", cat: "תקווה", youtube: "https://www.youtube.com/watch?v=4BDH4alxJ-A", lyrics: `
+ראיתי ת'כנרת זוהרת בטורקיז
+וגל סגול כהה הריע והתיז,
+חשבתי לעצמי הכל עוד אפשרי
+כל עוד אנחנו כאן שרים.
+
+ראיתי את הסכר פתוח לרווחה
+וכל שפעת המים נוהרת בשמחה,
+חשבתי לעצמי הכל עוד אפשרי
+כל עוד אנחנו כאן שרים.
+
+הכל פתוח עוד לא מאוחר
+מצב הרוח ישתפר מחר
+זה יתכן, זה אפשרי -
+כל עוד אנחנו כאן שרים.
+
+הייתי בעפולה הייתי באילת
+ובשמורת החולה מצאתי לי מקלט,
+חשבתי לעצמי הכל עוד אפשרי
+כל עוד אנחנו כאן שרים.
+
+בתל אביב טיילתי חופשי מדאגה
+לאן שהסתכלתי הייתה לי חגיגה
+חשבתי לעצמי הכל עוד אפשרי
+כל עוד אנחנו כאן שרים.
+
+הכל פתוח עוד לא מאוחר...
+
+גלשתי בחרמון נפלתי על האף
+נפגשתי עם המון אנשים נשים וטף,
+חשבתי לעצמי הכל עוד אפשרי
+כל עוד אנחנו כאן שרים.
+
+אולי הכל פתוח, אולי לא מאוחר
+אולי מצב הרוח ישתפר מחר
+הכל עוד ייתכן, הכל עוד אפשרי
+כל עוד אנחנו כאן שרים.
+
+הכל פתוח עוד לא מאוחר...` },
+    { name: "מחר יגיע בחצות", cat: ["תקווה", "התחלה"], youtube: "https://www.youtube.com/watch?v=1QlKKHqeMK4", lyrics: `
+
+הערב הזה יודע
+דברים שהבוקר ניחש,
+הערב הזה נוגע
+במה שהלב כבר ביקש.
+
+גילינו את סוד הקשר,
+בדרך הרגש נבחר.
+אנחנו עומדים על הגשר
+שבין האתמול למחר.
+
+מחר, מחר יגיע בחצות,
+חדש ויפה וטהור
+יפקיד את עצמו בידינו,
+מחר, מחר, מחר יגיע בחצות,
+בכל הרחובות יעבור
+ויאיר בעוברו את עיננו
+מחר, מחר
+בתקווה שלמדנו דבר מה מאתמול
+בתקווה שנדע לאהוב ולחמול
+
+תמיד מימים ימימה
+חולמים את הארץ הזאת.
+יודעים כן, בלבב פנימה -
+אחים אנו ואחיות.
+
+גילינו את סוד הקשר,
+בדרך הרגש נבחר.
+אנחנו עומדים על הגשר
+שבין האתמול למחר.
+
+מחר, מחר יגיע בחצות,
+חדש ויפה וטהור,
+יפקיד את עצמו בידינו
+מחר, מחר, מחר יגיע בחצות,
+בכל הרחובות יעבור
+ויאיר בעוברו את עיננו
+מחר, מחר,
+בתקווה שלמדנו דבר מה מאתמול
+בתקווה שנדע לאהוב ולחמול
+
+מחר, מחר, מחר יגיע בחצות,
+חדש ויפה וטהור,
+יפקיד את עצמו בידינו
+מחר, מחר, מחר יגיע בחצות,
+בכל הרחובות יעבור
+ויאיר בעוברו את עיננו
+מחר, מחר,
+בתקווה שלמדנו דבר מה מאתמול
+בתקווה שנדע לאהוב ולחמול
+
+שנדע לאהוב ולחמול.	
+ ` },
+    { name: "בית חלומותיי", cat: ["תקווה", "בית"], youtube: "https://www.youtube.com/watch?v=FkSHlF212BA", lyrics: `
+בבית חלומותי אשר בראש גבעה
+תנור גדול אבנה ואש תמיד תבער
+וחלונות שבעה וארובה גבוהה
+בבית חלומותי אשר בראש גבעה
+
+אני תנור גדול אבנה ואש תמיד תבער
+בבית חלומותי שלי אשר אבנה בראש גבעה
+
+אל בית חלומותי המסויד לבן
+הגפן תטפס ישר מן הבוסתן
+חרוב גם תאנה יהיו לי כמובן
+בבית חלומותי המסויד לבן
+
+הגפן תטפס אלי ישר מן הבוסתן
+אל בית חלומותי שלי המסויד כולו לבן
+
+על בית חלומותי איני יודעת כלום
+ככל חלומותי אפל הוא וחתום
+ולי הוא מחכה בסבלנות אי שם
+אולי בראש הרים, אולי על חוף הים
+
+אולי הוא בית חומה נטוש ונעזב
+אולי הוא צריף קטן, אולי מגדל שנהב
+דבר אחד עליו ידוע לי עכשיו -
+יגור בו איש אחד אשר אותי יאהב
+
+אולי הוא צריף קטן של עץ, אולי מגדל שנהב
+אבל יגור בו איש אחד אשר אותי מאד יאהב` },
+    { name: "יחד", cat: "תקווה", youtube: "https://www.youtube.com/watch?v=FBND6s5M0bg", lyrics: `עוד נדע ימים טובים מאלה
+עוד נדע ימים טובים פי אלף
+שורשינו יעמיקו סלע
+כמו ארזים בהר
+
+עוד נדע ימים טובים מאלה
+עוד נמתיק מימיו של ים המלח
+כשדה ירוק אחר השלף
+כאשד בלב מדבר
+
+יחד - כל הדרך
+יחד - לא אחרת
+יד ביד נושיט לטוב
+שעוד יבוא, בוא יבוא
+יחד - כל הדרך
+יחד - לא אחרת
+יחד איש אל איש יפתח
+את לבבו
+
+רק אם נאמין בעוז הרוח
+רק אם נאמין ולא ננוח
+מן המיצרים אל ים פתוח
+כמים רבים נסער
+
+רק אם נאמין ודאי נצליח
+רק אם נאמין ודאי נגיע
+בימים של סער ברקיע
+כאש התמיד נבער
+
+יחד - כל הדרך
+יחד - לא אחרת
+יד ביד נושיט לטוב
+שעוד יבוא, בוא יבוא
+יחד (יחד) - כל הדרך
+יחד (יחד) - לא אחרת
+יחד איש אל איש יפתח
+את לבבו` },
+    { name: "ימים של שקט", cat: "תקווה", youtube: "https://www.youtube.com/watch?v=Mk4NgJDLxDA", lyrics: `
+הנה הם באים ימים של שקט
+אחרי הרעש הגדול והנורא
+אפשר לנוח קצת על המרפסת
+ולאסוף את שברי הסערה
+
+הנה הם באים ימים של שקט
+כבר שכחתי איך שהם נראים
+אפשר עכשיו לפתוח את הדלת
+לשלוח אל הרוח ציפורים
+
+הנה הם באים ימים של שקט
+נצא אל החלון לראות
+אם קלו כבר המים
+אולי כבר יש באופק אדמה
+זוגות זוגות
+נצא זוגות זוגות
+נביט אל השמיים
+נחכה ביחד ליונה.
+
+הנה הם באים ימים של שקט
+אחרי שכבר איבדנו את הכל
+תשב איתי עכשיו על המרפסת
+תבכה איתי ביחד על אתמול
+
+הנה הם באים ימים של שקט
+שנינו כאן ביחד על ההר
+המים כבר ירדו ויש גם קשת
+אפשר לקום, סוף העולם עבר.` },
+    { name: "יהיה טוב (ברוזה)", cat: "תקווה", youtube: "https://www.youtube.com/watch?v=t5m31BjDkb8", lyrics: `
+אני מביט מהחלון
+וזה עושה לי די עצוב,
+האביב חלף עבר לו
+מי יודע אם ישוב
+הליצן נהיה למלך
+הנביא נהיה ליצן
+ושכחתי את הדרך
+אבל אני עוד כאן
+
+ויהיה טוב
+יהיה טוב, כן
+לפעמים אני נשבר
+אז הלילה
+הו הלילה
+איתך אני נשאר
+
+ילדים לובשים כנפיים
+ועפים אל הצבא
+ואחרי שנתיים
+הם חוזרים ללא תשובה
+אנשים חיים במתח
+מחפשים סיבה לנשום
+ובין שנאה לרצח
+מדברים על השלום
+
+ויהיה טוב...
+
+שם למעלה בשמיים
+עננים לומדים לעוף
+ואני מביט למעלה
+ורואה מטוס חטוף
+ממשלה של גנרלים
+מחלקת את הנוף
+לשלהם ולשלנו
+ולא רואים ת'סוף
+
+הנה בא נשיא מצרים
+איך שמחתי לקראתו
+פירמידות בעיניים
+ושלום במקטרתו
+ואמרנו בוא נשלימה
+ונחיה כמו אחים
+ואז הוא אמר קדימה,
+רק תצאו מהשטחים.
+
+ויהיה טוב...
+
+אני מביט מהחלון
+לראות אם כל זה אמיתי
+מביט מהחלון וממלמל את תפילתי
+עוד נגור זאב עם כבש
+ונמר ירבץ עם גדי
+אך בינתיים אל תוציאי
+את ידך מכף ידי
+
+כי יהיה טוב...
+
+אני מביט מהחלון
+אולי מגיע יום חדש` },
+    { name: "יהיה טוב (יסמין)", cat: "תקווה", youtube: "https://www.youtube.com/watch?v=qvdQ4mGMVkg", lyrics: `
+יהיה טוב
+
+
+בסוף זה רק אני ואתה פה
+בסוף היום בשקט באוטו
+החדשות עברו ליד האוזן
+ואמרנו תודה על עוד יום
+לא מנסים לכבוש את העולם
+רק לנקות את הלב מהאבק
+עוצרים בצד הדרך
+מסתכל לי בעיניים כשאני אומרת
+
+גם אם יישרף הכסף
+נשב ונצחק במרפסת
+אני ואתה והשקט
+לא צריך כלום
+קרן שמש
+גם אם ייקח לנו זמן
+תראה שהכל מכוון
+נשב מסביב לשולחן
+מבטיחה ש
+
+בסוף יהיה
+יהיה טוב
+הפרחים ישובו לפרוח
+תראה שיהיה טוב
+יהיה טוב
+גם אם יש עוד דרך לעבור
+בסוף יהיה
+יהיה טוב
+הפרחים ישובו לפרוח
+תראה שיהיה טוב
+יהיה טוב
+גם מתוך החושך יידלק האור
+
+בסוף זה רק אנחנו בחדר
+מה עברנו בשנה זה כמו עשר
+לא זה לא במילים זה התדר
+ניסיתי לעשות לנו סדר
+לפעמים רואים רק את הסדק
+נמצא את הדרך בלי נדר
+הזמן טס כל כך מהר אנחנו בטח לא נזכור את מה שאין
+רק מה שכן
+
+אפשר לעזוב את העיר
+נסע על הכביש המהיר
+העתיד תמיד מזהיר
+לא צריך כלום
+רק אוויר
+נמצא איזה אוהל שבור
+נחיה שם כאילו ברור
+שמדובר בארמון רק תזכור
+
+שבסוף יהיה
+יהיה טוב
+הפרחים ישובו לפרוח
+תראה שיהיה טוב
+יהיה טוב
+גם אם יש עוד דרך לעבור
+בסוף יהיה
+יהיה טוב
+הפרחים ישובו לפרוח
+תראה שיהיה טוב
+יהיה טוב
+גם מתוך החושך יידלק האור
+
+(אני בטח לא אקח את זה לאט
+אתה בטח לא תחזיק את זה נגדי
+וזה בטח טוב מדי ועוד מעט
+יקרה משהו, בטוח זה לא אמיתי
+אם יקרה לך משהו אני משתגעת
+אם יקרה לך משהו זה הסוף שלי
+אם יקרה לך משהו אני משתגעת
+אם יקרה לך משהו זה הסוף שלי)` },
+    { name: "הימים שעוד נכונו לנו", cat: ["תקווה", "התחלה"], youtube: "https://www.youtube.com/watch?v=z-cEI02kOcY", lyrics: `
+
+הימים שעוד נכונו לנו
+שיהיו נכונים, שיהיו רכונים
+שיהיו מעלינו כמו כפות תמרים.
+
+ואנחנו שני המינים,
+נברך עליהם,
+ובין כפות ידינו
+ידריכו קשתם כוכבים רחוקים
+להביט בנו מתוך הלילות,
+ולא נבוש להיות מוארים בימים, בימים.
+
+הימים שעוד נכונו לנו...
+
+והאפלה תביא תבונה אל לילותינו
+ועין תהיה בנו זבת דמעות רכות של דבש בחלב,
+ושבעה מינים, פי שבעה מונים
+בבגרותו יבשיל ליבנו.
+
+הימים שעוד נכונו לנו...	
+ 
+` },
+    { name: "לפעמים חלומות מתגשמים", cat: ["תקווה", "הודיה"], youtube: "https://www.youtube.com/watch?v=16QOkQ4n6vE", lyrics: `
+התקווה כבר ארוזה
+בתוך קופסא ורודה
+והכל נראה מוזר
+בארץ לא נודע
+הגלגל שוב מסתובב
+מעל מסך עשן
+והאור המהבהב
+זוהר עלי עכשיו.
+
+לפעמים חלומות מתגשמים
+לפעמים, כשהלב עוד תמים
+לפעמים, בליל קיץ חמים
+לפעמים חלומות מתגשמים.
+
+השבילים שמובילים
+לארץ החלום
+נפתחים ומגלים
+את כל רגעי התום,
+אורות הכרך דולקים עכשיו
+בכל חדרי הלב,
+בתוך תוכי יש הרגשה
+של אושר מתקרב.
+
+לפעמים חלומות מתגשמים...
+
+פרחי הלב מתעוררים
+במיליוני צבעים,
+והשמיים זוהרים
+מול שער הפלאים
+עוד דקה בחשיכה,
+והמון קולות,
+אולי עכשיו, אולי מחר,
+אקום אל תוך חלום.
+
+לפעמים חלומות מתגשמים...` },
+        { name: "קפה אצל ברטה", 
+        cat: "תקווה", 
+        youtube: "https://www.youtube.com/watch?v=Swk4HTb7LGI", 
+        lyrics: `כשאני שפוף ורע לי על הלב
+אני הולך אל ברטה ואצלה יושב
+אני שותה קפה שחור
+מראה לה את היד
+אומרת לי אתה נחמד
+תשים עשירייה בצד
+
+ואז לפתע היא שותקת ורואה
+את כל מה שיקרה ומה שכבר קרה
+רואה על מי אני חושב
+ומה אני רוצה
+אומרת שגלגל חדש
+יתחיל כשהשנה תצא
+
+תמיד כשאני עומד כבר לעזוב
+היא מנסה לומר שיהיה עוד טוב
+אחרי כמה צרות קטנות
+פתאום תרגיש נפלא
+תהיה לך שמחה גדולה
+מילה של ברטה זאת מילה
+
+אני הולך אל ברטה פעם בשנה
+ובינתיים שום דבר לא השתנה
+אבל תמיד אני חוזר
+מראה לה את היד
+ומקווה שיום אחד
+אומר שלום ולא אפחד
+
+ואז אני שואל אותה על אהבה
+אומרת כן אבל לפני כן אכזבה
+אז לא כדאי לך לדאוג
+אולי תראה רופא
+תשמע אתה בחור יפה
+אולי תשתה עוד כוס קפה
+
+תמיד כשאני עומד כבר לעזוב...` 
+    },
+    { name: "קרב יום", cat: ["תקווה", "אמונה"], youtube: "https://www.youtube.com/watch?v=rgCjyK_TRlI", lyrics: `
+קָרֵב יוֹם
+אֲשֶׁר הוּא לֹא יוֹם וְלֹא לַיְלָה
+
+רָם הוֹדַע
+כִּי לְךָ הַיּוֹם אַף לְךָ הַלַּיְלָה
+
+שׁוֹמְרִים הַפְקֵד
+לְעִירְךָ כָּל הַיּוֹם וְכָל הַלַּיְלָה
+
+תָּאִיר כְּאוֹר
+יוֹם חֶשְׁכַת לַיְלָה` },
+    { name: "שהשמש תעבור עלי", cat: "תקווה", youtube: "https://www.youtube.com/watch?v=yNP1bt1g9Vo", lyrics: `
+
+ישנם ימים ללא מרגוע
+בם לא אמצא לי נחמה
+ומוכרחה אני לנגוע
+בעשבים, באדמה
+לפסוע באותה הדרך
+בתוך פריחת הכרכומים
+ולהיות כל כך אחרת
+ולפרוח ערב הגשמים.
+
+רק תפילה אשא
+הוי אלי, אלי
+שהשמש תעבור עלי
+ותראה לי שוב את משעולי
+הוי אלי, אלי
+רק תפילה אשא
+שהשמש תעבור עלי
+ותיקח אותי אל המסע.
+
+ואם אשוב אל זאת הארץ
+ואם אפסע שוב בדרכים
+האם כקדם יכירוני
+האנשים והפרחים.
+
+רק תפילה אשא...
+
+האם אמצא את כל היופי
+האהבה הנושנה
+אשר היתה שם כשעזבתי
+עת אהבתי פעם ראשונה.` },
+    { name: "בגלל הרוח", cat: "תקווה", youtube: "https://www.youtube.com/watch?v=nli5tcVRjG4", lyrics: `
+יהיה מה שיהיה
+אני עוד אשנה
+אני אגשים את חלומי
+נושאי בשורה רעה
+מכות או עוד גזירה
+לא ישנו את מהותי.
+
+אני את והאל שלצידי
+עוד ננצח
+לא בגלל הכח
+רק בגלל הרוח
+הנושבת בגבי.
+
+רק בגלל הרוח
+בתוכי, במוחי, בנשמתי
+רק בגלל הרוח
+בתוכי, בדמי, בנשמתי.
+
+את שיש לי להגיד,
+אני עוד אצרח
+אפילו בירח ישמעו
+מי שיגיד: "לא כך"
+אותו לא אשכח
+יבוא היום אוכיח צדקתי.
+
+אני את והאל שלצידי...` },
+    { name: "הלוואי", cat: "תקווה", youtube: "https://youtu.be/_SATWBEsWWE", lyrics: `
+הלוואי ומענן תרד עלינו קשת
+הלוואי שלעולם הזה יש תקנה...
+
+הלוואי ויום יצמח מתוך סופה גועשת
+הלוואי ולא תאבד לעד המתנה
+הלוואי שהמדבר יצמיח עשב דשא
+הלוואי ועוד נשב בצל התאנה.
+
+הלוואי שלא נכאב ואיש אחיו יאהב
+הלוואי ויפתחו שוב שערי גן עדן
+הלוואי ויתמזגו מזרח ומערב
+הלוואי הלוואי ונחדש ימינו כאן כקדם.
+
+הלוואי ולא ישא עוד גוי אל גוי חרב
+הלוואי ולא ננטוש את דרך התקווה
+הלוואי והאדם יהיה רחום עד ערב
+הלוואי שיש סיכוי אחד לאהבה.
+
+הלוואי שלא נכאב...` },
+    { name: "בדרך אל האור", cat: "תקווה", youtube: "https://youtu.be/ZPxw2vWXxNE", lyrics: `
+באמונה שבליבי,
+באהבה ללא גבולות,
+בצדק אשר בקרבי
+ובתקוות הכי גדולות
+ובמוסר שבנפשי
+הרם מכל העלילות -
+היום אני נשבע.
+
+גם אם ארוך מסע הפרך
+ואם רבים כושלים אחור,
+ביחד נמשיך ללכת
+בדרך אל האור.
+
+ובקומי ובלכתי
+קורא שלום במלחמה
+מול השומעים זעקתי,
+מול כל המבקשים דמה,
+עם אלה ההולכים אתי
+בין אגרופי המשטמה
+היום אני נשבע
+
+גם אם ארוך מסע הפרך...
+
+ובחיי ובמותי,
+בייסורי המלחמות
+והקברים באדמתי
+ואזכרת הנשמות
+ובני ביתך ובני ביתי
+בין רסיסי החלומות
+היום אני נשבע.
+
+גם אם ארוך מסע הפרך...` },
+    { name: "משהו קטן וטוב", cat: "תקווה", youtube: "https://youtu.be/B5Ezz8SEvCg", lyrics: `
+לא מוצא עכשיו את האור
+מחפש אותו בנרות
+משוטט בכל האזור
+מנקודה לנקודה
+
+כמו תקליט שרוט וישן
+כמו אביר על סוס לבן
+הולך באפס מעשה
+הכל מעצמו יעשה
+
+ונדמה שזה טוב
+ככה, וצריך לאהוב
+ונדמה שזה קרוב
+משהו קטן וטוב
+
+לא תוכל אותו לאחוז
+אם תחפש אותו תאבד
+בן אדם צריך לעבור
+מנקודה לנקודה
+
+עמוק בלב האפלה
+משהו בא והולך
+האושר על העצב נישא
+בצער ובאושר שוכב
+
+ונדמה שזה טוב...
+
+לא מוצא עכשיו את האור
+מחפש אותו בנרות
+משוטט בכל האזור
+מנקודה לנקודה
+
+ונדמה שזה טוב...` },
+    { name: "ומפה נקום", cat: "תקווה", youtube: "https://youtu.be/cNAOsi1_UIc", lyrics: `
+ומפה נקום לדברים היפים
+עוגה על השיש וגג רעפים
+לרקוד על החול בזריחה יחפים
+קרן של שמש על מים שקופים
+
+ומפה נקום לדברים הפשוטים
+לאור שנדלק בחלונות הבתים
+מוכרי הפירות שעומדים בצמתים
+עפיפון מרחף קשור בחוטים
+
+עוד נאסוף את הדברים שחיים למענם
+שקט בכיס, אהבה בחינם
+קיץ בים, תמונה על הקיר
+שיר שאהבנו לרוץ להגביר
+
+עוד נמצא בנו כוחות
+עוד ניקח את המושכות
+עוד נקיים בעצמינו את כל ההבטחות
+
+ומפה נקום לדברים השמחים
+חתונת צהריים שולחן פיצוחים
+ערב שבת ודלי עם פרחים
+לעלות על גדותינו מרב חיוכים
+
+ומפה נקום לדברים שאין להן שם
+הדממה בין דפיקות הלב הפועם
+לצד הכאב שלא יעלם
+לבנות לנו בית חם ושלם
+
+עוד נאסוף את הדברים שחיים למענם
+שקט בכיס, אהבה בחינם
+קיץ בים, צחוק ילדים
+שלט על דלת ברוכים הבאים
+
+עוד נמצא בנו כוחות
+עוד ניקח את המושכות
+עוד נקיים בעצמינו את כל ההבטחות.
+ומפה נקום לדברים היפים` },
+    { name: "ואם השיר הזה נשמע לכם מוכר", cat: "תקווה", youtube: "https://youtu.be/j_B8f1V915Y", lyrics: `
+ואם השיר הזה נשמע לכם מוכר,
+זה רק מפני שעוד אותו חלום נשאר.
+מעט שכוח, פחות בטוח -
+אולי,
+אבל השיר הזה נשאר ונזכר,
+עוד נשאר ונזכר.
+
+ואם השיר הזה נשמע לכם תמים,
+זה רק מפני שהוא שואף עוד לקסמים.
+מעט כמו ילד, פחות מתכלת -
+אולי,
+אבל השיר הזה מתאים לפעמים,
+עוד מתאים, לפעמים.
+
+אל האור ואל החופש בתקווה מעפיל,
+שיר בן אלף, שמאלף מתחיל ומתחיל.
+
+ואם השיר הזה נשמע לכם עיקש,
+זה רק מפני שהוא לעד לא מתייאש.
+מעט יגע, פחות נוגע -
+אולי,
+אבל השיר הזה רוגש ומבקש,
+עוד רוגש ומבקש.
+
+אל האור ואל החופש בתקווה מעפיל,
+שיר בן אלף, שמאלף מתחיל ומתחיל.
+
+ואם השיר הזה נשמע לכם כואב,
+זה רק מפני שהוא יוצא מתוך הלב.
+מעט מקריח, פחות מבטיח -
+אולי,
+אבל השיר הזה אוהב, לא עוזב,
+עוד אוהב, לא עוזב.` },
+    { name: "עוד ניפגש", cat: ["תקווה", "געגוע"], youtube: "https://youtu.be/UKayx3c1Rb8", lyrics: `
+בא לו הלילה, ושקט עכשיו.
+בא געגוע, לראות לחבק אותך
+מה שעובר בי, זה יותר ממילים
+יש כאן הכל אבל אין אותך.
+
+את שוב עוברת ימים לא קלים
+איך את שומרת ומה עם החיוכים
+מה את חושבת זה קשה במילים
+יש כאן הכל אבל אין אותך.
+
+עוד נפגש ויהיה לנו טוב
+זה יהיה בקרוב, קרוב
+שנינו ביחד יהיה לנו טוב
+אל תדאגי זה קרוב, קרוב.
+
+מה לספר לך וזה רק מכתב
+מה לתאר לך ואיך לעניין אותך
+מה לספר לך - לא מוצא לי מילים
+יש כאן הכל, אבל, אין אותך.
+
+עוד נפגש...` },
+    { name: "Let It Be", cat: "תקווה", youtube: "https://youtu.be/dSSqHhAqxrk", lyrics: `
+When I find myself in times of trouble, Mother Mary comes to me
+Speaking words of wisdom, let it be
+And in my hour of darkness she is standing right in front of me
+Speaking words of wisdom, let it be
+
+Let it be, let it be, let it be, let it be
+Whisper words of wisdom, let it be
+
+And when the broken hearted people living in the world agree
+There will be an answer, let it be
+For though they may be parted, there is still a chance that they will see
+There will be an answer, let it be
+
+Let it be, let it be, let it be, let it be
+There will be an answer, let it be
+Let it be, let it be, let it be, let it be
+Whisper words of wisdom, let it be
+
+Let it be, let it be, let it be, let it be
+Whisper words of wisdom, let it be, be
+
+And when the night is cloudy there is still a light that shines on me
+Shinin' until tomorrow, let it be
+
+I wake up to the sound of music, Mother Mary comes to me
+Speaking words of wisdom, let it be
+
+And let it be, let it be, let it be, let it be
+Whisper words of wisdom, let it be` },
+    { name: "תן לי", cat: "תקווה", youtube: "https://youtu.be/JX_w2zDaAXY", lyrics: `
+מה שהיה תשכח מזה
+מה שיהיה לא משנה
+מה שאבקש בעולם כזה -
+תן לי את היום הזה!
+
+תן לי שמש על הבוקר
+ויונה מעל הגג
+תן לי תכלת ברקיע
+תן לי יום אחד של חג.
+
+מה שהיה...
+
+תן לי אהבה חולפת
+תן לי אהבת עולם
+תן לי יד שמלטפת
+רק אותי מבין כולם.
+
+מה שהיה...` },
+    { name: "משהו חייב לקרות", cat: "תקווה", youtube: "https://youtu.be/_I4hcr1xCqY", lyrics: `מה לא הייתי נותן בשביל קצת שקט
+קצת להירגע לחזור לנשום, לישון כמו ילד
+להירדם במיטה, אבל פחד תמידי
+כמו מוות איטי מתנגן בי כמו מזמור תפילה
+חג מעליי לכל מקום הולך איתי
+מלאך לבוש סימן שאלה
+
+כלום לא מובן מאליו לא אור השמש
+גם לא יום חדש בסוף הרחוב נורה דולקת
+שם אני נגמר פחד תמידי
+מטלטל אותי רקדן שמאבד שיווי משקל
+כמו אולסטארס שמישהו זרק
+על עמוד חשמל
+
+שנים יורקים עליי ואומרים לי שזה גשם
+תפסתי צד גם בלי לבחור
+עומד בתחנה ולא באה רכבת
+משהו חייב לקרות חייב לקרות
+
+מה לא הייתי נותן כדי ללכת
+לאיבוד לעזאזל אמת או שקר
+לחיות עד הקצה
+לא לדאוג מה מחכה
+בלי פחד שמכה מעיר אותי מתוך חלום ישן
+נספג בעורי הצמיח קוצים
+אין באמת מקום כזה זמן
+
+שנים יורקים עליי ואומרים לי שזה גשם
+תפסתי צד גם בלי לבחור
+עומד בתחנה ולא באה רכבת
+משהו חייב לקרות חייב לקרות` },
+    { name: "כיוון אחר", cat: "תקווה", youtube: "https://youtu.be/m4C-cHTodCw", lyrics: `
+
+
+רוחות נושבות על הספינה שלנו ככה
+אחד מושך לכאן, אחר לשם, חותרים בלי מטרה
+בוא נכוון את זה נכון, נמשיך ביחד
+אחרי הכל, עוד מעט כבר יבשה
+
+מכל מקום אפשר לראות כאן את האופק
+אך כל אחד רואה כיוון אחר של התמונה
+השוני לא יטריד את כל היופי
+אם לא נשכח, אחי, להקשיב לנשמה
+
+אז בוא נביט אל השמיים
+ונבקש ביחד את התשובה
+מהעולם שלי מהעולם שלך
+נניף את דגל האהבה
+
+כשהגל ישטוף את כל הפחד
+אז נישאר זכים ונקיים מכל דעה קדומה
+אחרי הכל זו הספינה שלנו יחד
+אז בוא נוביל אותה אל דרך נכונה
+
+אז בוא נביט אל השמיים
+ונבקש ביחד את התשובה
+אחרי הכל אנחנו שניים
+מייחלים לטוב, רוצים תקווה
+מהעולם שלי מהעולם שלך
+נניף את דגל האהבה` },
+    { 
+        name: "האמנם", 
+        cat: "תקווה", 
+        youtube: "https://youtu.be/XK3TtoXmQYM", 
+        lyrics: `רוחות נושבות על הספינה שלנו ככה
+אחד מושך לכאן, אחר לשם, חותרים בלי מטרה
+בוא נכוון את זה נכון, נמשיך ביחד
+אחרי הכל, עוד מעט כבר יבשה
+
+מכל מקום אפשר לראות כאן את האופק
+אך כל אחד רואה כיוון אחר של התמונה
+השוני לא יטריד את כל היופי
+אם לא נשכח, אחי, להקשיב לנשמה
+
+אז בוא נביט אל השמיים
+ונבקש ביחד את התשובה
+מהעולם שלי מהעולם שלך
+נניף את דגל האהבה
+
+כשהגל ישטוף את כל הפחד
+אז נישאר זכים ונקיים מכל דעה קדומה
+אחרי הכל זו הספינה שלנו יחד
+אז בוא נוביל אותה אל דרך נכונה
+
+אז בוא נביט אל השמיים
+ונבקש ביחד את התשובה
+אחרי הכל אנחנו שניים
+מייחלים לטוב, רוצים תקווה
+מהעולם שלי מהעולם שלך
+נניף את דגל האהבה` 
+    },
+    { name: "חבלי משיח", cat: ["תקווה", "אמונה"], youtube: "https://youtu.be/ms-YfEQM9E8", lyrics: `
+כאשר אני הולך
+בלי אין ובלי אן
+על ליבי כמו קמע
+יש לי כל הזמן
+שיר קטן, שיר קטן.
+
+חבלי משיח הנה זה בא
+חבלי משיח הנה זה בא
+חבלי משיח הנה זה בא היום
+הנה זה בא היום
+
+יש כאלה ששרים
+מעבר לדממה
+שפתיהם אולי אינן נעות
+אבל קולם
+ישמע, ישמע.
+
+חבלי משיח הנה זה בא...
+
+לפעמים אני סופג
+מכה אחר מכה
+וכשרע לי וכשמר לי
+אז אני דווקא
+שר לי כך, שר לי כך.
+
+חבלי משיח הנה זה בא...
+
+אם אגיע אל הבית
+אצל הברושים
+מישהו יגיש לי מים
+וככלות כוחי
+עוד אשיר, עוד אשיר.
+
+חבלי משיח הנה זה בא...` },
+    { name: "עולם שלם", cat: "תקווה", youtube: "https://youtu.be/3JfU50FodZo", lyrics: `
+עכשיו פורסים שוב ידיים
+זה הכל מהכל
+בעולם הגדול
+כשעצומות העניים
+אז רואים את הכל
+עולם שלם, עולם גדול
+
+ואם הגענו עד הנה
+וכל מה שנשאר, רק לאמר שחיינו
+שבכל זאת אפשר וכל מחר שנגיע
+הוא התחלה חדשה
+ואם הגענו עד הנה
+וכל מה שנשאר, רק לומר שחיינו
+שבכל זאת מחר, אולי יביא איזה קסם
+אולי יפתור חלומות
+
+עכשיו פורסים את הלחם
+הכול הופך שוב פשוט
+בעולם הגדול
+כל דמעה שחונקת
+מחליקה בגרון
+עולם שלם, עולם גדול
+
+ואם הגענו עד הנה
+וכל מה שנשאר, רק לומר שחיינו
+שבכל זאת אפשר וכל מחר שמגיע
+הוא התחלה חדשה
+ואם הגענו עד הנה
+וכל מה שנשאר, רק לומר שחיינו
+שבכל זאת מחר, אולי יביא איזה קסם
+אולי יפתור חלומות
+עולם שלם, עולם גדול` },
+    { name: "עכשיו תורי", cat: "תקווה", youtube: "https://youtu.be/zSwMbJbEPAM", lyrics: `
+
+יום רודף יום אני רוקמת חלום
+שחבוי בין כתלי חדרי
+לוחשת ברחובות מגלגלת מחשבות
+נסתרות הן ברחש חיי
+
+והימים כך עוברים ואיתם השנים
+בוערים הם בעצמותי
+אז שיפתח את חדרי
+ויגלה עולמי ואז אצעק
+
+עכשיו תורי לגעת בזריחה
+עכשיו תורי להיות שם בפסגה
+עכשיו תורי לפתוח את הקול
+לפרוש כנף ולא ליפול, ולשיר...
+
+עכשיו תורי לתת את כל הלב
+עכשיו שירפא מה שכואב
+עכשיו תורי לפקוע צליל מיתר
+שיהדהד אל המחר, ולשיר...
+
+יום ועוד יום במציאות בלי חלום
+רדופה ברחובות בלי אויר
+ניגשת לשם וחוזרת לכאן
+נמדדת בזמן בלי מחיר
+
+והימים לא חוזרים והזמנים משתנים
+חלומות עסוקים בתקווה
+אז שיפתח את חדרי
+ויגלה עולמי ואז אצעק
+
+עכשיו תורי לגעת...` },
+    { name: "באביב", cat: ["תקווה", "עונות"], youtube: "https://youtu.be/iYffGXi45Bw", lyrics: `נַעֲבֹר אֶת הַחֹרֶף וְאַחַר כָּךְ נִרְאֶה
+בָּאָבִיב, בָּאָבִיב
+בֵּינְתַיִם שֵׁב תַּחַת עֵץ הַקְּלֶמֶנְטִינוֹת
+זֶה עוֹנָתִי, עוֹנָתִי
+
+קַבֵּל אֶת הַדִּין זֶה נוֹפֵל מִלְמַעְלָה
+תַּחְשֹׁב שֶׁזֶּה גֶּשֶׁם, תַּחְשֹׁב שֶׁזֶּה חֹרֶף, וְאַחַר כָּךְ נִרְאֶה
+נַעֲבֹר אֶת הַחֹרֶף וְאַחַר כָּךְ נִרְאֶה
+בָּאָבִיב, בָּאָבִיב, בָּאָבִיב
+
+בָּאָבִיב אֲנִי אֶלְבַּשׁ חֻלְצָה לְבָנָה
+וְאֶחְצֶה אֶת הָרְחוֹב כְּמוֹ מֶלֶךְ...
+בָּאָבִיב בְּחֻלְצָה לְבָנָה כְּמוֹ מֶלֶךְ, כְּמוֹ מֶלֶךְ...
+נַעֲבֹר אֶת הַחֹרֶף וְאַחַר כָּךְ נִרְאֶה
+בָּאָבִיב, בָּאָבִיב
+קַבֵּל אֶת הַדִּין...` },
+    { name: "לפעמים אני מרגיש שאני צריך כנפיים", cat: ["תקווה", "אמונה"], youtube: "https://youtu.be/qkcf5Dnelnw", lyrics: `
+לפעמים אני מרגיש שאני צריך כנפיים
+לא בשביל לעוף
+רק בשביל לחסות בצילן
+לפעמים אני מרגיש שאני צריך עיניים
+רק בשביל לעצום אותן
+
+אני אנסה לעבור
+לעבור את היום ואת המחר
+כמו שעבר אברהם את הנהר
+כמו שעבר משה את המדבר והים
+אני אנסה לעבור איתם
+
+לפעמים אני מרגיש שאני צריך מרגוע
+לא בשביל לישון
+רק להאמין שאני נושם
+לפעמים אני מרגיש שאני צריך לנגוע
+בידו של אדם אחר
+
+אני אנסה...
+
+לפעמים אני מרגיש שאני צריך עיניים
+עוד עוד ועוד
+כדי שאראה את שפעת האור
+לפעמים אני מרגיש שאני צריך כנפיים
+רק בשביל לעוף ולעבור
+
+אני אנסה...
+ ` },
+    { name: "כל מה שתרצה", cat: "תקווה", youtube: "https://youtu.be/uwWzHlvD6I0", lyrics: `כל מה שתרצה יהיה לך
+אפילו אם קשה לך
+כל המכתבים שעוד לא נכתבו
+ועליהם רשום שמך
+
+רגע בלי בושה ואהבת אישה
+מישהי שתראה אותך
+כל רגעי האושר והנחמה
+כל מה שתרצה יהיה לך
+
+רגע של שמחה לבד מול המראה
+ריקוד לתוך הלילה
+יד רכה שתלטף אותך
+שנייה לפני שקמת
+פתק על מפית ושפה פרטית
+ריח שאתה אוהב
+שיר שמתנגן מבית של שכן
+כל מה שתרצה יהיה לך
+
+כל מה שתרצה יהיה לך
+כל מה שתרצה בכף ידך
+רק תסכים להיפתח
+כל מה שרצית
+כל מה שעדיין
+העולם כולו מושיט ידיים
+כל מה שתרצה יהיה לך
+
+כל הכוכבים כשאין אור מסביב
+האמת של השמיים
+הצטלבות מבט ופעימות הלב
+להיות אדווה במים
+
+התגנבות לילית לתוך חצר סגורה
+אהבה לא אסורה
+ילד שגידלת ואותך אוהב
+כל מה שתרצה יהיה לך
+
+כל מה שתרצה יהיה לך
+כל מה שתרצה בכף ידך
+רק תסכים להיפתח
+כל מה שרצית
+כל מה שעדיין
+העולם כולו מושיט ידיים
+כל מה שתרצה יהיה לך` },
+    { name: "אור", cat: ["תקווה", "בית"], youtube: "https://youtu.be/-GIcUpr0d60", lyrics: `
+אור עולה בבוקר
+על אגם רחוק (זוכרת)
+כן אני זוכרת
+ולא אחדל ולא אשתוק.
+
+אור שמבשר את
+ההשכמה והזריחה (זוכרת)
+רק לראות עוד פעם
+יותר מזה איני צריכה.
+
+שמש, הביאו שמש
+אם שָמַי מעוננים
+עוצמת את עיני
+אבל השמש היא בפנים.
+
+אור בצהריים
+על האדמה (זוכרת)
+על חלקת המים
+ועל שתיל ועל קמה.
+
+אור יורד בערב
+על שדות חיי (זוכרת)
+עוד אני זוכרת
+זה אור יומי זה אור ימי.
+
+שמש, הביאו שמש...
+
+אור יורד בערב (שמש)
+אור בצהרים (שמש)
+אור עולה בבוקר אור!` },
+    { name: "לחזור הביתה", cat: ["תקווה", "התחלה", "בית"], youtube: "https://youtu.be/6lZT62-u6_k", lyrics: `
+דווקא כשחשוך, כשהכל הפוך
+מוצאים שבילים להתגבר,
+להשתחרר, כל השאלות מתחילות להפתר
+כשכבר חשבתי רגע לוותר
+ראיתי את השמש מסנוורת את הרחוב
+מכל הרע שבעולם, שיהיה לי טוב
+מכל הרע שבעולם, שיהיה לי טוב
+
+כל החלונות נפתחים לראות
+רוח באה בגגות
+ומעיפה ככה בתנופה
+את שייבש ולא יחזור
+כשכבר חשבתי רגע לעצור
+תמיד זרח עוד בוקר להפריח ולשמור
+מכל החושך בעולם, תמיד יהיה לי אור
+מכל החושך בעולם, תמיד יהיה לי אור
+
+כל התחלה נושאת איתה תפילה
+תפילה שאשמר
+כל נפילה אותי רק מעלה
+ואני אגבה יותר
+מכל מה שבוער למטה
+בסוף הרי תמיד רוצים לחזור הביתה
+
+כל מי שעבר בנתיב הצר
+יודע להודות למרחבים הרטובים
+לאופק העוטף את השדות
+כשכבר חשבתי שהלב שביר
+חזרו אלי עיניים להאיר במבטן
+מכל הקור שבעולם, שיהיה לי חם
+מכל הקור שבעולם, שיהיה לי חם
+
+כל התחלה נושאת איתה תפילה
+תפילה שאשמר
+כל נפילה אותי רק מעלה
+ואני אגבה יותר
+מכל מה שבוער למטה
+בסוף הרי תמיד רוצים לחזור הביתה
+תפילה שאשמר
+כל נפילה אותי רק מעלה
+ואני אגבה יותר
+מכל מה שבוער למטה
+בסוף הרי תמיד רוצים לחזור הביתה...` },
+    { name: "סימן שעוד לא הגענו", cat: "תקווה", youtube: "https://youtu.be/p320GUpKgkQ", lyrics: `
+
+
+- אתה רואה דקלים?
+- דקלים איני רואה!
+- אתה רואה גמלים?
+- גמלים איני רואה!
+- אולי לפני עיני לרגע צל עבר -
+איני רואה דבר, איני רואה דבר!
+
+סימן שעוד לא הגענו
+והאופק עוד רחוק
+וליבך עודו פתוח
+אל ארבעת הרוחות
+וצריך להמשיך ללכת
+וצריך להמשיך לצעוד
+והדרך עוד מושכת
+ארוכה
+
+- אתה רואה אדם בצל התאנה?
+- איני רואה אדם בצל התאנה!
+- אולי בצל הגפן שם מנוחתו?
+- איני רואה דבר, איני רואה אותו
+- אתה רואה עצי זיתים ושדה חיטה
+ואיך שביניהם פורחת השיטה?
+- אולי אני בגלל השמש מסנוור -
+איני רואה דבר, איני רואה דבר
+
+סימן שעוד לא הגענו...
+
+- אולי אתה רואה בנות בכלי לבן
+יוצאות אל הכרמים עם אהובי לבן?
+- אולי אתה רואה בדרך ליהודה
+אשה יפהפיה צועדת לבדה?
+
+- איני רואה בנות, איני רואה כרמים
+עובר אני ביעף יבשת וימים
+יומם וליל האש בעצמותי תבער
+איני רואה דבר, איני רואה דבר
+
+סימן שעוד לא הגענו...` },
+    { name: "קו של אור", cat: ["תקווה", "איחול"], youtube: "https://youtu.be/CJH8j3hP2xc", lyrics: `
+שיהיה יומכם כמו מניפה נפרשת
+שיהיה לבכם פתוח לאהוב
+קו של אור וקו של חן וקו של חסד
+שאפשר לראות אותם גם מקרוב
+
+שתהיו קלים כעננים
+ותזכו לשרש בשמים
+קו של חן וקו של רחמים
+שאפשר לראות גם מקרוב
+
+שתביטו בעיניים
+ואחר הצהריים
+מישהו יקרא מן המרפסת
+ושמכם יהיה כלחן
+ואתו תוכלו לקחת
+קו של אור וקו של חן וקו של חסד
+
+שתהיו ערים כסקרנות של ילד
+ושירכם יביא לכם מן השורות
+קו של אור וקו של תום וקו של תכלת
+שאפשר לראות אותם גם מקרוב
+
+שיהיה חלון לכוכבים
+ולכל ספור יהייה שומע
+שיהיה מקום לאהובים
+שאפשר לראות גם מקרוב
+
+שתביטו בעיניים...` },
+    { name: "הסוף הטוב הזה", cat: "תקווה", youtube: "https://youtu.be/3Wq6MMnFLXU", lyrics: `עד שמרחקים יתייאשו
+עד אקיף כל עולמי ושוב ושוב
+עד אשר סוף כל מעשיי
+יהיו במחשבה תחילה
+
+עד שכתר גאוותי הבוהק
+ישמט בלי שארגיש, יתפרק
+עד אלחש צעקותיי
+עד כל חסרונותיי
+עד חלומי יפתור עצמו
+עד שאזכה למחילה
+
+כמו שקט בין צלילים אחכה
+את לבי המאובק לקראתך אנקה
+רק תיתן לי לראות קצת
+מהסוף הטוב הזה
+הטוב הזה
+
+עד אחרון גליך אשאר
+עד יפתחו כל שעריך, עד תיעתר
+עד עיניים טובות יפלסו
+יפוררו כל כעסיי
+עד מכתבי יכתוב עצמו
+עד בלי די
+
+כמו שקט בין צלילים אחכה
+את לבי המאובק לקראתך אנקה
+רק תיתן לי לראות קצת
+מהסוף הטוב הזה
+הטוב הזה
+מהסוף הטוב
+הסוף הטוב הזה` },
+    { name: "עד אשר ישוב", cat: ["תקווה", "געגוע"], youtube: "https://youtu.be/RJ9iW3VyAMY", lyrics: `
+
+אמצע השבוע לא פה ולא שם
+עדיין יש זמן להריח את הים
+וגם אותם
+אם יש בעולם מלאכים אז זה הם
+מדליקה את האור שיעיר את שניהם
+שומעים יחד שיר לא מדי עצוב
+עד אשר ישוב
+
+פתאום חדשות המציאות תוקפת
+יותר מדי זמן שהיא לא מתחלפת
+התנועה נעצרה
+לא נורא, תנשמי, תנשמי,
+תהיי חזקה מרמה את עצמי
+שרק לא ירגישו זה מה שחשוב
+עד אשר ישוב
+
+הגשר צר ומתעקל
+ולפעמים הלב נופל
+יש לנו מה לאבד בכל סיבוב
+העיקר לא לפחד עד אשר ישוב
+
+אמצע השבוע לא פה ולא שם
+עדיין יש זמן להריח את הים ומה איתם
+אם יש בעולם מלאכים אז זה הם
+מבקש: אלוהים שמור עליהם
+מסתכל בתמונות שוב ושוב ושוב
+עד אשר ישוב
+
+הגשר צר ומתעקל...	
+ ` },
+    { name: "היי אחות", cat: "תקווה", youtube: "https://youtu.be/9k3AIKa07A4", lyrics: `
+החדשות קשות
+הימים רעים
+אנחנו מחפשות
+לא מוצאות מילים
+להסביר כאב
+אימה ופחד
+עזבי מילים בואי ניסע באוטו
+נשים שיר ונצרח ביחד
+
+
+
+אחותי
+יש לך אותי
+כשאת אבודה
+דברי איתי
+נמצא על מה לצחוק
+גם אם קצת בכוח
+ראיתי אנשים שאיבדו את הכל
+אבל הם לא איבדו את הרצון לשמוח
+
+היי אחות
+אנחנו עוד נחזור לרקוד
+אחות נרקוד בצער בשמחות
+כל הדמעות
+בעולם
+לא יכבו לא יכבו לא יכבו
+את האש שלנו
+
+היי אחות
+אנחנו עוד נחזור לרקוד
+אחות להאמין בלב הטוב
+כל המכות
+בעולם
+לא ישברו לא ישברו לא ישברו
+את האור שלנו
+
+ראיתי שם אישה
+שצעקה בלי קול
+אני מתפללת בשבילה
+שהיא תמצא מזור
+המנגינה תחזור
+דרך השברים לזרוח
+ראיתי ילדים שאיבדו את הכל
+אבל הם לא איבדו את הרצון לשמוח
+
+היי אחות
+אנחנו עוד נחזור לרקוד
+אחות נרקוד בצער בשמחות
+כל הדמעות
+בעולם
+לא יכבו לא יכבו לא יכבו
+את האש שלנו
+
+
+
+היי אחות
+אנחנו עוד נחזור לרקוד
+אחות להאמין בלב הטוב
+כל המכות
+בעולם
+לא ישברו לא ישברו לא ישברו
+את האור שלנו
+
+
+
+היי אחות
+אנחנו עוד נחזור לרקוד
+אחות גם בצער וגם בשמחות
+עוד ניפגש
+עוד ניפגש
+
+
+
+היי אחות
+אנחנו עוד נחזור לרקוד
+אחות להאמין בלב הטוב
+אחות עוד ניפגש
+עוד ניפגש` },
+    { name: "כשאנחנו מנגנים", cat: ["תקווה", "מוזיקה"], youtube: "https://youtu.be/scjur_Kw5gY", lyrics: `
+אני תקווה שיתבהר הכל,
+רוצה שיתבהר הכל,
+שום דבר לא חדש,
+יום רודף את קודמו,
+שום דבר לא חוזר,
+גם הלילה מתעורר איתנו,
+אז אני מנגן לי.
+
+אני תפילה שיסתדר הכל,
+רוצה שיסתדר הכל,
+כי שום דבר לא חדש,
+יום רודף את קודמו,
+שום דבר לא חוזר,
+אז אני מתפלל עלינו,
+שתמיד ננגן.
+
+מי יוכל לנצח את הניגון שלנו,
+כשאנחנו מנגנים אז אלוקים אתנו,
+והוא כל כך שמח איתנו לנגן.
+מי יוכל להפסיק את הניגון שלנו,
+כשאנחנו מנגנים אז אלוקים איתנו,
+והוא כל כך שמח איתנו לנגן.
+
+אני תפילה שיתחדש הכל עלינו,
+שיתהפך הכל לטובה,
+אני תפילה שהניגון יתקיים בלב כולם,
+אני תפילה שהניגון יקלף את הקליפות שלנו,
+וננגן.`  },
+    { 
+        name: "סימן שעוד לא הגענו", 
+        cat: "מסע", 
+        youtube: "https://youtu.be/p320GUpKgkQ", 
+        lyrics: `
+
+
+- אתה רואה דקלים?
+- דקלים איני רואה!
+- אתה רואה גמלים?
+- גמלים איני רואה!
+- אולי לפני עיני לרגע צל עבר -
+איני רואה דבר, איני רואה דבר!
+
+סימן שעוד לא הגענו
+והאופק עוד רחוק
+וליבך עודו פתוח
+אל ארבעת הרוחות
+וצריך להמשיך ללכת
+וצריך להמשיך לצעוד
+והדרך עוד מושכת
+ארוכה
+
+- אתה רואה אדם בצל התאנה?
+- איני רואה אדם בצל התאנה!
+- אולי בצל הגפן שם מנוחתו?
+- איני רואה דבר, איני רואה אותו
+- אתה רואה עצי זיתים ושדה חיטה
+ואיך שביניהם פורחת השיטה?
+- אולי אני בגלל השמש מסנוור -
+איני רואה דבר, איני רואה דבר
+
+סימן שעוד לא הגענו...
+
+- אולי אתה רואה בנות בכלי לבן
+יוצאות אל הכרמים עם אהובי לבן?
+- אולי אתה רואה בדרך ליהודה
+אשה יפהפיה צועדת לבדה?
+
+- איני רואה בנות, איני רואה כרמים
+עובר אני ביעף יבשת וימים
+יומם וליל האש בעצמותי תבער
+איני רואה דבר, איני רואה דבר
+
+סימן שעוד לא הגענו...	
+ ` 
+    },
+    { 
+        name: "מבוע", 
+        cat: "מסע", 
+        youtube: "https://youtu.be/CPsWDCvUlKs", 
+        lyrics: `יעלה ויבא הרגע הזה
+ייבקע בו יום חדש
+והנהר היוצא מעדן יירד וישקה את גני
+מעיין חיים כרחם אמי יעטוף
+וייטע בי שוב את הכח
+לעורר את האור הגדול שחבוי בתוכי
+ואף על פי חשכת הלילה וצינתו
+לא ייחדל מבוע מזרימתו
+מתוך התהומות עולות דמעות
+וממיסות את השכבות שכיסו את עיניי, שפתיי וליבי
+ובשארית כוחותי אתייצב בראש ההר
+ואשא את קולי` 
+    },
+    { 
+        name: "אלוהיי", 
+        cat: "מסע", 
+        youtube: "https://youtu.be/eVJFS8AdKks", 
+        lyrics: `
+
+מסע כזה של שנים רבות
+הוא מתחיל ביום שבו אבי חיבק אותי
+והיה שם אור והרגשתי טוב
+מי זה אלוהי
+שאלתי אז את אחותי
+אז לא פלא שכלום לא פשוט
+וכלום לא מושלם
+כמו בריאת העולם
+וכשאימי קראה לי לשוב
+כי היה לה חשוב
+לא שמעתי אותה
+
+ושוב כבר סתיו
+תחנה בזמן ותראה אותי
+קורא לך אלוהי
+ועניין אחד לא סגור עליו
+אם אתה ישנו
+למה לא בא אלי
+
+מסע כזה איך לומר מוזר
+ולכל דבר מצאתי לי תרוץ
+פעם בגדתי בך
+וליבך נסגר
+סלחי לי כן עשיתי שטות
+אז לא פלא שאנשים שהיו
+הלכו לדרכם
+כי כלום לא מושלם
+נהייתי קצת בודד בעולם
+תלוי על סולם
+חולם וחרמן
+
+ושוב כבר סתיו
+תחנה בזמן ותראה אותי
+קורא לך אלוהי
+ועניין אחד לא סגור עליו
+אם אתה ישנו
+למה לא בא אלי
+
+מסע כזה של שנים רבות
+ובצומת לוד עוד מתפללים
+תן כוחות לעבור עוד יום
+מול כל שונאינו הגדולים
+אז לא פלא שבפיקאפ – בר מלא
+ושופכים את הלב
+צוחקים עם בדרן
+פתחנו לך מוסך בקרני
+קניון באיילון
+ולא באת לכאן` 
+    },
+    { 
+        name: "מתארחת בעולם", 
+        cat: ["מסע", "אמונה"], 
+        youtube: "https://youtu.be/Mp2OgpIlWPY", 
+        lyrics: `למד אותי לפתוח מתנות
+על מה שבתוכם איך לא להתנצל
+למד אותי לראות את עצמי במשקפיים הנכונים
+למד אותי איך לא לפחד מלפחד
+
+אני כבר לא נלחמת בעצמי, יבוא מה שיבוא
+מה אני כמו כולם בסך הכל מתארחת בעולם
+מה אני כמו כולם בסך הכל מתארחת בעולם
+
+למד אותי דרכים בלי סוף
+כדי שאלך בהם ובעצמי אכתוב
+בבקשה, למד אותי איך לקבל
+את כל כולי גם אם כל מה שלא הבנתי איך
+
+אני כבר לא נלחמת בעצמי, יבוא מה שיבוא
+מה אני כמו כולם בסך הכל מתארחת בעולם
+מה אני כמו כולם בסך הכל מתארחת בעולם` 
+    },
+    { 
+        name: "ההצגה הגדולה", 
+        cat: "מסע", 
+        youtube: "https://youtu.be/AH9OWv6kXqI", 
+        lyrics: `
+המסך שוב עולה
+על במה עגולה
+אור השמש מלא
+תפאורה כחלחלה
+מתחילה הצגה
+שקיצבה רצחני
+סיפורי עשיר ועני
+
+הצגה אין סופית
+לא נגמרת לעד
+מליוני משתתפים
+אך צופה בה אחד
+הוא צופה בכולם
+וכולם בידו
+וכולנו כאן בחסדו
+כן, כולנו כאן בחסדו .
+
+באנו לכאן
+באנו מזמן
+באנו לכאן במסע לילי
+כל שניתן
+רגע קטן
+רגע לך רגע לך רגע לי .
+
+הפתעות עד בלי די
+ותמונה בתמונה
+אבל יד הבמאי
+מנוסה אמונה
+אם סיפור מאכזב
+הוא מרעיד הבמה
+וקורא לאש לשממה
+
+כל שורה גורלית
+כל תפקיד ותפקיד
+אך סמויה התכלית
+וסמוי העתיד
+אך נצליח אולי
+להפריח יונים
+ולגדל כמה שחקנים
+ולגדל כמה שחקנים .
+
+באנו לכאן...	
+
+
+ 
+` 
+    },
+    { 
+        name: "כל יום", 
+        cat: "מסע", 
+        youtube: "https://youtu.be/zoCDcOol0_o", 
+        lyrics: `
+
+הדברים הבאים חשובים לי באמת
+אם את אוהבת אותי עדיין
+שתראי אותי עין בעין
+שתחכי לי כל יום
+במרחק נשימה אני בך מביט
+והרגש שוב מתמלא
+מצייר לך בלילה לב
+בעשן הסדינים הלבנים
+
+כל זה בא כל זה בא ומופיע אלי
+בחלום ובמציאות
+בלילות שוב נרשמת בדידות
+ופחד שבא למות
+הימים שוב טסים, אנשים מתחפשים
+על הדרך אני עוצר
+עם הילד שבתוכי מדבר
+אל תישכח אותי הוא אומר
+כל יום
+
+שושנים בשדות
+ואני מטפס על חלקת אלוהים הקטנה
+מתאפס על המנגינה
+שאהבתי בתוך תוכי
+את נפרדת ממני לכמה ימים
+ואני שוב בהמתנה
+בלילות מתחילה צינה
+מתפלל שלא תחתכי
+
+כל זה בא כל זה בא ומופיע אלי
+בחלום ובמציאות
+בלילות שוב נרשמת בדידות
+ופחד שבא למות
+הימים שוב טסים, אנשים מתחפשים
+על הדרך אני עוצר
+עם הילד שבתוכי מדבר
+אל תישכח אותי הוא אומר
+כל יום
+
+אגואיזם ועדינות
+אלימות וכנות.
+בתוך אוטו אדום
+כל יום	
+ ` 
+    },
+    { 
+        name: "הלאה", 
+        cat: "מסע", 
+        youtube: "https://youtu.be/z-OpnBf-JNI", 
+        lyrics: `
+בסך הכל אנחנו די לבד
+נכון שלא כולנו ל"ו
+אבל אני בכל זאת מאוהב,
+אז הלאה!
+בסך הכל רציתי לברך
+החטיפו לי על שוק ועל ירך
+אבל אני בכל זאת אברך,
+גם הלאה!
+
+הלאה! ימי כקדם
+הלאה! שירי מולדת
+הלאה! האדמה רועדת
+והמדינה רוקדת
+הלאה! עד אור הבוקר
+הלאה! כבר לא תינוקת
+הלאה! הלאה! הלאה!
+
+אולי כמו לולין על חבל דק
+ניסיתי לעבור את המרחק
+ולא להסתנוור מן הזרקור
+וחוץ מזה עוד לנגן כינור
+אולי כמו שחיין שכבר שחה
+חמש מאות ועוד ברכה
+והוא צמא לרגע מנוחה
+והלאה!
+
+הלאה...
+
+ראינו איך הרץ במרתון
+לגמרי לא לבד בצרתו,
+כי כל הזמן האיש מהעיתון
+שואל איך הוא מרגיש ומה איתו.
+ראינו מטפס הרים שיכור
+אשר את נשמתו מוכן למכור
+למען איזה רגע משוגע
+של הזריחה מהפסגה,
+והלאה!
+
+הלאה...` 
+    },
+    { 
+        name: "בימים שיעברו עלינו", 
+        cat: "מסע", 
+        youtube: "https://youtu.be/0prjRjuBR34", 
+        lyrics: `בימים שיעברו עלינו נדע לשאת יותר
+עצבות רכה
+והשמיים יחכו לנו עד שנבין
+
+ובלילות נרוץ מתוך עצמנו
+אל שדות ילדות, בארץ לא שבויה
+אתה המים המבקשים משיבולים לגדול
+
+אלוהים ודאי מקשיב תמיד ללב
+כשהכאב כמו אבן שם
+אני כמעט כבר מת מאהבה
+
+השנים יכשילו את רגלינו
+אך לא ניפול, כמו אבן נעמוד
+מול כל סופות החול, השלג והאש
+תמיד נדע לזכור שיעבור
+
+אלוהים ודאי מקשיב תמיד ללב
+כשהכאב כמו אבן שם
+אני כמעט כבר מת מאהבה` 
+    },
+    { 
+        name: "מה עשית היום", 
+        cat: "מסע", 
+        youtube: "https://youtu.be/lAmQ17x4bfQ", 
+        lyrics: `
+מה עשית היום
+מה רצית היום
+את מי חיבקת בחום
+שלא נתן לך ללכת
+
+מה חיפשת היום
+מה מצאת היום
+מה הצליח לגרום לך
+לעצור ושוב ללכת
+
+האם שמעת את השיר
+ששרה הציפור לך
+האם שמרת בכיסך
+את העלה שנח על ראשך
+האם כבר שרת שיר היום
+האם מצאת שביל היום
+האם הקשבת בחלום
+האם ברכת לשלום
+אדם בודד הולך מולך
+לעולם לא תדע
+מה עובר לו בנשמה...
+
+על מה דיברת היום
+למי הקשבת היום
+האם פינית מקום או זמן
+לשפוך ליבך כמים, בן אדם
+
+לאן מיהרת היום
+על ספסל עצרת לנשום
+כל אדם צריך מדי פעם
+לעצור ולהביט לשמיים
+
+האם שמעת את השיר...
+
+את מה אספת היום
+את מה השלכת במקום
+שנים ניסית לבלום
+לגזום, לפרום
+אך לא באמת העזת לומר שלום
+ענה לי לפני שיהיה מאוחר מדי
+מלא ליבי כי לא אומר לך די...
+
+והשביל שגילית פתאום
+ואספת מאבני המקום,
+וביקשו העיניים את עצמם לעצום
+להביט פנימה בסולם שיופיע בחלום	
+ 
+` 
+    },
+    { 
+        name: "לפני שייגמר", 
+        cat: ["מסע", "הודיה"], 
+        youtube: "https://youtu.be/dG3NAutpEoY", 
+        lyrics: `
+לא לפחד להתאהב
+שיישבר הלב
+לא לפחד בדרך לאבד
+
+לקום כל בוקר
+ולצאת אל החיים
+ולנסות הכול לפני שייגמר
+
+לחפש מאיפה באנו
+ולחזור בסוף תמיד להתחלה
+למצוא בכל דבר עוד יופי
+ולרקוד עד שנופלים מעייפות
+או אהבה
+
+מכל הרגעים בזמן
+למצוא אחד לאחוז בו
+להגיד שהגענו
+תמיד לזכור לרגע לעצור
+ולהודות על מה שיש ומאיפה שבאנו
+
+לחבק אותה בלילה
+כשהיא נרדמת
+אז כל העולם נרגע
+לנשום אותה עמוק
+לדעת שתמיד
+אני אהיה שם בשבילה` 
+    },
+    { 
+        name: "לתת ולקחת", 
+        cat: "מסע", 
+        youtube: "https://youtu.be/C-bAr0i0YAg", 
+        lyrics: `
+
+ניסיתי ניסיתי מאד,
+להילחם ברוחות,
+לא סיפרתי לך כמה.
+ניתקתי את עצמי מהרוב,
+אך בתוך המציאות,
+חטפתי ג'ננה.
+
+אדם צריך שתהיה לו מילה,
+קצת מקום בעולם,
+אהבה לא נשכחת.
+וקול אמיתי לתפילה,
+ורגע מושלם,
+כדי לתת ולקחת,
+ולא...לפחד מהפחד.
+
+ניסיתי ניסיתי לצוף,
+יחסי אהבה,
+זה משחק מלוכלך קצת.
+מציפור שוב למדתי לעוף,
+לנחות בשלווה,
+לא ליפול על התחת.
+
+אדם צריך שתהיה לו מילה...
+
+ניסיתי כי הייתי צריך,
+לו היית במקומי,
+מה היית אז אמרת?
+תמשיך כי צריך להמשיך,
+אם אתה אמיתי,
+בשבילי אתה מלך.
+
+אדם צריך שתהיה לו מילה...` 
+    },
+    { 
+        name: "הסיפור שלנו", 
+        cat: "מסע", 
+        youtube: "https://youtu.be/GfLvhUVg7V0", 
+        lyrics: `לקדם בברכה את היום שבא אלינו
+נושא עמו את כל מתנות הוויתנו 
+הן גם עכשיו הסיפור שלנו נכתב
+מתחבר מרגע לרגע, צעד אחר צעד, תו לתו
+
+והנה חיוך השמש העולה נפרש על פנינו
+רוח נדיבה מרחפת
+אור חדש מציף את עינינו
+פותח לרווחה את כל שערי הלב
+
+לקבל באהבה את המקום בו אנו נמצאים
+ולהודות על כל הדרכים שבהם עוברים החיים שלנו
+לא זה לא לשווא מה שעובר עלינו
+בא ללמד אותנו להשליך את כל הדאגות 
+את שהיה ועתיד להיות ולהתחיל לחיות
+
+והנה חיוך השמש העולה נפרש על פנינו
+רוח נדיבה מרחפת
+אור חדש מציף את עינינו
+פותח לרווחה את כל שערי הלב
+` 
+    },
+    { 
+        name: "דרך ארוכה", 
+        cat: ["מסע", "שירים על שירים"], 
+        youtube: "https://youtu.be/Ax59Vq-oq3U", 
+        lyrics: `
+דרך ארוכה
+אני כעוף בנדודיו
+אני כרוח חרש
+ימים עובר
+שר לי כאן מסתיו אל סתיו.
+
+דרך רחוקה
+ואני ציפור בליל סגריר
+ציפור בלי בית,
+מה היא
+אל מול שמיים
+כשאבד לה סוף השיר.
+
+שיר הרוח על המים
+ולו הרבה גוונים
+מי אני היום ומה אני
+בצלילים המשתנים בשיר?
+כשהאור על פני המים
+יש קשת של גוונים
+מי אני היום
+ומה היום
+מי אני בשיר.
+
+דרך רחוקה
+ובסופה ניצבת את
+אבוא אלייך חרש
+כרוח ערב
+נלך איתה עד תום יחדיו.
+
+דרך ארוכה
+ואני ציפור תלויה על בד
+ידך הושיטי
+קראי לי,
+כי בשמיים
+כל השיר שלי אבד.
+
+שיר הרוח על המים...` 
+    },
+    { 
+        name: "תקוות ימי", 
+        cat: "מסע", 
+        youtube: "https://youtu.be/alHi4sjtGIQ", 
+        lyrics: `
+אני פייטן פייטן
+פשוט פורט ושר על דרך
+את רחשי ליבי אחרוט בקולמוסי הדק
+אבל היום ידי שותקות בנשמתי עצבת
+שירתי גוועה וניגוני חדל
+
+תקוות ימי פלסו לי דרך
+אורחות חיי כרעו כרעו על ברך
+כי הלכו להם שירי וכבדו לי לילותי
+המילים מילים כמו איבדו כל ערך
+כי הלכו להם שירי וכבדו לי לילותי
+המילים מילים כמו איבדו כל ערך
+
+אני פייטן פייטן עצוב
+פורט ושר על דרך
+בימי שלוה קולחים שירי כמים צוננים
+אבל עתה במיתרי גונחת רק הרוח
+וחדרי ליבי עונים לה והומים
+
+תקוות ימי...
+
+אני פייטן פייטן פשוט
+פורט על דרך
+ראיתי כבר ימים טובים מאלה ידידי
+ואאמין כי עוד יבואו גם יפים מאלה
+הזמנים שרק הכסיפו לי שנותי
+
+תקוות ימי...` 
+    },
+    { 
+        name: "בשדות בית לחם", 
+        cat: "מסע", 
+        youtube: "https://youtu.be/5TZvR7wFlVo", 
+        lyrics: `
+אור הירח על ההר
+לילה לבן בשדות בית לחם
+תן מילל בקול נשבר
+אנה פנה עדרי ללכת
+אח לנשר ולעיט
+אין לי שם ואין לי בית
+הי חלילי ילל, ילל חלילי
+עד ליל אוסיף ללכת
+עם תרמיל רועים על שכם
+הי חלילי ילל, ילל חלילי
+
+אבן מוטלת על לבי
+כאבנים בשדות בית לחם
+רוח עובר בעשבים
+אנה פנה עדרי ללכת
+
+אי שם בסוף הדרך
+התחכי עד רדת ערב
+הי חלילי ילל, ילל חלילי
+
+התחכי להלך
+עם הלחם והמלח
+הי חלילי ילל, ילל חלילי
+
+אור הירח על ההר
+לילה לבן בשדות בית לחם` 
+    },
+    { 
+        name: "הכל עד לכאן", 
+        cat: "מסע", 
+        youtube: "https://youtu.be/hSgflhyU9jk", 
+        lyrics: `
+מנגינות מדומות, משטות, מזייפות
+מטשטשות לי את שביל הזהב
+מתנגנות בי, משקרות לי, מציקות.
+רציתי להבין קצת, להרגיש איזה ערך
+וסמכתי עלייך שאת תגלי לי את הדרך.
+ונשמתי אוויר מזוהם והלכתי בערך
+התהלכתי שולל עד לכאן.
+
+אני רואה, אני מרגיש
+אני רוצה, אני אדיש
+אני חכם, אני יכול
+אני גיבור כל כך גדול
+הכל אני, אני הכל
+אני חזק, אני בתוך בועה
+סתם מנופח בלי שום ערך
+וידעתי בסופו של דבר, היא תתפוצץ לי בדרך
+התביישתי, כמו מצורע הרגשתי בערך
+ואולי זה הכל עד לכאן
+והלוואי שזה הכל עד לכאן
+
+אנשים ישנים, משתגעים, מתנשאים
+רוקדים ונשרפים לאורו של ירח,
+להשתגע, להתבדח,
+סתם כי מישהו רצה כל כך
+להרגיש כמו איזה מלך
+וסמך רק עלייך, שאת תגלי לו את הדרך
+ואמרת לו שהוא מיוחד
+הוא אוהב שאת משקרת
+הזיות, הזיות עד לכאן.
+
+אני רואה, אני מרגיש...` 
+    },
+    { 
+        name: "יומן מסע", 
+        cat: "מסע", 
+        youtube: "https://youtu.be/aJ5NXQNOQ3s", 
+        lyrics: `
+אינספור שבילים ויציאה
+רושם בתוך יומן מסע
+להתערבב ולא להיבלע
+רושם בתוך יומן מסע
+
+והיה אם מישהו בא
+אל תסתובב
+כי זה תמיד יכול להיות
+זה שידליק לך את הלב
+יפרוק את הכאב בשלווה
+
+מגע הרוך גובר על המכה
+רושם בתוך יומן מסע
+כולנו עשויים אבק של אהבה
+רושם בתוך יומן מסע
+
+מביטים למעלה ונושאים תפילות
+כשבינתיים שוכחים
+שהמשמעות לחיות
+היא לשאול את השאלות ולענות
+
+והיה אם מישהו בא...` 
+    },
+    { 
+        name: "חלק בעולם", 
+        cat: "מסע", 
+        youtube: "https://youtu.be/gMqCIawspWI", 
+        lyrics: `
+
+כשאפקח את העיניים
+ואגביה את ראשי
+אז אפתח חלון או שניים
+אל הרוח החופשית.
+אז אפתח חלון או שניים
+ואביע בקולי
+מה שיש ומה שאין לי
+ויכול להיות שלי.
+
+חלק בעולם
+חלק כחלק
+המסע עוד לא הושלם והדרך מיטלטלת
+אנשים צמאים לקשר
+אנשים זקוקים לגשר
+על הגשר הנטוי
+יש תקווה ויש סיכוי
+על הגשר הנטוי
+יש תקווה ויש סיכוי
+
+זה מביך אתה יודע
+הפחדים החששות
+ובפצע זה נוגע
+וחושף את החולשות
+וצריך כוחות ושקט
+וגם לא מעט דמיון
+שעת רצון ויד מושטת
+לעמוד בניסיון.
+
+חלק בעולם...
+
+כשאפקח את העיניים
+כדי לשאול וכדי לשקול
+יצמחו גם לי כנפיים
+וחומה אחת תיפול
+כשאפתח חלון או שניים
+גם אתה תראה אותי
+והאור אשר בינינו
+יהיה נחלתי
+
+חלק בעולם...
+ ` 
+    },
+    { 
+        name: "היי את", 
+        cat: "מסע", 
+        youtube: "https://youtu.be/qkZHICHuJJY", 
+        lyrics: `
+היי את
+הכל בסדר
+חוץ מכל מה שממש ממש לא
+כשאת בתוך החדר
+אפשר לדמיין
+עולם בלי גבולות
+
+היי את
+זה לא פשוט כאן
+כולם חיים בסיפור מסוים
+אולי יהיה יותר קל
+אם תספרי לך סיפור
+ותחיי אותו גם
+
+
+הימים עוברים
+קצב לא סביר
+מכניסים ואז
+מוציאים אוויר
+יורד הגשם
+צומח גן
+אותו משחק ידוע של הזמן
+
+היי את
+הגעגוע
+כל פעם נצבע בצבעים אחרים
+הזמן בכיוון הידוע
+לפעמים שוכחים לפעמים נזכרים
+
+
+הימים עוברים
+קצב לא סביר
+מכניסים ואז
+מוציאים אוויר
+יורד הגשם
+צומח גן
+אותו משחק ידוע של הזמן
+יורד הגשם
+צומח גן
+אותו משחק ידוע של הזמן
+
+
+היי את
+מה שקשה לך
+כנראה יתחלף בקשיים אחרים
+זה לא מנחם או משמח
+אבל זה המצב ככה כולם אומרים
+
+
+
+הימים עוברים
+קצב לא סביר
+מכניסים ואז
+מוציאים אוויר
+יורד הגשם
+צומח גן
+אותו משחק ידוע של הזמן
+יורד הגשם
+צומח גן
+אותו משחק ידוע של הזמן
+
+
+
+היי את` 
+    },
+    { 
+        name: "לתת", 
+        cat: "נתינה", 
+        youtube: "https://youtu.be/IG2waIDW7Cc", 
+        lyrics: `לתת
+את הנשמה ואת הלב
+לתת
+לתת כשאתה אוהב
+
+ואיך מוצאים את ההבדל
+שבין לקחת ולקבל
+עוד תלמד לתת, לתת
+
+לגלות סודות בסתר
+להתיר את סבך הקשר
+כשהלב בך נצבט
+מכל חיוך, מכל מבט
+
+אתה נזהר, אתה יודע
+וחוץ ממך איש לא שומע
+פוסע בין הדקויות
+וממלא שעות פנויות
+
+לתת
+את הנשמה ואת הלב
+לתת כשאתה אוהב
+עוד תלמד לתת, לתת
+
+אתה לומד עם השנים
+לבנות ביחד בניינים
+לחיות עם כל השינויים
+לרקום איתה סיפור חיים
+
+ולעבור ימים קשים
+במצוקות וריגושים
+תמיד לדעת לוותר
+ואת הטעם לשמר
+
+לתת
+את הנשמה ואת הלב
+לתת כשאתה אוהב
+עוד תלמד לתת, לתת
+
+לתת
+את הנשמה ואת הלב
+לתת כשאתה אוהב
+עוד תלמד לתת, לתת
+
+לראות בתוך הנפילה
+שיש מקום למחילה
+תמיד אפשר שוב להתחיל
+כמו יום חדש, כמו כרגיל
+
+לתת
+את הנשמה ואת הלב
+לתת כשאתה אוהב
+עוד תלמד לתת, לתת` 
+    },
+    { 
+        name: "ככלות הקול והתמונה", 
+        cat: "נתינה", 
+        youtube: "https://youtu.be/tWN7c6cn3WA", 
+        lyrics: `החיוך שלך מרוח על כל העיר
+כמו הבטחה גדולה
+ויש לך עדת מעריצים, כן
+שרים איתך במקהלה
+מה יש לומר כל הכרטיסים נמכרו מראש
+מה יש לומר אל תתן לזה לעלות לך לראש
+
+כי אחרי ככלות הקול והתמונה
+מישהו יכול לשאול בלי כוונה
+מתי בפעם האחרונה
+עשית משהו בשביל מישהו
+עשית משהו בשביל מישהו
+
+זה נראה כמו קלף בטוח
+אתה דוהר, אתה על גב הסוס
+פותחים לך דלתות כולם
+ומדברים בנימוס
+
+אתה יושב ומצטלם ממש כמו סמל הצלחה
+אתה חושב שהעולם מונח כאן בכיסך
+
+כי אחרי ככלות הקול והתמונה
+מישהו יכול לשאול בלי כוונה
+מתי בפעם האחרונה
+עשית משהו בשביל מישהו
+עשית משהו בשביל מישהו
+
+אתה חי כמו בסרט
+אתה כוכב עליון בהפקת חלום
+אז תזהר שלא ידליקו אור
+ותתעורר פתאום
+
+אז תראה איך מלמעלה עד למטה יש אותו מרחק
+ואז תלמד מי יהיה האחרון אשר יצחק
+
+כי אחרי ככלות הקול והתמונה
+מישהו יכול לשאול בלי כוונה
+מתי בפעם האחרונה
+עשית משהו בשביל מישהו
+עשית משהו בשביל מישהו` 
+    },
+    { 
+        name: "אנשים טובים", 
+        cat: "נתינה", 
+        youtube: "https://youtu.be/pT8HOC-EhZk", 
+        lyrics: `
+לא צריך לחפש מלאכים בשמיים
+הם מתהלכים בינינו, על פני האדמה
+נוגעים בקצה העצב, מסתירים את הכנפיים
+נושאים על גביהם תרמילים של נחמה
+
+הם יודעים להגיע בדיוק בזמן
+לרדת בזהירות במדרגות האפלות
+להרים שם את המתג, לצבוע בלבן
+לפתוח במבט את הדלתות הנעולות
+
+אנשים טובים,
+נשארו עוד אנשים טובים
+גם כשהשמיים עניים בכוכבים
+הם ישלחו אליך יד, הם יגיעו במיוחד
+להזכיר לך שיש עוד טוב בעולם
+הם יגיעו אם רק תאמין שהם שם
+
+לא צריך לחפש מלאכים בשמיים
+הם מתהלכים בינינו, ביני ובינך
+הם יודעים איך לרפא גם בכוח העיניים
+להוביל את הכאב אל שדות השכחה
+
+אנשים טובים,
+נשארו עוד אנשים טובים
+גם כשהשמיים עניים בכוכבים
+הם ישלחו אליך יד, הם יגיעו במיוחד
+להזכיר לך שיש עוד טוב בעולם
+הם יגיעו אם רק תאמין שהם שם
+תזכור שיש עוד טוב בעולם
+הם יגיעו אם רק תאמין שהם שם
+
+ואם אלוהים נגע לך בראש
+ואם הלב הזה שלך עוד לא התעוור
+ברגע הנכון, תדע מבלי לחשוש
+להיות מלאך כזה בשביל מישהו אחר` 
+    },
+    { 
+        name: "מקום בלב", 
+        cat: "נתינה", 
+        youtube: "https://www.youtube.com/watch?v=TqNkm1gRVp4", 
+        lyrics: `
+
+כדי להגשים חלום אחד ישן
+יש צורך במיליון חולמים
+שלא עוצמים את עיניהם.
+
+כדי להגשים חלום אחד ישן
+יש צורך במיליון חולמים
+שלא אוטמים את אזניהם.
+
+שמוכנים אל החלום להתקרב,
+שעוד זוכרים איך להקל את הכאב.
+שיכולים להתאהב, להתחייב
+ולגלות שעוד נשאר להם מקום בלב.
+מקום בלב.
+מקום בלב.` 
+   },
+// קטגוריית שמחה
+{ name: "בלילה על הדשא", cat: "שמחה", youtube: "https://youtu.be/z9kjeXwDbR0", lyrics: `
+
+
+נשב בחוץ, כל כך יפה, יפה הליל
+נשיר רעים, נשיר לקול צלילי מיתר
+שירים פשוטים, שירים יפים
+על אהבה וקיץ
+שירי הלב ההם, שירי הלב ההם
+שאין כמותם.
+
+ואל תשאל על מה נפשי עכשיו רוגשת
+הן אין דבר אשר אוהב, אוהב יותר
+מכך לשכב
+מסתם לשכב בלילה על הדשא,
+להתבונן בכוכבים,
+להתבונן ולזמר.
+
+כיפת כוכב האירי לי פנייך
+אשוט אלייך במפרש געגועים,
+אלי הטוב
+מה שמת בו, בקיץ
+אשר הופך
+אשר הופך אותנו כת משוגעים.
+
+במקהלה לילית שקטה ומאולתרת
+שרים שלושה, שרים גם ארבעה קולות
+והרעות,
+והרעות כגל אפל עוברת
+ומלטפת חרש,
+מלטפת חרש קלילות.	
+ ` },
+{ name: "אחרת לא הייתי שר", cat: "שמחה", youtube: "https://youtu.be/p1_fGiMa7PI", lyrics: `
+
+הם אומרים לי אל תשיר
+על שמי אביב פתוחים
+לא על שדרות לא על פרחים
+עזוב שירים שמחים
+
+והם אומרים תפסיק לחרוז
+את אור הכוכבים
+שיר רק מה שבנפשנו
+את הכאבים
+והם אומרים תפסיק לחרוז
+את אש האהבות
+שיר רק מה שבנפשנו
+את האכזבות
+
+אך איך אפשר לזמר איך אפשר
+בלי מחר בלי מחר
+איך אפשר לזמר איך אפשר
+אם חלום לא נשאר
+
+אני מאמין בשדות השמש
+בשחר מפציע ובליל אמש
+בצחוק של ילד
+אחרת לא הייתי שר
+
+הם אומרים לי אל תשיר
+יבואו עוד ימים
+ימים טובים, קרובים, ימים חולמים
+עזוב שירים תמימים
+
+והם אומרים תפסיק לחרוז
+את אור הכוכבים
+שיר רק מה שבנפשנו
+את הכאבים
+
+אך איך אפשר לזמר איך אפשר
+בלי מחר בלי מחר
+איך אפשר לזמר איך אפשר
+אם חלום לא נשאר
+
+אני מאמין בשדות השמש
+בשחר מפציע, ובליל אמש
+בצחוק של ילד
+אחרת לא הייתי שר
+אחרת לא הייתי שר	
+ ` },
+{ name: "שמחות קטנות", cat: "שמחה", youtube: "https://youtu.be/7YIUyrtRBOo", lyrics: `
+עמוק בליבך, עיגולים של שמחה
+ואור גנוז בנשמת אפך
+עמוק בלב, עיגולים של כאב
+אתה שונא, אתה אוהב.
+
+יהללו, יהללוך מלאכים
+ולא תאבד דרכך בזוהר ובחשיכה
+יהללו, יהללוך מלאכים
+שמחות קטנות יאירו
+כנצנוץ הכוכבים.
+
+לחיי התמימים ודוברי האמת
+וכל החיים את חייהם באמת
+שזוכרים את השמש ונוגעים באור
+שיודעים אהבה, שאינה בת חלוף.
+
+יהללו, יהללוך מלאכים...` },
+{ name: "ימים טובים", cat: "שמחה", youtube: "https://www.youtube.com/watch?v=8rEpRyL8KLk", lyrics: `
+
+או.. ימים טובים שהשמש בם זורחת
+והעיר כולה פורחת כמו השיר
+או.. ימים טובים לא אכפת לך הפסולת
+והדיזל והסולר באוויר
+
+ואז אתה קטן ופתאום עשיר
+כמו הבעל בית של העיר
+ואז אתה קטן ופתאום גדול מהכל
+ואלה הם ימים טובים שהלבבות מתרחבים
+ובני אדם אז נפתחים כמו פרחים
+
+או.. ימים טובים והעיר כמו בתחפושת
+ואתה מביא לה בושם של פרחים
+או ימים טובים ואפשר אז באופנוע
+ברחובות ריקים לנסוע תותחים
+
+ואז אתה קטן ופתאום עשיר
+כמו הבעל בית של העיר
+ואז אתה קטן ופתאום גדול מהכל
+כן אלה הם ימים טובים שהלבבות מתרחבים
+ובני אדם אז נפתחים כמו פרחים.	
+ 
+` },
+{ name: "ביתנו", cat: "שמחה", youtube: "https://youtu.be/PgNu4tdTIVI", lyrics: `אזיז לך ת'שמש במעופה
+אקטוף בשבילך כוכבים מקטיפה
+כדי שיהיה בסיס לחיינו אבוא וארתיע
+מפני האויב שבא מרחוק
+מאושר כואב בחילוף העונות
+אצעק לך "חיינו מספיק עם פצע וטיח"
+
+אדביק לבנים עם מלט רטוב
+ננעל נעליים נרוץ בשדות
+כדי שיכנס האושר בקיץ אל תוך חיינו
+
+תחת שמש גדולה, נדחוף עגלה
+עם תינוקת קטנה, עם פנים של אלה
+וילד מושלם בעולם שדומה קצת לשנינו
+
+בואי נקדים את המאוחר
+נבין את חיינו היום ומחר
+תמיד יש סיכוי לאהבתנו
+כדי שנוכל להמשיך לספר
+איך רצינו יותר איך אהבנו יותר
+בואי נבנה לנו בית ונקרא לו ביתנו
+
+ולמרות שלא אמרתי את רוב הדברים
+כי חיי מלאים בשתיקות ושירים
+אני חושב שניסע במכונית
+ואלחש לך באינטימיות
+
+"את הדבר הגדול בחיי
+רוצה לאהוב אותך כול ימיי
+בבית קטן גדול בינוני
+העיקר בו הפנימיות"
+
+בואי נקדים את המאוחר
+נבין את חיינו היום ומחר
+תמיד יש סיכוי לאהבתנו
+כדי שנוכל להמשיך לספר
+איך רצינו יותר איך אהבנו יותר
+בואי נבנה לנו בית ונקרא לו ביתנו` },
+{ name: "כמו ציפור", cat: "שמחה", youtube: "https://youtu.be/BiEHq2Qn6C8", lyrics: `
+
+כמו ציפור נולדה לחופש
+אפרוש כנפיי לי אל הנופש
+כי תקוותיי בי שבו לקנן
+אשכח ימים ללא מרגוע
+אמצא מנוחה שלוות אלוה
+וגם שירי חזרו להתנגן
+
+בין ידידיי על המרפסת
+אני ממש ממש נרגשת
+גם בליבי ארגיש את השינוי
+אתמול הייתי כעיוורת
+כה בודדה כל כך אחרת
+ופתע כמו חלום בלתי צפוי
+
+אמשיך לשיר שירי אוהבת
+אחרוז מילים פניני מחשבת
+ארגיש סוף סוף, הו, מה זה לחיות
+ימים נלחמתי לא ויתרתי
+על יאושי סוף סוף גברתי
+על כן אני בין המאושרות...` },
+{ name: "חי ונושם", cat: "שמחה", youtube: "https://youtu.be/N-wEko6vckM", lyrics: `
+יום רודף יום ונגמר לי
+לאיפה אתה נעלם לי
+מה איתך, מה איתך
+
+המרדף מעלינו
+יעייף את חיינו
+ומה איתם – מה איתם.
+
+בוא נזכור לאהוב
+בתוך כל הרעש הזה
+לרגע אחד ביום
+נשמור את הלב בחזה
+
+פועם ונפעם
+נפעם וצוחק
+צוחק ובוכה
+צוחק ובוכה
+וחי ונושם.
+
+עוד נראה בחיינו
+נחת מעמלינו
+ונבנה בית חם
+
+עוד נצליח ביחד
+לגרש את הפחד
+וראשנו מורם` },
+{ name: "אבן על אבן", cat: "שמחה", youtube: "https://youtu.be/NIi29Qeqlis", lyrics: `
+תמיד זה אבן על אבן
+שום דבר לא בא בחינם
+עכשיו לצאת אל הדרך
+לאסוף טיפות עד שיהיה לנו ים
+תראה בסוף הוא יבוא
+נמשיך ונחכה לו
+
+רגע של אושר כזה שחיים בשבילו
+רגע של אושר כזה שרצים לקראתו
+ואל תפחד מהעצב תמיד הוא ילך
+ושוב יבוא
+אבן על אבן
+
+לבנות מרגע עוד רגע
+שום דבר לא בא בחינם
+וגם לטעות זה בסדר
+ואז לצאת שוב מחדש לעולם
+גם אם יגידו שלא
+נמשיך ונחכה לו
+
+רגע של אושר כזה שחיים בשבילו
+רגע של אושר כזה שרצים לקראתו
+ואל תפחד מהעצב תמיד הוא ילך
+ושוב יבוא
+אבן על אבן` },
+{ name: "אחכה לך", cat: "שמחה", youtube: "https://youtu.be/YHQ_NhxUxqE", lyrics: `
+
+אחכה לך
+כבה את כל אורות עירך
+ובוא אל הפינה שלנו
+בין סדינים צחים ולבנים
+
+אחכה לך
+אסוף אותי אל תוכך
+הרחק בערפל שלנו
+בין עשן אדום ועננים
+
+אחכה לך
+אחכה לך בקצה הערב
+שטה שטה לקראתך, אוהב
+אחכה לך
+אחכה לך בסוף הדרך
+קח את הדימעה את הכאב
+
+אחכה לך
+חרוט עמוק בתוך ליבך
+את ספר הספרים שלנו
+שנכתב בסתר הסתרים
+
+אחכה לך
+לנשום עמוק את צווארך
+בתוך האהבה שלנו
+רק חדים חידות אך לא פותרים
+
+אחכה לך...
+
+אחכה לך
+להיאבק בתוך גופך
+וכך בשדה הקרב שלנו
+את מותי למצוא איתך, אוהב
+
+אחכה לך...` },
+{ name: "ימים לבנים", cat: "שמחה", youtube: "https://youtu.be/aF0zBbPHckE", lyrics: `מים לבנים ארוכים כמו בקיץ קרני החמה
+שלוות בדידות גדולה על מרחב הנהר
+חלונות פתוחים לרווחה אל תכלת דממה
+גשרים ישרים וגבוהים בין אתמול ומחר
+
+כל כך קל לשאת שתיקתכם, ימים לבנים וריקים (כל כך ריקים)
+הן עיני למדו לחייך וחדלו משכבר (עיני כבר חדלו)
+לזרז על לוח שעון את מירוץ הדקים
+ישרים וגבוהים הגשרים בין אתמול ומחר
+
+לבבי התרגל אל עצמו ומונה במתינות דפיקותיו
+ולמתק הקצב הרך מתפייס, מוותר ונרגע
+כתינוק מזמר שיר עצוב, טרם סגור את עיניו
+עת האם הלאה פסקה מזמר, נרדמה
+
+לבבי התרגל אל עצמו ומונה במתינות דפיקותיו
+ולמתק הקצב הרך מתפייס, מוותר ונרגע
+כתינוק מזמר שיר עצוב, טרם סגור את עיניו
+עת האם הלאה פסקה מזמר, נרדמה
+
+ימים לבנים ארוכים כמו בקיץ קרני החמה
+שלוות בדידות גדולה על מרחב הנהר
+חלונות פתוחים לרווחה אל תכלת דממה
+גשרים ישרים וגבוהים בין אתמול ומחר` },
+{ name: "לא נעצור", cat: "שמחה", youtube: "https://youtu.be/ifaIMHB2ooM", lyrics: `לנו קוראים המרחקים
+הפתוחים, הארוכים
+ההרים, העמקים
+לא נעצור
+
+זו הריצה שאין לה סוף
+אין לה בית, אין לה חוף
+לא להגיע רק לשאוף
+לא לעצור
+
+ארץ גדולה ורבה
+אין לנו בה רגע מנוח
+לנו קורא המרחב
+האופק הבהיר
+
+ארץ גדולה ורבה
+ועל גבה אלף שנותיה
+לנו קורא המרחב
+לבנו עוד צעיר
+
+אין לנו רגע לחלום
+לא בלילה, לא ביום
+רק לנוע ולנשום
+לא לעצור
+
+באפלה, בסערה
+גם בטוב, גם ברע
+אם התחלנו אין ברירה
+לא נעצור
+
+ארץ גדולה ורבה
+אין לנו בה רגע מנוח
+לנו קורא המרחב
+האופק הבהיר
+
+ארץ גדולה ורבה
+ועל גבה אלף שנותיה
+לנו קורא המרחב
+לבנו עוד צעיר
+
+לא יעצרנו הכאב
+לא הלהט הצורב
+כל עוד פועם, בנו הלב
+לא נעצור
+
+ארץ גדולה ורבה
+אין לנו בה רגע מנוח
+לנו קורא המרחב
+האופק הבהיר
+
+ארץ גדולה ורבה
+ועל גבה אלף שנותיה
+לנו קורא המרחב
+לבנו עוד צעיר` },
+{ name: "שכשנבוא", cat: "שמחה", youtube: "https://youtu.be/uTYYaZOGY7Y", lyrics: `
+הזמן את השנים יניס
+וקצת בינה בלב מכניס
+אבל ישנם דברים שהוא עוד לא גילה לי
+האם יפרח לי עוד שושן
+האם נעור בי ניצוץ נושן
+האם בסוף הדרך מחכה תשובה לי
+
+ואיך נדע
+אם יש תקווה
+שכשנבוא, שכשנבוא
+נמצא תשובה
+
+לאן נמשכת המסילה
+לאן הולכת התפילה
+ומי ישיב לשאלה ומי ישמע לי
+ומי יפתח לי לבבו
+ואם אלך לאן אבוא
+האם בסוף הדרך מחכה תשובה לי.
+
+ואיך נדע...
+
+זה רק אני וזו רק את
+וזה הרבה וזה כה מעט
+ואיך נדע אם לא לריק עברו חיינו
+האם עמלנו לא לשווא
+האם ביתנו לא יחרב
+האם תחייה אהבה גם אחרינו.
+
+ואיך נדע...` },
+{ name: "ביום הטוב הזה", cat: "הודיה", youtube: "https://youtu.be/gHpW2rgelBg", lyrics: `
+
+ביום הטוב הזה
+שבא במפתיע
+הוא מתעורר אלי והוא כחלום
+ארץ אבודה לגלות סודה הנשכח
+ולדעת כאן ולטעת גן
+עד הגיע זמן והשער ייפתח
+
+ביום הטוב הזה
+שבא במפתיע
+ביום הטוב הזה
+היום הזה
+ביום הטוב הזה
+שבא במפתיע
+ביום הטוב הזה
+היום הזה
+
+כשנות מדבר שומם
+ארכה לי הדרך
+ביקשתי מי באר צמא לרוות
+ארץ אבודה לגלות סודה הנשכח
+ולדעת כאן ולטעת גן
+ולמצוא בזמן את השער המובטח
+
+ביום הטוב הזה...
+
+ביום הטוב הזה
+שבא במפתיע
+הוא מתעורר אלי והוא כחלום
+ארץ אבודה לגלות סודה נשכח
+ולדעת כאן ולטעת גן
+עד הגיע זמן והשער ייפתח
+
+ביום הטוב הזה...` },
+{ name: "שמים", cat: "שמחה", youtube: "https://youtu.be/VfIJSc6KWWk", lyrics: `
+
+
+כאן השמים הם שלי
+כאן אני מרגיש כמו שאני
+רוצה לחיות, רוצה להיות
+בין התקוות שמשתנות
+כאן השמים הם שלי
+
+כאן סיפרתי את סיפור חיי
+כאן אני נושם את אוהביי
+להתאכזב, להתעצב
+ולנצח כל כאב
+כאן סיפרתי את סיפור חיי
+
+רק השמים מעליי
+יודעים קצת לפניי
+לאיזה בוקר חם
+לאיזה בוקר קר
+נתעורר מחר
+
+רק השמים מעליי
+שומרים עלייך ועליי
+ובגללם אני
+ומתחתם אני
+עדיין שר
+
+היו כאן חכמים וגם צודקים
+היו תמימים וגם הרבה חולמים
+בין יריבים לאוהבים
+בסוף קוראים לנו אחים
+ברחובות הלבבות האבודים
+
+רק השמים מעליי...
+
+היו כאן השקיעות הכי זורחות
+היו כאן הזריחות הכי שוקעות
+בין הכנרת למדבר
+תמיד הייתי מחובר
+רק שהנוף לא ישתנה לי עד מחר
+
+רק השמים מעליי...` },
+{ name: "קולות", cat: "שמחה", youtube: "https://youtu.be/FGCoeZH1CHw", lyrics: `
+קול מן ההרים
+התשמע, אמור לי
+קול מן ההרים
+ומעברים
+הקולות לי מספרים.
+
+מישהו השאיר
+את החלון פתוח
+מישהו הסגיר
+מקום כמעט בטוח
+מישהו הכיר
+בחריקת הרוח
+קול קורא ממרחקים.
+
+רעד בזגוגית
+מטוס חורש רקיע
+מישהו נפרד
+ומישהו מגיע
+מישהו בצד
+אהבתו מביע
+וקולו אומר שמחה.
+
+קול ממדרונים
+התשמע אמור לי
+קול ממדרונים
+זה לזה עונים
+צלצולי פעמונים.
+מי שמאזין
+ישמע קולות בלי הרף
+ברזי רזים
+או מוזיקה סוערת
+מי שמאזין
+גם בליבו עוברת
+מקהלת קולות רבים.
+
+אוי לבי, לבי
+האבן מתגלגלת
+הד ובנות הדים
+משק כנפי התכלת
+בואה ידידי
+עכשיו נפשי שואלת
+את קולך היחידי.
+ ` },
+
+// קטגוריית התחלה
+{ name: "משנה לשנה", cat: "התחלה", youtube: "https://youtu.be/I0zfPDyvR0A", lyrics: `משנה לשנה\ שימרית אור
+משנה לשנה אני הולכת ונחשפת
+מעונה לעונה אני מתקלפת
+מסירה את כסותי הישנה
+מקפלת אותה בפינה ומסתכלת
+
+מציצה בתהום שמעבר לדלת
+כבר לא כל כך נבהלת
+מביטה ברקיעים שמעלי
+זו עדיין אותה התכלת
+
+משנה לשנה אני הולכת ונרגעת
+כמו צידפה לבנה אני מתבקעת
+משילה קליפתי הישנה
+אוספת אותה בפינה ומסתכלת
+
+את קמט הצחוק בעיני מקבלת
+המראה מתרגלת
+שערה של כסף או אולי זהב
+על ראשי מסתלסלת
+
+אני פתוחה לרוחות, חשופה לסופה
+שאותי מטלטלת
+פתוחה לריחות, חשופה לפריחה
+שאותי מבלבלת לאט לאט לאט לאט
+מתערטלת
+
+משנה לשנה אני נחשפת והולכת
+ולקראת האביב מזדככת
+מורידה עוד שכבה אחרונה
+מקבלת אותי מתנה ומחייכת
+
+מבקשת רק טוב, משתדלת
+לא לדרוך על יבלת
+אוּ - אני רוצה לאהוב, רוצה לאהוב
+אני פתוחה לרוחות, חשופה לסופה
+שאותי מטלטלת
+פתוחה לריחות, חשופה לפריחה
+שאותי מבלבלת לאט לאט לאט לאט
+מתערטלת
+
+משנה לשנה אני הולכת ונחשפת
+משנה לשנה הולכת ונרגעת` },
+{ name: "התחדשות", cat: "התחלה", youtube: "https://youtu.be/-KBA6mUSd1c", lyrics: `
+עייפות בלתי מוסברת
+פיק ברכיים לא מובן
+זו שעה שלא חוזרת
+לעולם - אבל
+בליבך אתה יודע
+שמעבר לפינה
+אהבה חדשה
+ממתינה
+
+אחרי החגים יתחדש הכל
+יתחדשו וישובו ימי החול
+האוויר, העפר, המטר והאש
+גם אתה, גם אתה תתחדש
+
+בגנך פורחים לפתע
+בערבוביה גמורה
+עץ החלומות
+ועץ הדעת טוב ורע
+הסתכל על כליך
+שהשארת בחצר
+הפטיש, הסולם, המעדר
+
+אחרי החגים...
+
+במסע שלא נגמר
+בין שדות הצל ושדות האור
+יש נתיב שלא עברת
+ושתעבור
+שעון החול, שעון חייך
+מאותת לך עכשיו
+למד-דלת, למד-הא, למד-וו.
+
+אחרי החגים...` },
+{ name: "כל עוד", cat: "התחלה", youtube: "https://youtu.be/hlJtllNRf-Q", lyrics: `
+ילד הולך לו ברחוב
+בבוקר בהיר של תשרי
+אל בית הספר שוב יוצאים הילדים
+גבר הולך אחריו
+משגיח, רואה - לא - נראה
+ורק אחר כך הוא עומד שם ורואה
+
+איך עוד שנה פה נפתחת
+כמו כל שנה, בסתיו,
+איך בן הולך לו לבד
+ואב בעקבותיו
+
+גבר רואה בחשאי
+איך בנו נכנס לכיתה
+גבר עומד כמו ילד שנשאר בחוץ
+וכבר שרים שם בפנים
+שיר של שנה חדשה
+הו איך הכל מתחיל פה שוב מהתחלה -
+
+שוב הם שרים על הגשם
+שוב הם שרים על סתיו
+ועל הלוח עולות שוב אותיות הכתב
+
+(א.ב.ג.ד.ה.ו.ז.ח.ט.י.כ.ל.מ.נ.ס.ע.פ.צ.ק.ר.ש.ת.)
+
+גבר באמצע הבוקר
+גבר בלב חייו
+על יד גדר של בית ספר לבדו ניצב
+והוא זוכר שאביו
+פעם הלך אחריו
+הוא מנסה לשמוע את קול צעדיו
+
+אך הילדים עוד שרים
+שיר על יורה וחצב,
+וגם שפתיו של גבר לוחשות עכשיו:
+גם אם אלך בגיא צלמוות
+הן לא אירא,
+גם אם אפול פתאום
+יאמר לבי שירה
+
+כל עוד עולה הבוקר
+כל עוד נכתב הלוח
+כל עוד הולך לו בן
+ואב בעקבותיו
+כל עוד שרים הילדים
+על שנה חדשה
+כל עוד הכל מתחיל פה שוב מהתחלה
+
+כל עוד הים מתעורר
+כל עוד הרוח עולה
+כל עוד על שחור הלוח
+תתנוסס מילה	
+ ` },
+{ name: "התחדשות אחרת", cat: "התחלה", youtube: "https://youtu.be/AUUXlOZglBQ", lyrics: `
+עייפות בלתי מוסברת.
+פיק ברכיים לא מובן
+צל שרב על כל הדרך,
+ואבק לבן
+אבל עודך משווע
+לגשמי ברכה
+עוד רחוקה מנוחתך
+
+אחרי החגים יתחדש הכל.
+יתחדשו וישובו ימי החול
+האוויר, העפר, המטר והאש
+גם אתה,
+גם אתה,
+תתחדש.
+
+בגנך פורחים לפתע
+עץ הפרי ועץ הסרק
+ועץ החלומות
+ועץ הטוב והרע
+ומוטלים כל כליך
+בחצר ביתך
+לא נשלמה מלאכתך
+
+אחרי החגים יתחדש הכלƔ
+
+במסע שלא נגמר
+בין שדות הצל ושדות האור
+יש נתיב שלא עברת
+ושתעבור
+שעון סמוי מן העין
+מצלצל לך
+לא נשלמה אהבתך
+
+אחרי החגים יתחדש הכל
+ ` },
+{ name: "גלגל ענק", cat: "התחלה", youtube: "https://youtu.be/8DSk7pOBiaA", lyrics: `
+אדם בונה ביתו בדם ויגע
+מלילו ויומו
+ובסופה עזה, ממש בן רגע
+הוא חרב, כן, חרב עולמו.
+
+עוד שנה ועוד שנה
+הזמן הוא גלגל ענק
+ומחר עוד יום שממרומיו
+נדאה למרחק.
+
+מעגל נפתח בכל שנה
+ומעגל נסלח בכל שנה
+ואם דבר לא השתנה
+מחר ודאי נצחק.
+מעלה כשזה טוב
+ולא נורא כשמטה, אם זה רע -
+תמיד יש עוד ברירה -
+הזמן הוא כמו גלגל ענק.
+
+אדם אוהב תמיד בתום ולהט
+ביומו ולילו
+פתאום כמו רוח פרא לא נודעת
+נעלם, נעלם חלומו.
+
+עוד שנה ועוד שנה...
+ ` },
+{ name: "משהו חדש מתחיל", cat: "התחלה", youtube: "https://youtu.be/8yfWmcGlVn8", lyrics: `
+
+משהו מתחיל מתגלגל ברחובות
+משהו אחר יורד במדרגות
+משהו קורה, תופס לו בזנב
+משהו חדש מתחיל אצלי עכשיו
+מישהו מוכר עומד ומסתכל
+אמצע הרחוב ומישהו אוכל
+כמה רעשים הופכים כבר למקצב
+משהו חדש מתחיל אצלי עכשיו
+
+דברים קורים תמיד בזמן נכון
+באים הולכים בין ההמון
+את עיניי תראי, ומגע מקרי בי
+ניסים קורים, הכול עוד אפשרי
+האם פתאום את תעברי?
+
+ערב שוב יורד לעיר העסוקה
+חושך מתגנב, מונית שם מחכה
+חתול רחוב קטן גווע ברעב
+משהו חדש מתחיל אצלי עכשיו
+ריח מתוקים מציץ מהחלון
+שם במרחקים עולה כבר אור ראשון
+קטע של רחוב כורע מתחתיו
+משהו חדש מתחיל אצלי עכשיו
+
+דברים קורים תמיד בזמן נכון...
+
+כל הנקודות כבר מתחברות לקו
+משהו חדש מתחיל אצלי עכשיו
+
+דברים קורים תמיד בזמן נכון...
+
+רגע של שלווה, אני עוד פה לבד
+זוג צעיר עובר, מחזיק לו יד ביד
+מעבר לפינה פנים, חיוך רחב
+משהו חדש מתחיל אצלי עכשיו...
+מתחיל אצלי עכשיו...` },
+  { name: "אל תפחד", cat: ["מחזק"], youtube: "https://www.youtube.com/watch?v=DifgJhL-fLU", lyrics: `אל תפחד
+אתה לא לבד
+היתה זו דקירה קטנה
+זעזוע פתאומי ומהיר,
+נכון, איבדת שליטה לרגע
+לא היית מספיק זהיר,
+
+ועכשיו פעמוני אזהרה
+מצלצלים בראשך
+אתה רוצה לשכוח
+להתחיל מהתחלה
+
+אז תאמין שאם קלקלת
+אתה יכול גם לתקן, כן, כן.
+אל תפחד
+אתה לא לבד.
+
+אם יחזור שוב רגע הפחד
+אבוא להושיט לך יד
+תמיד אהיה קרוב אליך
+לחבק במקרה שתרעד
+
+עכשיו פעמוני אזהרה
+מצלצלים בראשך
+אתה רוצה לשכוח
+להתחיל מהתחלה
+
+אז תאמין שאם קלקלת
+אתה יכול גם לתקן, כן, כן.
+
+אל תפחד
+אתה לא לבד.
+` },
+  { name: "חזקה מהרוח", cat: ["מחזק"], youtube: "https://youtu.be/IBeUJY-YBls", lyrics: `
+
+היא היתה חזקה מהחורף
+היא היתה חזקה מסופה
+לצמוח מכלום שהיה לה
+זה סוד הכח שלה
+את ליבה היא שמרה בכספת
+את גופה היא שמרה לעצמה
+היא רואה או אולי מתעלמת
+ממה שקורה בגללה
+
+מתוך עולמות שבורים
+היא צומחת, היא צומחת
+לילות שלמים
+היא רוקמת
+כל מה שיקרה לה
+
+ופתאום יום אחד הוא הגיע
+כמו אל שעלה מן הים
+את כל כוחותיה נתנה לו
+ליבה התעורר מאי שם
+אבל אהובה כמו המים
+נגע בחופים וחזר
+עכשיו אהבה היא יודעת
+כאב שאיננו נגמר
+
+מתוך עולמות שבורים...	
+ ` },
+  { name: "רץ אלייך", cat: ["מחזק", "אהבה"], youtube: "https://youtu.be/3QNJ4Na0bZY", lyrics: `
+
+חיים טובים, חיים פשוטים,
+שרק נהיה מאושרים.
+ואת יודעת..
+
+הנשיקה, הנחמה,
+חיים על פני האדמה הזאת.
+ימים של חול, ימי שבת,
+רוצים הרבה ויש מעט
+ואת יודעת..
+
+אומרים תודה על מה שיש,
+מתגלגלים על פני האדמה הזאת.
+
+וכל מילה שאת אומרת -
+היא נצרבת בכאב.
+כשאת בוכה, אני בוכה
+וזה שורף לי את הלב.
+כאילו כל מה שרצינו נשבר לעולם, לעולם
+
+פזמון:
+הייתי רץ אלייך ,
+מנסה להתקרב.
+כי לא אמרתי לך אף פעם
+כמה שאני אוהב.
+שימי ראש, הירדמי,
+אני כאן, שומר רק עלייך.
+הייתי רץ אלייך כמו לים הפתוח
+לוחש לך, בשקט, ברוח, ברוח
+אל תדאגי, אני כאן,
+שומר רק עלייך.
+
+ויש ימים טובים כאלה, ויהיו קשים מאלה,
+את יודעת...
+ולפעמים נופלים חזק,
+חוטפים מכה מפני האדמה
+והטפל נשאר טפל
+ובכל יום שרק עובר
+אני יודע...
+אם לא היית כאן לצידי,
+לחבק אותי,
+הייתי משתגע..
+
+יש אור גדול שמחכה לנו בחוץ להחזיק ידיים,
+ולרוץ לרוץ לרוץ.
+תמיד לזכור,
+שיש עדיין אהבה שמחכה לנו כאן, על פני האדמה.
+
+פזמון:
+הייתי רץ אלייך ,
+מנסה להתקרב.
+כי לא אמרתי לך אף פעם
+כמה שאני אוהב.
+שימי ראש, הירדמי,
+אני כאן, שומר רק עלייך.
+הייתי רץ אלייך כמו לים הפתוח,
+לוחש לך, בשקט, ברוח, ברוח
+אל תדאגי, אני כאן,
+שומר רק עלייך.
+
+יש אור גדול שמחכה לנו בחוץ.
+תראה, יש אור גדול שמחכה לנו בחוץ.
+יש אור גדול שמחכה לנו בחוץ.
+
+פזמון:
+אני כאן, שומר רק עלייך.
+הייתי רץ אלייך כמו לים הפתוח,
+לוחש לך, בשקט, ברוח, ברוח
+אל תדאגי, אני כאן,
+שומר רק עלייך,
+אני שומר רק עלייך, רק עלייך.` },
+  { name: "ככה זה", cat: ["מחזק"], youtube: "https://youtu.be/2rlKy4YhB9U", lyrics: `
+
+
+למדתי מזמן
+שיש לי ת׳זמן שלי
+לא מהר לא לאט
+לא שלו לא שלה
+לא של אף אחד
+
+כסא מזהב
+כואב לי בגב בייבי
+בא לי לצחוק
+בא לי בא לי לבכות
+
+אני נתתי
+הכול נתתי
+כשלא היה בי עוד
+
+עכשיו הבנתי
+על מה חתמתי
+כשלא היה בי אור
+
+כשאת בוכה
+עולם נפתח למעלה
+ככה זה
+תבכי מפל
+תבכי עד שנגמר לך
+עד שנגמר, הלב אומר
+
+תן טונה, תן, תן לי עוד ונאהב אותך
+ככה התרוקנתי והבנתי שזה לא מגניב
+ואללה יש לי לב, (אה) לב אחד, שומר עליו
+כן, עכשיו אני העץ הלא הנדיב
+רק רגע, היי, רק רגע
+אני צריך רק רגע לאיתי
+גם אם עכשיו זה לא מתאים
+חברים על אמת מבינים אותי
+כי מה שבשבילי הוא בטח לא רעיל
+קשה לחשוב שלפעמים עדיף לי לבד
+ואף אחד לא חייב להבין ת׳מסע שלי
+אנשים שלא התעניינו אם אכלתי
+יהיו הראשונים להגיד שעלה לי
+זה שיש עליך כתר
+לא אומר שגם יראו אותך ממטר
+איפה שלא שמתי גבול היה קצר
+ואז עצב, שם נפרץ הסכר
+אתה לומד להיות אתה דרך הרבה כאב
+אז תן לזה לכאוב זה משחרר ת׳לב
+עכשיו אני מחבק את הקושי
+מצאתי בו גם את היופי
+כי כמה שעצוב לראות אותך בוכה
+וכמה שקשה לראות שמישהו מאוכזב ממך
+תמיד יש עוד ועוד ועוד, זה בבבושקה
+תן טונה, תן, תן לי עוד ונאהב אותך
+
+אני נתתי
+הכול נתתי
+כשלא היה בי עוד
+
+כשאת בוכה
+עולם נפתח למעלה
+ככה זה
+תבכי מפל
+תבכי עד שנגמר לך
+עד שנגמר, הלב אומר` },
+  { name: "יש בי עוד כוח", cat: ["מחזק"], youtube: "https://youtu.be/bZRNeRxB2c4", lyrics: `
+יש בי עוד כח עכשיו
+כשהלכת חייך לי ירח
+נתן את אורו בחלון
+והלילה כבר לא מפחדת
+לבד להיות ולחלום
+הנה שוב...
+
+זה אתה שנוגע
+אתה שבורח
+תדע אין לי רגע
+אפילו דקה לחכות
+והשמש היום
+מאירה לי לצאת
+אל הים הגדול
+
+יש בי עוד כח עכשיו
+רק תניח הכל כבר נחתם ונסגר
+והלב מתרפא
+והגשם נפסק
+אז חוזר שוב הריח
+האביב שוב מגיע ושוב...
+
+זה אתה שנוגע...` },
+  { name: "מחכה לשקט", cat: ["מחזק", "תקווה"], youtube: "https://youtu.be/OJwAYUWVO4g", lyrics: `
+
+מחכה לשקט הזה שיעטוף אותי
+ויגיד לי הנה זה בא
+מחכה לרוח הזו שתנשוב על פני
+ותרגיע את הסערה
+אני בוער מבפנים וכל תמונות חיי
+עולות מתוך הבעירה
+מחכה לשקט הזה שייתן מים קרים
+לנפש עייפה
+
+עוד רגע יגיע השקט הזה
+שישתיק את לבי הסוער
+נוגע לא נוגע בשקט הזה
+כמו גל שהולך וחוזר
+וכשהוא יבוא סדקים שבלב
+יזכירו שפעם היה שם כאב
+אז אדע שאני שלם
+
+מחכה לשקט הזה שיפתח את עיני
+בסופו של חורף סגריר
+את קולך שמעתי עמוק בשדות
+וצעדי כשלו כרגיל
+מחפש בתוך תוכי את קולך האינסופי
+שישטוף את הלבטים
+אני רץ כמו שיכור והוא לידי
+קרוב רחוק...	
+ ` },
+  { name: "מהמרחקים", cat: ["מחזק"], youtube: "https://youtu.be/-xBZjKIrU1Q", lyrics: `
+והים לא נרגע, רק גאה וגאה
+את אוספת לאט את גופך
+אנשים שפגשת שהיו בשבילך
+ובן רגע נשארת מול צילך
+
+את היופי שלך, את הקסם שבך
+לא תוכלי לחלוק עם כולם
+הסתכלי מסביבך תאהבי את עצמך
+ושמרי את נפשך לעולם
+
+מהמרחקים שאת בורחת
+לא ידעו דרך חזרה
+שם את הולכת לאיבוד
+במנהרה, בלי מטרה
+והשחקים הם הגבולות
+אל תיעלמי במצולות
+כי אין תשובה טובה
+לכל השאלות
+
+הוציאי עכשיו מגירות מליבך
+ורוקני רגשות משומשים
+אולי תמצאי את אושרך, את כוחך
+שקברת עם הזמן בשנים
+
+מהמרחקים שאת בורחת...
+
+קחי עכשיו את אושרך, את כוחך
+ורוקני רגשות משומשים
+הסתכלי מסביבך, תאהבי את עצמך
+ושמרי את נפשך` },
+  { name: "כתר", cat: ["מחזק"], youtube: "https://youtu.be/hhs1SW3WjYc", lyrics: `בכה תבכה בלילה
+דמעתה על לחייה
+אין לה מנחם
+עמוק בתוך הלילה נראתה דמותה
+ומבעד לדממה עלתה צעקת ליבה
+
+ביקשנו למלאות חסרונה
+קראנו אליה לחשנו את שמה
+ובסתר ליבנו בכינו עמה
+
+קומי רוני בלילה
+לראש אשמורות
+שפכי כמים ליבך
+אל תעשי שקר בנפשך
+לחשוב שכל זה היה לשווא
+הלא כל דמעה
+וכל דיבור נחשב כל זכויותייך שמורות בבית גנזי המלך
+יחד כולן יהיו לך כתר
+נזר לראשך
+
+ולמרות שאין מי שיבין באמת
+מה נותר עוד לעשות
+לא הפסקנו לרצות
+וישנם רגעים שכל מה שנשאר
+זו רק אמונה בלילות` },
+  { name: "שמש שמש", cat: ["מחזק"], youtube: "https://youtu.be/VE8Azy8T1Ac", lyrics: `
+שמש, שמש באה בימים
+יש חלום אחד שלא חולמים
+יש מקום אליו גם לא הולכים לבד
+אחד אחד.
+
+יש רוחות רעות על פני הים, ובהרים
+עוד רבה הדרך, והאנשים
+הו, קשים.
+בוא ונעבור על השנים
+בוא ונדלג על הימים
+בוא ונכנס למערות קרות
+שלא לראות.
+
+בוא נביט בשמש, היא יודעת מה קורה
+איך אפשר לזרוח כשהים מלא,
+ים חולה.
+נעצום עיניים רק ליום שלא נראה
+איך גואים המים
+איך חכם טועה
+הו, הו.
+
+בוא ונחפש את האבות
+בוא ונתעטף באהבות
+בוא ונצטרף לשמש העולה
+כל כך גדולה.
+
+נעצום עיניים רק ליום שלא נראה
+איך גואים המים, איך חכם טועה,
+נצטרף לשמש העולה כל כך גדולה
+יש, עוד יש, שמיים
+יש שלי, שלה
+או כולה...` },
+  { name: "חיים פשוטים", cat: ["מחזק"], youtube: "https://youtu.be/GmkueSgpkkw", lyrics: `
+ביום שכל הרחובות יהיו לטובתנו
+יהיו שם בשבילנו ולא של אחרים
+גם אנחנו אז נוכל לצאת שלובי ידיים
+לראות אז מעלינו שמים נקיים
+
+ואת, עכשיו את לא יודעת
+אבל אני שמעתי - יש חיים טובים
+שכל האנשים חיים בלי פחד
+ונשארים ביחד, חיים פשוטים
+
+ביום שכל הרחובות יהיו לטובתנו
+נוכל לצאת בערב לראות רק כוכבים
+גם אנחנו אז נוכל לראות אז בעצמנו
+את מה שלא הכרנו מעבר לגדר
+
+ואת, עכשיו את לא יודעת
+אבל אני שמעתי - יש חיים טובים
+שכל האנשים חיים בלי פחד
+ונשארים ביחד, חיים פשוטים
+(חיים פשוטים)
+
+ואת, עכשיו את לא יודעת
+אבל אני שמעתי - יש חיים טובים
+שכל האנשים חיים בלי פחד
+ונשארים ביחד, חיים פשוטים
+(חיים פשוטים)` },
+  { name: "תחזיקו", cat: ["מחזק"], youtube: "https://youtu.be/14wvU9lkBlg", lyrics: `
+
+היא קצת מאבדת את שיווי המשקל
+היא קצת מסמנת לי ששם זה לא קל
+היא קצת עוד רועדת
+קצת לא עומדת
+תחזיקו
+
+היא קצת שוב בונה לה חומות של שתיקה
+וקצת מנסה לשחרר מועקה
+היא קצת מבולבלת
+קצת מסובבת
+תפסיקו
+
+היא תחפש בכל הסמטאות החשוכות
+ובכל הארגזים בתוך כיסי שמלות בלויות
+ותדע להעביר את הלילות
+בין ללטף את הפצעים ולטפס על הקירות
+למצוא את כל מה שאבד לה שם בדרך
+זה ישרוף קצת וישכח
+
+היא קצת מתקשה שם למצוא אחיזה
+וקצת מתרגזת ושוב מכריזה
+אני לא משתוללת
+אבל היא מתבלבלת
+תחזיקו
+
+היא תחפש בכל הסמטאות החשוכות
+ובכל הארגזים בתוך כיסי שמלות בלויות
+ותדע להעביר את הלילות
+בין ללטף את הפצעים ולטפס על הקירות
+למצוא את כל מה שאבד לה שם בדרך
+זה ישרוף קצת
+
+היא תחפש בכל הסמטאות החשוכות
+ובכל הארגזים בתוך כיסי שמלות בלויות
+ותיגע, היא תדע
+איך זה לטבוע בתוך השלוליות הנסתרות
+ולפתוח את הפצעים מהם למדה כבר להרפות
+למצוא את כל מה שאבד לה שם בדרך
+זה ישרוף קצת וישכח
+
+היא תחפש בכל הסמטאות החשוכות
+ובכל הארגזים בתוך כיסי שמלות בלויות
+ותדע להעביר את הלילות
+בין ללטף את הפצעים ולטפס על הקירות
+למצוא את כל מה שאבד לה שם בדרך
+זה ישרוף קצת וישכח
+זה ישרוף קצת וישכח	
+ ` },
+  { name: "שובי לביתך", cat: ["מחזק"], youtube: "https://youtu.be/e0EIvVlg1s8", lyrics: `
+מה לך בחוץ, ילדה?
+מנוח לא מצאה רגלך.
+ציפור פצועה, חזרי אלי
+ושובי לביתך.
+
+האזיני לקולות,
+הרעם על גגות בתים,
+מקול סופה, שמרי נפשך.
+שובי לביתך.
+
+סהר חצות גבוה,
+אור על ענפי אילן,
+תני לנפשך לשמוע
+זמר קטן.
+
+שם צמח לענה,
+שם נפש מרעידה מקור.
+חלון אפל ותריס מוגף.
+שובי לביתך.
+
+סהר חצות גבוה,
+אור על ענפי אילן,
+תני לנפשך לשמוע
+זמר קטן.
+
+שאי עין למרום,
+כבר סדק שחר מאפיר.
+נעורה כבר ציפור אחת.
+שובי לביתך.` },
+  { name: "כולנו זקוקים לחסד", cat: ["מחזק"], youtube: "https://youtu.be/iE-lp0rICnw", lyrics: `
+
+כולנו זקוקים לחסד,
+כולנו זקוקים למגע.
+לרכוש חום לא בכסף,
+לרכוש מתוך מגע.
+לתת בלי לרצות לקחת
+ולא מתוך הרגל.
+
+כמו שמש שזורחת,
+כמו צל אשר נופל.
+בואי ואראה לך מקום
+שבו עוד אפשר לנשום.
+
+כולנו רוצים לתת
+רק מעטים יודעים איך.
+צריך ללמוד כעת
+שהאושר לא מחייך,
+שמה שניתן אי פעם
+לא ילקח לעולם.
+
+שיש לכל זה טעם,
+גם כשהטעם תם...
+בואי ואראה לך מקום
+שבו עוד מאיר אור יום.
+
+כולנו רוצים לאהוב,
+כולנו רוצים לשמוח.
+כדי שיהיה לנו טוב,
+שיהיה לנו כח.
+
+כמו שמש שזורחת...` },
+  { name: "לפרוש כנפיים", cat: ["מחזק"], youtube: "https://youtu.be/LWbVnQRm0zk", lyrics: `
+
+לו רק נרפה את כל הכוחות
+ולא נקפוץ ידיים
+אם רק נשחרר את כל האחיזות
+נוכל שוב לפרוש כנפיים
+איך יכולנו לשכוח מי אנו
+ומאין באנו ושעוד ניתן לנו
+להגביה עוף
+
+שנים שעברו עלינו
+משברים שהותירו אותנו כואבים
+עמעמו אורנו
+החלישו בנו את האמונה
+עד שנדמה היה לנו
+שמאז ומעולם
+היינו רק מהלכים
+וגם כשסגרו חומות עלינו
+מכל הכיוונים
+הושפל מבטינו ואת עצמנו
+חשבנו אבודים
+
+הלא מכל נפילותינו
+היינו עולים
+ומעומק עומקי התהומות
+אל שמיים ממריאים	
+ 
+` },
+  { name: "שלא יעלמו הדברים היפים", cat: ["מחזק"], youtube: "https://youtu.be/wLx_urtuWPM", lyrics: `
+
+ויש לך פנים שעם השנים
+אני אוהב עוד יותר בטירוף
+ואני מתאמן מול ירח שמן
+ושורק לך בחוץ
+
+אני יכול עוד לבחור בדברים הפשוטים
+לעצור מול הים וללחוש
+אלוהים הגיבור תן לי כוח לשים
+על כתפך את הראש
+
+ושלא ייעלמו הדברים היפים
+מעינינו כל יום ויום
+שנדע להפנים שנדע להבחין
+בין הרע והטוב
+
+הייתי סגור נפתחתי לאט
+יש שירים שכבר לא משמיעים
+אך יש שיר לא גמור שכתבתי רק לך
+במשחק החיים
+
+אחרי ליל אהבה הסתובבת על הצד
+גם את זה שוב הייתי קונה
+האם את רוצה
+להיות איתי עוד קצת
+כשהכול משתנה?
+
+ושלא ייעלמו...
+
+לפעמים ציפור עוד שרה
+ועושה לי טוב
+רק שלא ייעלמו אף פעם
+הדברים שפה
+
+ויש לך פנים שעם השנים
+אני אוהב עוד יותר בטירוף
+אני רוצה עוד לשים את הראש על כתפך
+ולעוף ולעוף.
+
+ושלא ייעלמו הדברים היפים
+מעינינו כל יום ויום
+שנדע להפנים שנדע להבחין
+בין הרע והטוב	
+ ` },
+  { name: "סירת מפרש", cat: ["מחזק"], youtube: "https://youtu.be/iVb_fEb9I08", lyrics: `
+ולא מצאתי את הדרך
+להגיד את המילים,
+פשוט הלכתי,
+נעלמתי בקירות.
+
+ולפעמים לבך כאבן
+שאיני יכול לשבור,
+ולפעמים נוצה
+שאי אפשר לתפוס.
+
+אני נווד בעולמך
+את כמו סירת מפרש ששטה,
+וכל גל מזיז אותך כרצונו.
+אינך רואה את דמעותייך
+ואת עומק כאבך,
+ואת לבך המבקש את מקומו.
+
+אהבתי רכה כמים
+ויפה לכאבך,
+אם רק היית יודעת
+להיות שקטה.
+
+המנוסה הזאת שורפת
+כל שנייה של מנוחה,
+ורק בשקט מגלים את השמחה.
+
+אני נווד בעולמך
+את כמו סירת מפרש ששטה,
+וכל גל מזיז אותך כרצונו.
+אינך רואה את דמעותייך
+ואת עומק כאבך,
+ואת לבך המבקש את מקומו.	
+ ` },
+  { name: "מי אמר", cat: ["מחזק"], youtube: "https://youtu.be/1JceLq7wY5Y", lyrics: `
+רוני, את אומרת
+שהכל נגמר
+ואת מצטערת
+אין לך מה לומר
+לפני שאת עוזבת
+נשמטת מידי
+קלף נואש אזרוק לך
+רוני אל תלכי.
+
+רוני, אל תלכי,
+השמש לא תזרח עלי
+כשאת לא לידי
+רוני, אל תלכי
+אני פשוט רוצה אותך איתי.
+
+רוני, בלעדייך
+אין לי שום כיוון
+אפליג בין מכתבייך
+שיכור על הסיפון
+לא רוצה כל ערב
+לצאת ולחפש
+תרגום בגוף אחרת
+תני לי מה שיש.
+
+רוני, אל תלכי...
+
+רוני, יש בטבע
+רגע של עצבות
+אך אל תתני לרגע
+להפוך למציאות.
+
+רוני, אל תלכי...` },
+  { name: "עברתי רק כדי לראות", cat: ["מחזק", "געגוע", "בית"], youtube: "https://youtu.be/FYowzK4oxFk", lyrics: `
+
+כאן היה מכחול ואנו שניים
+מציירים ציור בתוך צבעים, שלא יוכלו לדהות
+כאן היתה טירה ונהר זורם בלי מים
+עברתי רק כדי לראות
+
+הטירה עמדה בראש הגבע
+בתוכה נפלו הרבה מילים, שאיש עוד לא אמר
+הפרחים שרקו מין מזמור מחמיא לטבע
+היום הוא שיר מאוד מוכר
+
+לא, אין טירה אל תביט עליה, היא איננה
+אין מה לרוץ ככה, אין יותר שמיים
+הגבירה כבר מתה
+אין נהר בלי מים
+עברתי רק כדי לראות
+
+הקירות סדוקים, הכל קפא
+ואתה יושב בראש זקוף וכבר מוכן לשלוט
+קח את שתי ידי וראה בשתי עינייך
+היום הכל בוער פחות
+
+לא, אין טירה אל תביט עליה...` },
+  { name: "בסוף העולם", cat: ["מחזק"], youtube: "https://youtu.be/5OacxEzrXWE", lyrics: `אתה תוכל לשכוח
+את כל הימים הרעים
+ובקלות למתוח
+שעה למיליון רגעים.
+אתה תוכל לברוח
+מאביך, מאימך ומשימך
+אך אפילו בסוף העולם
+לא תוכל לברוח מעצמך.
+
+אתה תוכל לפתוח
+עוד פרק חדש בחיים
+אתה תלמד לבטוח
+באור, בריחות בצבעים.
+תמיד תוכל לברוח
+מאביך, מאימך ומשימך
+אך אפילו בסוף העולם
+לא תוכל לברוח מעצמך.
+
+אז תיקח את עצמך בידיים
+ואל תעזוב.
+תיקח את עצמך בידיים
+חזק וקרוב.
+ותמצא כמו כולם
+את הסוף המושלם
+שנקרא לאהוב
+בסוף העולם.
+
+אתה תתחיל לצמוח
+על אף צלקות ופצעים.
+אתה תוכל לצרוח
+את כל מה שטוב ונעים.
+אתה תפסיק לברוח
+מאביך, מאימך ומשימך
+כי אפילו בסוף העולם
+לא תוכל לברוח מעצמך.
+
+אז תיקח את עצמך בידיים...` },
+  { name: "עד שיעלה האור", cat: ["מחזק"], youtube: "https://youtu.be/dfXUbSn1Dt0", lyrics: `
+אם תבחרי בי ערב ערב
+תישארי אחרי שכל השאר עוזבים
+אם תביאי זר של שקט
+ותלבשי לבן צחורה ללא כתמים
+
+אם היה אפשר סתם ככה
+לעוף ולחזור עד שיעלה האור
+יש עקבות של פחד אל תביטי לאחור
+עד שיעלה האור
+
+אם תעברי בי חדר חדר
+את ילדי כסי בשמיכות דאגתך
+במבוך נמצא האושר
+ואהיה תמיד הכתובת על לבך
+
+אם היה אפשר לשכוח
+את מה שלא שווה לזכור
+עד שיעלה האור
+יש עקבות של פחד
+אל תביטי לאחור
+עד שיעלה האור
+
+הכול נראה קודר מהמקום שאני עומד
+ואת שוב שואלת אם אני מודאג
+את ממשיכה להאמין באהבה
+ומושיטה אליי ידך העדינה` },
+  { name: "זה לא בא בקלות", cat: ["מחזק"], youtube: "https://youtu.be/ZFrqhN2dnMY", lyrics: `
+זה לא בא בקלות
+אבל זה בא בשבילך
+וכל דבר בעיתו, יתגלה בשמחה
+אתה בונה סולמות, מכוון לשמיים
+ארבעה מלאכים מלוויים בינתיים
+
+העולם הוא שיר שנכתב בשבילך
+איך הבוקר מאיר ולאט מחזיר אותך משנתך
+יש לך נשמה, היא גדולה כמו השמש
+יש עלייך ברכה, פה מחכה פתח את הדלת
+
+יש בך שיר שעוד לא נכתב
+תן לו לשיר עכשיו
+תן לו לזרום אלייך
+ויש מעל כוכב איך הוא מאיר עכשיו
+תמיד שומר עלייך
+
+אתה חי בשביל מה שנולדת לו
+וגם אם התשובה עוד לא ברורה
+בסוף היא תבוא
+זה עולם משוגע חגיגה מטורפת
+ובסוף המסיבה
+שוב תנגן על המרפסת
+
+יש בך שיר שעוד לא נכתב
+תן לו לשיר עכשיו
+תן לו לזרום אלייך
+ויש מעל כוכב איך הוא מאיר עכשיו
+תמיד שומר עלייך` },
+  { name: "קמעא קמעא", cat: ["מחזק"], youtube: "https://youtu.be/J7WB6JZCYEA", lyrics: `
+קמעא קמעא
+כמעט כמעט
+ובכל יום עוד קצת
+מתקרב מסתתר מתכסה מתבהר
+ושוב קם מעפר ומתנער
+
+קמעא קמעא
+מעט מעט
+מופיע פתאום ונמלט
+לרגע זוהר
+לפתע קודר
+אך גם כשדועך עדיין בוער
+
+קמעא קמעא
+לאט לאט
+פעם אני אבוד ופעם את
+כאב הולך וחוזר
+מתחלש מתגבר
+רק לא להישבר
+
+כי בהיסח דעתנו
+עוד מעגל יאוש נפרץ
+יוצאת איילת השחר
+מכשולים אותם אמרנו
+לעולם לא נעבור
+נעלמו כלא היו
+מתוך החושך בוקע אור
+
+וכבר עומדות רגלינו
+על הפסגות של ההרים
+אשר עד לא מזמן ניצבנו לנו
+תוהים ומשתאים
+עכשיו כשאנו כה קרובים
+היינו כחולמים
+` },
+  { name: "את הלילה שלך מרגיעים", cat: ["מחזק"], youtube: "https://youtu.be/Mk4H5-DltbY", lyrics: `
+את הלילה שלך, שעזבת לבדד,
+שעמד על דלתייך סחרחר משיאים,
+שנשא את חוליי המוקדש לך לעד,
+שידע לענות רק בשמך האחד,
+את הלילה שלך מרגיעים, מרגיעים.
+
+בידי שנגעו בך דועך השרב.
+מה יקרו לי חיי שהיו הדומך!
+את זרה! את זרה! אל תבואי עכשיו!
+התוגה שעזבת פה גדולה כה ממך.
+
+באחרון נרותיו - בשביל מי הדלקתים? -
+כבר עומם המשתה אשר אין לו שילום.
+רק הרעם אי שם עוד גורר רהיטים.
+רק ענק מחייך ושותק על לא כלום.
+
+אל תבואי עכשיו! ילד מת בחיקי.
+את נשכחת. עיני המראה עצומות.
+בחדרי העולם הגדולים, הריקים,
+גם צחוקך יבהל מעצמו.	
+ ` },
+  { name: "בדרך הביתה", cat: ["מחזק"], youtube: "https://youtu.be/WvhDmS4mXRY", lyrics: `
+הנה בא
+עוד יום שמח
+משוגע על כל הראש
+הנה באת
+הרגע שלנו ביחד
+מתחיל בריקוד
+
+משחרר
+וחם בבטן
+כי מאז ירדו גשמים
+ועכשיו הכל בינינו
+כל הימים הגעגועים
+אז בואי נעצור את הזמן
+
+בדרך הביתה את אומרת
+בסוף עוד יהיה לנו טוב
+אני אומר לך
+עד הבוקר הכאב הזה יחלוף
+את מחשבת כמה זמן כבר
+הסיפור הזה ממשיך
+לא לא נגמר` },
+  { name: "היי שקטה", cat: ["מחזק"], youtube: "https://youtu.be/7hcEPikUpHI", lyrics: `
+
+היי שקטה, עכשיו הכל בסדר
+אפילו המחנק עומד להשתחרר
+זה לא הגיהנום ובטח לא גן עדן
+זה העולם שיש ואין עולם אחר.
+
+היי שקטה כאילו אין בך דופי
+כאילו האוויר נותן לך הגנה
+כאילו הצרות כבר מתגבשות ליופי
+כאילו מעפר פורחת שושנה.
+
+היי שקטה כמו לא עברת אף פעם
+כמו לא היית צרימה בנוף המטופח
+כמו ראית כף יד בתוך אגרוף הזעם
+כמו אלומת האור הנה מצאה אותך.
+
+היי שקטה כאילו אין בך דופי...
+
+היי שקטה, כמה אפשר לשטוח
+את הפגיעות מבלי לחשוש מהשפלה
+כאילו הפגיעות עצמה היא סוג של כח
+כאילו השלווה היא חוף הבהלה.
+
+היי שקטה כאילו אין בך דופי...` },
+  { name: "מישהו לרוץ איתו", cat: ["מחזק"], youtube: "https://youtu.be/x_IxdSdNT9w", lyrics: `
+
+
+עכשיו תורי
+עכשיו תורי לאהוב
+עכשיו אני גם לי מגיע
+שיהיה מישהו כאן קרוב
+יחבק וירגיע
+אחד אחד את השדים במלחמה הזאת
+אחד אחד את הפצעים שלא נותנים לחיות
+
+מישהו להיות איתו ביחד לא לחוד
+מישהו להיות איתו ללכת לאיבוד
+מישהו לרוץ איתו בגשם החזק
+שבתוכי תמיד יורד
+ולא נפסק
+
+עכשיו תורי
+עכשיו תורי לא לכאוב
+עכשיו אני גם לי מגיע
+מישהו שלא ייתן לעזוב
+הוא יילחם וינצח
+אחד אחד את הקרבות במלחמה שלי
+הוא יחבר את החלומות השבורים שלי
+
+מישהו להיות איתו...
+
+עכשיו תורי
+עכשיו תורי לאהוב
+עכשיו אני
+גם לי מגיע` },
+  { name: "גחליליות", cat: ["מחזק"], youtube: "https://youtu.be/ApbYcTiFcig", lyrics: `
+
+אני חוזרת אל היער ללקט גחליליות
+אורות קטנים השארתי בעוזבי
+מלים כבדות מצער, שלא יכלו לעוף
+שירים שלא אספתי בלכתי
+
+אני חוזרת לעבר ללקט גחליליות
+לבנות מהן סולם של כוכבים
+שבילים שלא הלכתי כי לא יכלו להיות
+אולי עוד מחכים שם בשבילי
+
+אם תבוא ליבי לשם
+תבוא אל העבר בלי לעצור
+נאסוף את כל הטוב
+נאסוף את כל התם
+נאסוף גחליליות ונחזור
+
+ילדה שם מחכה לי, היא מתאהבת בלי לראות
+גחליליות דולקות סביבה באור בוהק
+בואי שוב אלי, אשמור עלייך מצרות
+בואי וביחד נתחזק
+
+אני חוזרת לעבר, לא פוחדת מהזמן
+יודעת להבחין בין טוב ורע
+נאסוף את כל הטוב,
+את כל האור, את כל התם
+נביא אותם לכאן בחזרה
+
+אם תבוא ליבי לשם...	
+ ` },
+  { name: "מים חיים", cat: ["מחזק"], youtube: "https://youtu.be/dKCY4__igDo", lyrics: `
+הייתי זרה בבית שלי
+אז לקחתי תרמיל ומקל
+יצאתי לדרך נסתרת
+רציתי להתקבל
+
+שהשמים יברכו אותי
+שהגשם ישטוף את כולי
+במים טובים במים חיים
+
+הייתי זרה בין יקירי
+ככה זה קורה מעת לעת
+אז יצאתי לנדודי
+כי לא היתה לי מילה טובה לתת
+שהשמים יברכו אותם
+שהגשם ירווה את ליבם
+במים זכים במים חיים
+
+הייתי זרה בגוף שלי
+ולא רציתי לוותר
+אז צבטתי במיתרים
+למצוא את הצליל שמחבר
+
+בין השמיים לאדמה
+בין הגוף לנשמה
+במים טובים במים חיים
+מים חיים.	
+ ` },
+  { name: "איך זה שכוכב", cat: ["מחזק"], youtube: "https://www.youtube.com/watch?v=osnEGXT3SvQ", lyrics: `
+איך זה שכוכב אחד לבד מעז.
+איך הוא מעז, למען השם.
+כוכב אחד לבד.
+אני לא הייתי מעז.
+ואני, בעצם, לא לבד.` },
+  { name: "מעבר לנהר", cat: ["מחזק"], youtube: "https://youtu.be/E6fgnGEsocE", lyrics: `בוא איתי היום מלאך שלי
+לחלום חלום פשוט בין הגלים מעבר לנהר
+גוף בגוף נרשום בחול שבילים אל המקום
+שבו הכל שלי ואין לי שום דבר
+מעבר לנהר.
+
+קח איתך רק כמה מנגינות כי המילים
+לא חשובות, הרי הכל כבר נאמר
+בוא איתי נקי מדאגות
+גם אם נשאר קצת פחד
+עוד מעט חוצים את הנהר
+חוצים את הנהר.
+
+שם נחיה בבית מנייר
+מעבר לנהר, רחוק מכל דבר
+לא יהיה חסר לנו דבר
+מעבר לנהר, מעבר לנהר אם רק תבחר.
+
+בוא איתי היום מלאך שלי
+ללמוד לנשום פשוט כמו הגלים מעבר לנהר.
+גוף בגוף תקח אותי איתך אל המקום
+שבו אני שלך ואין לנו דבר
+מעבר לנהר.
+
+שם נחיה בבית מנייר
+מעבר לנהר רחוק מכל דבר
+לא יהיה חסר לנו דבר
+מעבר לנהר, מעבר לנהר אם רק תבחר.
+
+שם נהיה עולם שלא נגמר
+מעבר לנהר
+מעבר לנהר אם רק תבחר.` },
+  { name: "אין דבר", cat: ["מחזק"], youtube: "https://youtu.be/Sn54Izw3Utk", lyrics: `
+ליל אביב מלא ירח
+עוד מעט וייגמר
+אמהות שרות לילד
+הזהר והשמר
+אמהות נותנות לילד
+מדבשן וחלבן
+ומאחורי הדלת
+מצפה לו גדי לבן
+
+אין דבר אין דבר
+שלם יותר מלב שבור
+וזועק יותר מן הדממה
+
+אז לכבוד עמוד השחר
+העיניים נפקחות
+והרבה צרות מאמש
+נסלחות ונשכחות
+
+וכולם יודעים לשמוע
+וכולם שבים לראות
+בחלום הרי כולנו
+ילדים יפים מאוד
+
+אין דבר אין דבר...
+
+זה האות לסוף הלילה
+ולהתחלת היום
+אנשים אשר הכרנו
+זה לזה אומרים שלום
+
+בליבך אולי נקשר עוד
+צל הלילה שעבר
+אמהות אומרות לילד
+לא נורא ואין דבר
+
+אין דבר אין דבר...` },
+  { name: "יש לי סיכוי", cat: ["מחזק"], youtube: "https://youtu.be/v5hV3j6ywD4", lyrics: `
+יש לי סיכוי להינצל אני יודע
+אני אוכל להתעורר להתפכח
+אני אוכל עוד לדבר באהבה
+על עצמי ועל העיר ועל אשה
+
+כבר עכשיו אני פחות כועס
+וגל שקט של רגש מתפקע
+אמא שרה לבן בלילה
+אמא כאן לידך כל הזמן
+
+אני מרגיש שמשהו משתנה
+העייפות תחלוף האור יעלה
+ואז אכיר אותך יקירתי
+ומיד תכירי את אותי
+
+תמיד פחדתי להשתגע
+שהלב יקפא ויתרוקן
+אבל עכשיו כמו שאני יושב
+יש לי סיכוי להינצל אני חושב` },
+  { name: "קוצים", cat: ["מחזק"], youtube: "https://youtu.be/ugbiJ0gDjpA", lyrics: `
+קוצים, זה כל מה שנשאר בי
+הפרחים שאת נתת לי קמלו בינתיים
+דרכים, בהן אני הלכתי
+עכשיו חוזר על עקבותי
+אחרי שלא מצאתי את שחיפשתי
+
+לכל אחד יש זכות לחלום
+סירות נייר במים
+רציתי רק לשוט הכי רחוק
+אני אדם משום מקום
+שמחפש לו רק סיבה לנשום
+
+תראי, בניתי לנו בית
+כשהוא נולד אני נתתי את מה שלא היה לי
+קוצים, שמזכירים בכוח
+שלא נותנים לשכוח
+דוקרים אותנו ולא מרפים
+
+לכל אחד יש זכות לחלום
+סירות נייר במים
+רציתי רק לשוט הכי רחוק
+אני אדם משום מקום
+שמחפש לו רק סיבה לנשום` },
+  { name: "ואני שר", cat: ["מחזק"], youtube: "https://youtu.be/u1i5IxDJEKE", lyrics: `
+ניסיתי לשתף אותך בכאב
+ולא ידעתי איך
+זה תופס אותי בבטן, מתגבר והולך
+לרגע לא דועך
+
+אני יודע, כשאת נפגעת זה כל כך כואב
+ולא שוכח, למרות הכול אני אותך אוהב
+
+ואני שר
+שתאמיני שאני מאושר
+כי משהו בתוכי נשאר
+מזכיר לי שעוד לא נגמר
+
+אתמול קפצו החברים לבקר
+ישבנו בחצר
+אני מביט בתמונתך ומחפש מענה
+כי משהו חסר
+
+אני שומע את כולם אומרים לי להרפות
+אני יודע, אני אמצא עוד דרך לנסות
+
+ואני שר...` },
+  { name: "הו מה יהיה", cat: ["מחזק"], youtube: "https://youtu.be/wlebc9U3Y4s", lyrics: `
+הוי מה יהיה מה יהיה
+תגידי מה יהיה כאן איתי ואיתך
+הבטיחו אגדות לי ולך לי ולך
+ולא קיבלנו כלום מכל מה שהובטח
+
+סיפרו לי על עולם בלי שום צל של ענן
+סיפרו לך על נסיך וסוסו הלבן
+אמרו שאהבה היא טובה היא טובה
+אמרו תביט ישר בתקווה בתקווה
+
+ואין לי שום מושג מה יהיה מה יהיה
+אך בליבי אני עוד רוצה מקווה
+שלא הכל אבד שנחייה כאן לעד
+באושר ובעושר
+
+הוי מה יהיה מה יהיה
+תגידי מה יהיה כאן איתי ואיתך
+ניסיתי לחפש את כל מה שהובטח
+אך לא קרה לי נס זה סיפור לא מוצלח
+
+ניסיתי לבקש קצת יותר קצת יותר
+אמרו זה מה שיש אז תלמד לוותר
+חשבתי על ביתי על אבי על אימי
+חשבתי שאמשיך לחפש בעצמי
+
+ואין לי שום מושג מה יהיה מה יהיה
+אך בליבי אני עוד רוצה מקווה
+שלא הכל אבד שנחייה כאן לעד
+באושר ובעושר
+
+הוי מה יהיה מה יהיה
+תגידי מה יהיה כאן איתי ואיתך
+הביטי איזה קור איזה גשם ניתך
+מתי זה יעבור זה נמשך זה נמשך
+
+זוכרת כל סיפור כל מילה כל מילה
+חוזר על כל מילה כמו תפילה כמו תפילה
+אסור להתייאש ואסור לעזוב
+צריך להתעקש וצריך לאהוב
+
+ואין לי שום מושג מה יהיה מה יהיה
+אך בליבי אני עוד רוצה מקווה
+שלא הכל אבד שנחייה כאן לעד
+באושר ובעושר` },
+  { name: "דע בני אהובי", cat: ["מחזק"], youtube: "https://youtu.be/I9Q4Gikkc_I", lyrics: `הם יספרו לך שמליבי נעקרת
+ומעל שולחני גליתַ לעד
+הם יזכירו לך דברים שהסתרת
+עד שכל גופך מבושה ירעד
+
+הם יעמדו היטב על כל טעויותיך
+טיפשותך, חיבתך אל הרע
+הם ינוּדוּ לך, "זה היה בידך
+"ועכשיו אין 'ך דרך חזרה"
+
+ואתה תקשיב להם
+ואתה תאמין להם
+
+הם יוכיחו לך - לרחמנותי יש גבול
+אותו חצית בפחז רגליך
+שום צעקה, שום אנחה, שום תעלול
+לא יחזירו את פניי אליך
+
+הם יספרו לך על בת קול שלוחשת
+"שובו בנים שובבים
+"כולם חוץ ממך"
+הם יציעו לך
+"משנלכדת ברשת
+"עכשיו פרפר בה להנאתך"
+
+אל תקשיב להם
+אל תאמין להם
+
+דע בני אהובי
+כי מליבי לא נעקרת
+לעולם אתה לי
+ילד חן בן שעשועים
+
+מדבריהם האמת לא נעדרת
+הן יש לך על מה להכות על חטא
+דברים שיכולת לבחור אחרת
+ולא מצאת את העוז להתחרט
+
+אף על פי כן אהובי, הרחק מליבך
+כל מחשבת פחד בעתה
+מתחת כל אמת דוקרת מסתתרת
+האמת לאמיתה
+
+אל תקשיב להם
+אל תאמין להם
+
+דע בני אהובי
+כי מליבי לא נעקרת
+לעולם אתה לי
+ילד חן בן שעשועים
+
+נכון שאני אוהב את הצדק
+אבל למעלה מזאת
+אני אוהב את הרחמים` },
+  { name: "כחרס הנשבר", cat: ["מחזק"], youtube: "https://youtu.be/-sScYeWEeg0", lyrics: `
+כחרס הנשבר לא אדע איך אשא פני אל המחר
+ומהיכן אמצא תקווה
+כחציר יבש בסערה
+לכל עבר מתפזרות מחשבותי
+וכציץ נובל מרגיש כיצד נטשוני כוחותי
+מתבונן על ימי
+שכמו חולפים מעלי כצל עובר וכענן כלה
+חש ברוח הנושבת
+איך שהיא בדרכה הופכת הרים של חול ואפר לאבק פורח
+כן יש בי חלום
+לעוף חופשי מכל החסימות שבתוכי
+ולזכות שוב פשוט להיות שמח בחלקי
+` },
+  { name: "רק שלא תיפול הרוח", cat: ["מחזק"], youtube: "https://youtu.be/GR8XEQTlvEw", lyrics: `
+כמה קל להישבר
+כשאף אחד לא מסתכל
+אין מחסה, גם לא בבית
+לאן הלכנו, מי שואל?
+
+ויש בי עוד תקווה, אני יודעת
+הימים הטובים עוד לפנינו
+יש בך סליחה, אני יודעת
+ורק שלא תיפול הרוח
+
+בימים כמו היום
+אפשר לקחת עוד אוויר
+להתפלל, להתפרק
+מותר לבכות, כדאי לשיר
+
+ויש בי עוד תקווה, אני יודעת
+הימים הטובים עוד לפנינו
+יש בך סליחה, אני יודעת
+רק שלא תיפול הרוח
+
+ובזמן אחר
+כשעוד היה אפשר להתקרב מעט ולחבק
+והאם קולי
+נשמע למרחקים, חוצה קירות כבדים
+התשמע?
+
+יש בי עוד תקווה, אני יודעת
+הימים הטובים עוד לפנינו
+יש בך סליחה, אני יודעת
+רק שלא תיפול הרוח` },
+  { name: "את מביאה הכל לידי דמעות", cat: ["מחזק"], youtube: "https://youtu.be/kIY0m3ZAGRo", lyrics: `
+את מביאה הכל לידי דמעות
+ביום יפה כזה, יכולנו לבלות
+בחוץ אביב מדליק פריחה
+רציתי לבקש ממך סליחה
+רציתי להצחיק אותך
+והנה את בוכה
+
+לו רק יכולתי להביא לך פתרונות
+כל מה שרק ניתן
+היה כבר כאן מזמן
+להביא לך פתרונות
+כל מה שרק ניתן
+היה כבר כאן מזמן
+
+בלי שהרגשנו, השתנה הלב
+בלי שניחשנו האהבה הפכה כאב
+אין לעולם דבר פשוט
+אי שם בדרך מחכה טעות
+אי שם קיימת אפשרות
+שלא הכל אבוד
+
+ולו יכולתי להביא לך פתרונות...` },
+  { name: "כמו עשב בניסן", cat: ["מחזק"], youtube: "https://youtu.be/q86yTBW8bcw", lyrics: `
+נקשר בך הלחן הידוע
+שזימרתי עצומת עיניים
+תמצא אותי בנוף אחד צנוע
+ברצועה של ארץ ושמיים
+
+יום אל יום נוסע
+ליל בליל שוקע
+רק שירנו בערשם
+עד מחר שוב נתחדש
+אפשר שנתאושש
+כמו עשב בניסן
+
+אצלי אין עב, רק אור כמו שטיח
+שעליו תרחיב את צעדיך
+תזכור כיצד עולם שלי הבטיח
+לא לרצות לפרוח בלעדיך
+
+יום אל יום...
+
+תפקיד אצלי את רעש שעוניך
+איש לא יעכב את בוא השחר
+יפה לי הדלה בשושניך
+שאותה הצלת מן הסחף
+
+יום אל יום...` },
+  { name: "מארש הדייגים", cat: ["מחזק"], youtube: "https://youtu.be/hZ5nhnSBIKI", lyrics: `
+
+
+כשספינתי תצא - תפליג בים,
+אפרוש רישתי, אהובתי,
+כשספינתי שלי תחזור מים
+אביא לך גל, אהובתי,
+כשיחזרו גם חברי מים
+אודה לאל הטוב שבמרומים.
+
+כוכב רחוק שלי לויני,
+תאיר דרכי, אל תעזבני,
+או אז אדע: בודד אינני,
+כי מישהו חושב עלי עכשיו.`  },
+{ name: "שיר ארץ", cat: ["זיכרון"], youtube: "https://youtu.be/ZtxEIY7hmJQ", lyrics: `
+ארץ שיושביה היא אוכלת
+וזבת חלב ודבש ותכלת
+לפעמים גם היא עצמה גוזלת
+את כבשת הרש.
+
+ארץ שמתקו לה רגביה
+ומלוחים כבכי כל חופיה
+שנתנו לה אוהביה
+כל אשר יכלו לתת.
+
+שב החצב לבן לפרוח
+שם בדרך יחידי
+והיסמין ישיב ניחוח
+שדות הזמן שלה האבודים.
+
+ארץ שמתקו לה רגביה
+ומלוחים כבכי כל חופיה
+שנתנו לה אוהביה
+כל אשר יכלו לתת.
+
+כל אביב שבים לה סביוניה
+לכסות את כל קמטי פניה
+רוח קיץ עצב אבניה
+ילטף באור.
+
+שב הסתיו עם כובד ענניה
+לעטוף אפור את כל גניה
+והחורף את שמורות עיניה
+הבוכות יסגור.
+
+שב החצב לבן לפרוח
+שם בדרך יחידי
+והיסמין ישיב ניחוח
+שדות הזמן שלה האבודים
+
+שב הסתיו עם כובד ענניה...` },
+    { name: "קצר פה כל כך האביב", cat: ["זיכרון"], youtube: "https://youtu.be/bjOqqJcJ15U", lyrics: `
+יש רגע קצר בין אדר לניסן
+שהטבע צוהל בכל פה
+הוא שופע חיים
+שיכור ומבושם -
+איך שיופי יכול לרפא!
+
+נסער ומשולהב ומתיז
+ניצוצות -
+אך עוד רגע ייבּול ויצהיב
+כי הנה בשוליו כבר הקיץ ניצת -
+קצר פה כל כך האביב.
+
+קצר וחטוף ושובר את הלב
+לחשוב שהוא תכף ידעך
+מבטו רק נפקח
+אך התחיל ללבלב -
+רק ניתן לי ותכף נלקח.
+
+אביב עול-ימים וסוער
+וסופו-
+כבר כתוב בעלי ניצניו,
+אבל הוא מסתחרר
+כפרפר במעופו,
+וכמוהו-נצחי בעיניו.
+
+קצר וחטוף ושובר את הלב
+לחשוב שהוא תכף ידעך
+מבטו רק נפקח
+אך התחיל ללבלב -
+רק ניתן לי ותכף נלקח.
+
+ואת ואני היודעים
+ונורא הדבר שרק הוא לא -
+עד כמה קצרים החיים,
+החיים הקצרים שניתנו לו.
+
+נדיב ונסער ומכאיב
+קצר פה כל כך
+האביב.` },
+    { name: "גרה מול המים", cat: ["זיכרון"], youtube: "https://youtu.be/Jxf5msri5Uw", lyrics: `אני גרה מול המים בין שדות ובין חול
+מעלי השמיים וממול ים כחול
+לפעמים אתה חי פה לפעמים אתה מת
+לפעמים הדמיון פה כבר נראה כמו אמת
+יש לילות של ירח במזרח הזה
+יש ימים שצורח הכאב בחזה
+
+
+אני גרה מול המים והאופק רחוק
+וגבוהים השמיים והים הוא עמוק
+יש ליופי פה טעם של עקבות מלחמה
+פה גדלים עשבי זעם בין פרחי נחמה
+כאן יודעות השפתיים לחייך לזמן
+כאן בוכות העיניים כבר שנים מעצמן
+בוכות מעצמן
+
+
+אני גרה מול המים ונופים משכבר
+מספרים לי בינתיים איך הפכו לעפר
+כאן תמצא בכל אבן גם שרידי חלומות
+כאן נושאים את הסבל בתוך סל השמחות
+כאן שותים את הצער בגביעי אהבה
+כאן שרים שירי סער בין תפילות אשכבה
+
+
+אהה.. אהה.. אהה.. אהה..
+מעלי השמיים וממול
+ים כחול` },
+    { name: "בשביל אל הברכות", cat: ["זיכרון"], youtube: "https://youtu.be/YUofFuTEYyU", lyrics: `
+
+רוחות חמות נשבו בינות עצי האורן
+ורחש ממטרות עלה מן השדות
+בתוך שער ראשה הלבינה הציפורן
+וכף ידה קטנה הלבינה בידו.
+
+בשביל אל הבריכות פסעו שלובי ידים
+וכוכבים נשרו למים עם הטל
+ותן בודד צחק הרחק בתוך הליל
+והיא אמרה: אתה כל כך יפה, חייל.
+
+והיא אמרה לו: הן מחר תצא לדרך
+את תרמילך ארזתי שאותו תיקח
+לא שמתי בו מכתב, לא פרח למזכרת
+הן אם תזכור - תזכור, ואם תשכח - תשכח.
+
+ועת חזרו בשביל מן הבריכות עם שחר
+דמעות הטל נתלו גדולות על קני הסוף
+והוא את כף ידה אחז ביד בוטחת
+והיא הביטה בו מתוך מסך שקוף.
+
+והוא אמר לה: ילדתי אני אחזור עוד
+גם אם רחוק אלך, ליבי נשאר איתך
+והיא החזירה לו בלאט את הציפורן
+הן אם יזכור - יזכור, ואם ישכח - ישכח.
+
+והוא הלך לקרב עת החמה הנצה
+ולא חזר משם ימים רבים כל כך.
+והיא יודעת שהוא לא יחזור לנצח
+והיא עוד מתפללת שהוא רק שכח.` },
+    { name: "מקום לדאגה", cat: ["זיכרון"], youtube: "https://youtu.be/vzM7MR9ry-k", lyrics: `
+בקצה השמיים ובסוף המדבר
+יש מקום רחוק מלא פרחי בר
+מקום קטן, עלוב ומשוגע
+מקום רחוק, מקום לדאגה.
+
+אומרים שם מה שיקרה
+וחושבים על כל מה שקרה.
+אלוהים שם יושב ורואה
+ושומר על כל מה שברא.
+
+אסור לקטוף את פרחי הגן
+אסור לקטוף את פרחי הגן
+ודואג ודואג נורא.` },
+{ name: "לבסוף | יעל שריר", cat: ["מסע"], youtube: "https://www.canva.com/design/DAGYXDrsObI/eDeppR19OM9T2MXosb1ukA/view?utm_content=DAGYXDrsObI&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "הנפש | יהודה עמיחי", cat: ["מסע"], youtube: "https://www.canva.com/design/DAGxpRtkTT4/D3NZAo7ljhioqDddBaEUdg/view?utm_content=DAGxpRtkTT4&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h72937dc737", isPoem: true },
+  { name: "על הצורך להניח לדברים מסוימים | מיכאל זץ", cat: ["מסע"], youtube: "https://www.canva.com/design/DAGYXK3RkOE/-7SUGSIAQmeUn-zCh3i1yw/view?utm_content=DAGYXK3RkOE&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "דרך | עידית ברק", cat: ["מסע"], youtube: "https://www.canva.com/design/DAGYXBbGZXw/ajoKWpw3R3Ik7rbNDbZ45w/view?utm_content=DAGYXBbGZXw&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "כבר השתיקות קלות | לאה גולדברג", cat: ["מסע"], youtube: "https://www.canva.com/design/DAGYW5z4iZU/GhwcsubdQb6uCzFGRdUN-Q/view?utm_content=DAGYW5z4iZU&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "מצח הנפש | טלי ורסנו - אייסמן", cat: ["מסע"], youtube: "https://www.canva.com/design/DAGxqFYSnn8/7NqQ3jUAfApB8B2JFQeMhA/view?utm_content=DAGxqFYSnn8&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=hd7866de86f", isPoem: true },
+  { name: "בדרך הגדולה | נתן אלתרמן", cat: ["מסע"], youtube: "https://www.canva.com/design/DAGxqNCqCWY/P99o3OQ925XjNbUKw4BiYg/view?utm_content=DAGxqNCqCWY&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=hec13cac215", isPoem: true },
+  { name: "אני מלמדת את עצמי לחכות | אסתר אטינגר", cat: ["מסע"], youtube: "https://www.canva.com/design/DAGxqMAW3as/ttTPeUvYC9i5DDPimGa-EQ/view?utm_content=DAGxqMAW3as&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h86ce95f061", isPoem: true },
+    { name: "בן אהוב", cat: ["אמונה"], youtube: "https://youtu.be/FHNiGW5OPXc", lyrics: `
+
+מבוהל, מפוחד שוב חזרתי אליך
+מאויים מעצמי, לא רוצה להביט לאחור
+לא תמיד כשנפלתי ידעתי לבוא אחריך
+כמו בן שב אל אביו ממסע מהכפור
+
+הדפוני השומרים
+דלתך לא פותחים
+נאבק בכל כוחי לבוא אליך
+ועכשיו אני כבר כאן
+מתחנן נאמן
+הוא מאש - ואני בשר ודם
+
+נשמתי שקפאה, וגופי שרתח כמו נער
+ובגדי השחורים, מיוזע, חוזר מהקרב
+כמו פצוע נדחף מהחוץ טרם נעילת שער
+מתחנן לאביו, שיביט שוב אליו
+
+הדפוני השומרים...
+
+כשהקיץ ייסוג לאחור, ובגדי שוב ילבינו
+אז אשמע את קולו של אבי שקורא לי לשוב
+כשהמלך יצא לשדה לבניו יחכה הוא
+שוב ארגיש בליבי כאותו בן אהוב
+
+הדפוני השומרים...` },
+{ name: "כאשר בירכתי על הנרות | זלדה", cat: ["עצוב"], youtube: "https://www.canva.com/design/DAGxpMb2Lwg/HNltIMU-TICzHhbOvbS7qQ/view?utm_content=DAGxpMb2Lwg&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=hb058307c15", isPoem: true },
+  { name: "אפילו סלעים נשברים | דליה רביקוביץ", cat: ["עצוב"], youtube: "https://www.canva.com/design/DAGYXCxQqpI/vijUVGqsvDi8HE2ZlmBTSg/view?utm_content=DAGYXCxQqpI&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "האנשים הנורמטיביים | אלחנן ניר", cat: ["עצוב"], youtube: "https://www.canva.com/design/DAGxpG4Um3o/xKZDrFCRY_V2PtWnbpaJDQ/view?utm_content=DAGxpG4Um3o&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h0fdd0eddfe", isPoem: true },
+  { name: "בלילה | עידית ברק", cat: ["עצוב"], youtube: "https://www.canva.com/design/DAGxpC0s-hQ/RIZ50lBW-aoWdb1ym0N3Xg/view?utm_content=DAGxpC0s-hQ&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h8e37a3c5e7", isPoem: true },
+  { name: "אני מחכה לאוטובוס | רון אדלר", cat: ["עצוב"], youtube: "https://www.canva.com/design/DAGxpPL7DBU/T2TdIrS_QNmgSZuJXEFlIg/view?utm_content=DAGxpPL7DBU&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h5a492f9ee6", isPoem: true },
+  { name: "למחרת | לאה גולדברג", cat: ["עצוב"], youtube: "https://www.canva.com/design/DAGxpUoISIk/DTnQGG5l1PXP-x8mBty7Yg/view?utm_content=DAGxpUoISIk&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h54acd56ecc", isPoem: true },
+  { name: "אמא, את לא באה לאסוף אותי | גלי רביץ", cat: ["עצוב"], youtube: "https://www.canva.com/design/DAGxpVqekJE/5DrpSpyyA0Nf727_TrfoKA/view?utm_content=DAGxpVqekJE&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=hf914c8327a", isPoem: true },
+  { name: "מנגד | רחל", cat: ["עצוב"], youtube: "https://www.canva.com/design/DAGYXAdqqsM/rrmljA0Nl_ib4EL6wXJSYA/view?utm_content=DAGYXAdqqsM&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "רציתי להתפרק בפני מישהו | גל נתן", cat: ["עצוב"], youtube: "https://www.canva.com/design/DAGYW0aV0u4/1ldGzL-3J3PJ_fc1f-nvEw/view?utm_content=DAGYW0aV0u4&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "בוקר טוב | לאה גולדברג", cat: ["עצוב"], youtube: "https://www.canva.com/design/DAGxpS3yVEM/OCycwYQsY2M-eAw3WaGsLw/view?utm_content=DAGxpS3yVEM&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h4d30062e1f", isPoem: true },
+    { name: "זה ששומר עלי", cat: ["אמונה"], youtube: "https://youtu.be/OJTgoDmIm58", lyrics: `
+אם יש בך עוד כוח לשרוד
+תתקרב אלי
+אם יש בך עוד קצת מהאור
+שכמעט נעלם
+תסתכל בי, ותראה בי
+איך הגיעה
+
+אהבה גדולה וסיבה גדולה
+להיות ביחד אפשר לראות
+הדברים פשוטים הקירות יודעים
+שאתה זה ששומר עלי
+
+אם יש בך עוד קצת מהכל
+שהיה לי איתך
+בוא כמו במחול ונתכסה
+בשמיכת אהבה
+שתרגיע יש בי שקט
+כי הגיעה
+
+אהבה גדולה וסיבה גדולה...` },
+    { name: "הלכתי ממך", cat: ["אמונה"], youtube: "https://youtu.be/Tk1_zyDG9C0", lyrics: `הלכתי ממך בסתר
+ובכל זאת אני מבקשת
+הלכתי ממך בסתר
+ובכל זאת אני מבקשת
+שתלך איתי בגלוי
+תלך איתי באמת
+שתלך איתי בגלוי 
+תלך איתי
+תלך איתי
+
+לב טהור 
+ברא לי אלוקים
+ורוח נכון
+חדש בקרבי
+אל תשליכני
+מלפניך
+ורוח נתיבה
+אל תיקח ממני` },
+    { name: "לעבוד אותך", cat: ["אמונה"], youtube: "https://youtu.be/snSvCqzgosw", lyrics: `
+
+בוחן כליות ולב גלוי וידוע לפניך
+שאני רוצה לעבוד אותך
+הנני עבד לעם קדוש על אדמת הקודש
+אני מחויבת לפעול עימך
+כל תפילותיי כל דמעותי נטפו על זה הסלע
+לגאולת עמך בניך ונחלתך` },
+    { name: "מלך (אתי אנקרי)", cat: ["אמונה"], youtube: "https://youtu.be/xYxhWSc1JgU", lyrics: `
+פעם הייתי כסא של מלכים
+משכמם ומעלה בשמן משוחים
+הם ידעו שיש מלך מלכי המלכים
+ויש כוונה ויש הבנה
+ויש אמונה
+היום מתיישבים עלי כל מיני אנשים
+חסרי פנים מיואשים
+הם עושים להם כתר מצופה במלים
+חסרי כוונה חסרי הבנה
+חסרי אמונה
+
+אני רוצה מלך מלך חדש
+אני רוצה להיות כסא של מלך
+מלך חדש
+אני רוצה מלך מלך חדש
+אני רוצה להיות כסא בבית המקדש
+
+מזמן לא התפניתי לרגע או שניים
+מיד הם קופצים עלי
+אוחזים עיניים
+וזה שמנצח מרים ידיים
+חסרי תקווה חסרי מחשבה
+חסרי אהבה
+והארמון מתמלא בפקידים אטומים
+בגללם זה פשע להיות תמים
+ונוספים חדרים ונוספים עבדים
+שעובדים את השקר
+מבוקר עד בוקר
+והעם משלם ביוקר
+
+אני רוצה מלך מלך חדש...` },
+    { name: "כשהנשמה מאירה", cat: ["אמונה"], youtube: "https://youtu.be/HDf5j4C5L-8", lyrics: `כשהנשמה מאירה – גם שמיים עוטי ערפל מפיקים אור נעים` },
+{ name: "טיול במגדיר הצמחים", cat: ["טבע"], youtube: "https://youtu.be/Tl9nozx8sxU", lyrics: `
+למותניך חגור את "ילקוט הרועים"
+ו"מטה אהרון" אחוז בידיך
+וחבוש לראשך את "כובע הנזיר"
+"נר הלילה" יאיר את לילך הבהיר
+"כלנית" ו"נורית" יקשרו לך שיר
+ומבול פרחי בר עליך.
+
+בוא רעי,
+בוא אחי,
+נטייל בדרכים
+בין ארבע רוחות השמיים,
+בין פרחים ושיחים
+ממגדיר הצמחים,
+רק אנחנו יחד בשניים.
+
+"חבצלת החוף" תקשט את הנוף
+"שושנת העמקים" תצחק מן האופק
+"כליל החורש" יעורבסגול מסמם
+"זמזומית" תזמזם לנו שיר מהמם
+וירוץ הניגון וכולו מדמם
+עם הלב ומפוח הדופק.
+
+בוא רעי...
+
+פת נטעם ב"שמיר" וחלב ב"עמיר"
+"בת שלמה" תשביענו תות וגם פטל
+"בנימינה" תגיש לנו דבש יערה
+ב"בוסמת" ילדים יפצחו בשירה
+כשנבוא ברחובה של אותה עיירה
+ונשכח מלאות ומנטל.
+
+בוא רעי....
+
+יום אביב בשנה וחמה לבנה
+זאת הדרך רבה וקשה שבעתיים
+לרגלינו עפר, מעלינו שחקים
+עוד נלך ונלך ונגמע מרחקים
+והולכים גם ימינו בוכים,צוחקים
+ודומעות ממראות העיניים.
+
+בוא רעי...` },
+    { name: "אדמה", cat: ["טבע"], youtube: "https://youtu.be/blvxcZKNX7A", lyrics: `
+אדמה, אני קשובה לקולך.
+אדמה, תמיד ולאן שאלך.
+אדמה, השביל בו אפסע הוא שבילך,
+אמא אדמה.
+
+אדמה, רגלי מהלכות יחפות.
+אדמה, פנייך חמות ועוטפות.
+אדמה, עיניים חומות בי צופות,
+אמא אדמה.
+
+הן באתי ממך, מחיקך, אדמה,
+ואת עתידה לשכך - אדמה
+את כל כאבי, את לילותי, את ימי,
+עולם ומלואו לך מודה - אדמה
+ואנו עצי השדה - אדמה
+ממך ואלייך אם כל חי, אמציני.
+
+אדמה - נותנת פריה לכולם.
+אדמה - טובה ותמימה לעולם.
+אדמה - למדי נא את בנך האדם.
+אמא אדמה.` },
+{ name: "רוח דרומית קלה | נתן יונתן", cat: ["עונות"], youtube: "https://www.canva.com/design/DAGYWIm0dBs/U5DWUWKYzROrfwvyXK6G7Q/view?utm_content=DAGYWIm0dBs&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "הביאו את הסתו | אסף שריג", cat: ["עונות"], youtube: "https://www.canva.com/design/DAGYWCq9Xsc/2geoLXRlMWbkWB0rqKuGUg/view?utm_content=DAGYWCq9Xsc&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "אישור לבית הספר | אביטל הררי", cat: ["עונות"], youtube: "https://www.canva.com/design/DAGYWDdkyRI/ziM9sS3_yBH9uPV3wHdMLQ/view?utm_content=DAGYWDdkyRI&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "עוד אזכור | נתן יונתן", cat: ["עונות"], youtube: "https://www.canva.com/design/DAGYWLxjBdY/sd9fsddZ_MMyhBZ6eeaJkg/view?utm_content=DAGYWLxjBdY&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "עוד שיר גשם | ערן צלגוב", cat: ["עונות"], youtube: "https://www.canva.com/design/DAGYWrdwWk0/DagDilzpoepk78oF4ffgmw/view?utm_content=DAGYWrdwWk0&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "אל הנירים האפורים | נתן יונתן", cat: ["עונות"], youtube: "https://www.canva.com/design/DAGYWx6NVQI/oObp9x_oL5htzlrHesGqyA/view?utm_content=DAGYWx6NVQI&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "בין אביב לענן | נתן יונתן", cat: ["עונות"], youtube: "https://www.canva.com/design/DAGYWx6NVQI/oObp9x_oL5htzlrHesGqyA/view?utm_content=DAGYWx6NVQI&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "אני מבקש מן החורף | חיים גורי", cat: ["עונות"], youtube: "https://www.canva.com/design/DAGYW1Yv_YQ/M41eaT9pBjUxzS3BwKGgBw/view?utm_content=DAGYW1Yv_YQ&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "גשם בשמש | לאה גולדברג", cat: ["עונות"], youtube: "https://www.canva.com/design/DAGYW5LldFo/zr2gaaHA8MxyClYFvqKfGQ/view?utm_content=DAGYW5LldFo&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "רגע אחרי הגשם | לאה נאור", cat: ["עונות"], youtube: "https://www.canva.com/design/DAGYW_QHEDI/vyxkz8ty6kS5Xyu-5jQjwg/view?utm_content=DAGYW_QHEDI&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+    { name: "קולות השדה", cat: ["טבע"], youtube: "https://youtu.be/BhkKLuPkVT8", lyrics: `
+
+אם תקשיב היטב, אתה תשמע
+קולות ולחשים
+אשר עולים וחרש ניגשים
+אל סף הנשמה
+קולות העשב והאדמה.
+
+כל מה שרוחש
+מתחת לפרחים
+ומה שמלחש
+העשב לשיחים
+ומה שמתרגש
+בצמרות עצים.
+
+אם תקשיב היטב, אתה תשמע
+כנפיים נפרשות
+קריאות עורב והדהודי פרסות
+ברוח החמה
+קולות העשב והאדמה.
+
+כל מה שרוחש...
+
+אם תקשיב היטב, אתה תשמע
+תזמורת חרישית
+והבטחה לבוקר בראשית
+של אור ונחמה
+קולות העשב והאדמה.
+
+כל מה שרוחש...` },
+{ name: "להתפלל | בנצי גולדשטיין", cat: ["אמונה"], youtube: "https://www.canva.com/design/DAGYV1wQAB8/1ObsGLpWxUSYN1vrPYTuGg/view?utm_content=DAGYV1wQAB8&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "עם קומץ שמים ביד | אברהם חלפי", cat: ["אמונה"], youtube: "https://www.canva.com/design/DAGYVx67Cqo/o46hjr4-3V2Yx8X-IliMIg/view?utm_content=DAGYVx67Cqo&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "תפילה נסתרת | אורי ברנשטיין", cat: ["אמונה"], youtube: "https://www.canva.com/design/DAGYVzbfDgw/Z6DEpMD0XQnKpUHJvJ6KYg/view?utm_content=DAGYVzbfDgw&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "על קו תפר | גלי רביץ", cat: ["אמונה"], youtube: "https://www.canva.com/design/DAGYVzbfDgw/Z6DEpMD0XQnKpUHJvJ6KYg/view?utm_content=DAGYVzbfDgw&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+    { name: "שדות שבעמק", cat: ["טבע"], youtube: "https://youtu.be/yk5387yQczo", lyrics: `שָׂדוֹת שֶׁבָּעֵמֶק
+קִדְּמוּנִי הַלַּיְלָה
+בְּרֵיחַ הַזֶּבֶל,
+נִיחוֹחַ חָצִיר.
+
+הַלַּיְלָה לָעֵמֶק
+אֲנִי אֲזַמֵּרָה,
+כִּי אֹשֶׁר בָּאַנִי
+וְחֶסֶד הַשִּׁיר.
+
+רָצָה גּוֹרָלִי כִּי
+אָשׁוּבָה אֵלֶיךָ
+מֵעֶצֶב הַמָּוֶת,
+מֵעֶרֶשׂ הַשְּׁכוֹל.
+
+מִכָּל חֲסָדִים לִי
+אֻשַּׁרְתִּי בַּיֶּגַע
+לִגְמֹעַ מֵימֶיךָ
+פִּתְּךָ לֶאֱכֹל.
+
+אָסְפֵנִי אֵלֶיךָ
+אֱסֹף כַּשִּׁבֹּלֶת,
+שִׁבֹּלֶת לַגֹּרֶן
+בְּחַג הַקָּצִיר!
+
+הַלַּיְלָה לָעֵמֶק
+אֲנִי אֲזַמֵּרָה,
+כִּי אֹשֶׁר בָּאַנִי
+וְחֶסֶד הַשִּׁיר.` },
+    { name: "שיר (אילה)", cat: ["טבע"], youtube: "https://youtu.be/dEDp45cIWGk", lyrics: `
+בנקיק נסתר בצוקים
+אילה שותה מים
+מה לי ולה אלא צוקי ליבי
+אלא מעיין חיי אלא נסתר
+
+אילה מה לי ולה
+מה לי ולה
+מה לי ולה
+אילה מה לי ולה
+אלא אהבתי` },
+{ name: "רחש נשימות | דרור בורשטיין", cat: ["אהבה"], youtube: "https://www.canva.com/design/DAGYUr7v3rc/QOx98DBPUecXvD5QOq2mfA/view?utm_content=DAGYUr7v3rc&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "שלומי | זלדה", cat: ["אהבה"], youtube: "https://www.canva.com/design/DAGYUn8b9NI/rDyII61xENM1Ug2_yCAKlw/view?utm_content=DAGYUn8b9NI&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "ראשית אהבתנו | לאה גולדברג", cat: ["אהבה"], youtube: "https://www.canva.com/design/DAGYUuQNTNM/3ko8t36DJJ2J3AP3VbVZoQ/view?utm_content=DAGYUuQNTNM&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "בגני נטעתיך | רחל", cat: ["אהבה"], youtube: "https://www.canva.com/design/DAGYUiXwibc/OCAqUEcCI6j6pN4pPT6osg/view?utm_content=DAGYUiXwibc&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "בתוך הלב יש נקודה | שלומית כהן אסיף", cat: ["אהבה"], youtube: "https://www.canva.com/design/DAGYUg5e69A/_yoHlMiGKUoaEKocSj_7MA/view?utm_content=DAGYUg5e69A&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "זמן | לי עברון", cat: ["אהבה"], youtube: "https://www.canva.com/design/DAGYUprfsOc/7Z8kSwXGSvLz3t2l86474Q/view?utm_content=DAGYUprfsOc&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "את | לא ידוע", cat: ["אהבה"], youtube: "https://www.canva.com/design/DAGYXMxjqyc/fiZbbcCfD9gZaUM2GZ3BHQ/view?utm_content=DAGYXMxjqyc&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "הרים ובין ערביים | אברהם חלפי", cat: ["אהבה"], youtube: "https://scontent.fsdv4-1.fna.fbcdn.net/v/t39.30808-6/375210255_167570869705754_2822472711619836884_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=127cfc&_nc_ohc=PONUXjfsqAcQ7kNvgF8RMkM&_nc_zt=23&_nc_ht=scontent.fsdv4-1.fna&_nc_gid=A-jRi0XAgM1Qzmg0B679rQL&oh=00_AYB4jAlv7BB329tGZ7XwLn2SwNxnViFFgykpah4mgckFsQ&oe=6755F9AD", isPoem: true },
+  { name: "אתה אוהב | רחל חלפי", cat: ["אהבה"], youtube: "https://www.instagram.com/kibutzpoalim/p/CootJuToW8U/?igshid=MDJmNzVkMjY%3D", isPoem: true },
+  { name: "שויתי נפשי | לאה גולדברג", cat: ["אהבה"], youtube: "https://www.canva.com/design/DAGYU-6L-yY/RIAyCmNBTisp8S9Hgccj5A/view?utm_content=DAGYU-6L-yY&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "אולי כאן נגמרת דרכי | לאה גולדברג", cat: ["אהבה"], youtube: "https://www.canva.com/design/DAGYU7u7H78/votxADDsiEJWxpx7KBSw5Q/view?utm_content=DAGYU7u7H78&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "טנא מלא כוכבים | לאה גולדברג", cat: ["אהבה"], youtube: "https://www.canva.com/design/DAGYU-BVjTM/tL-_daylYVVh2zKzChztYg/view?utm_content=DAGYU-BVjTM&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "מחר | לאה גולדברג", cat: ["אהבה"], youtube: "https://www.canva.com/design/DAGYUwZC3lU/FUEzJ8YoSalhxRyQZ53goA/view?utm_content=DAGYUwZC3lU&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "התפעלות | חיים גורי", cat: ["אהבה"], youtube: "https://www.canva.com/design/DAGYU2GGtug/Hj1cTFwvgsA43sqttADxGQ/view?utm_content=DAGYU2GGtug&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "אי אפשר לסגור הכל | לאה נאור", cat: ["אהבה"], youtube: "https://www.canva.com/design/DAGYU9q0tzw/ewghDgoB56gqyGHBVsZYEQ/view?utm_content=DAGYU9q0tzw&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "זריחה | רפי וייכרט", cat: ["אהבה"], youtube: "https://www.canva.com/design/DAGYUxG9WE0/FkWaNJciAgNZZRPZqUT7LQ/view?utm_content=DAGYUxG9WE0&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "אהבתנו היא תשבץ | יהונתן גפן", cat: ["אהבה"], youtube: "https://www.canva.com/design/DAGYUxJvd3g/f1yFduvBhQIKWRRZqqmFbg/view?utm_content=DAGYUxJvd3g&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "זה הזמן שכואב | נתן יונתן", cat: ["אהבה"], youtube: "https://www.canva.com/design/DAGYU7EjY-w/ij112cXYM5Bkw2YEJR4GIw/view?utm_content=DAGYU7EjY-w&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+    { name: "סתיו ישראלי", cat: ["עונות"], youtube: "https://youtu.be/fJ5tfnAIbg0", lyrics: `
+
+עץ הצפצפה מקריח מול שלולית שקופה
+סתיו ישראלי מול החלון שלי
+גשם פתאומי מביא אותי אל תוך עצמי
+אומרים שהשנה תהיה בצורת
+אבל אני באתי מן הקיץ
+כמו מתוך תבוסה באתי אל החורף
+באתי בטיסה, הגעתי במנוסה
+
+הוא שהבטיח לי חורף חם
+לא יקיים לעולם
+הוא שהבטיח לי חורף חם
+לא יקיים לעולם
+
+רוח נכנסה לתוך בגדים על חוט כביסה
+סתיו ישראלי במרפסות מולי
+גשם לפרקים ניתז על פני שתילים רכים
+גשמים פזורים יורדים בכל הארץ
+אבל אני שוב מצאתי בית
+עץ בתוך גינה, ארץ בשלכת
+עיר כל כך קטנה וכלום לא השתנה
+
+הוא שהבטיח לי חורף חם...` },
+    { name: "סוף העונה", cat: ["עונות"], youtube: "https://youtu.be/QX8gSOFHBU4", lyrics: `
+
+סוף העונה, כל חלון מראה כבר
+את סוף העונה, בלילות כאלה
+היא לא ישנה, משהו עומד באוויר.
+פרק נגמר, כל הסימנים
+שהקיץ עבר, יש לה הרגשה
+שהעצב מוכר, שוב הגיע סתיו אל העיר.
+
+ילדות גדולות בוכות עכשיו
+כל שנה בסתיו, כל שנה בסתיו.
+מחכות שכבר ייפול כוכב,
+כל שנה בסתיו, מה יהיה עכשיו.
+
+כבר ממחר היא תהיה אחרת
+לבד זה מוזר, היא אולי תבין
+שמדי מאוחר, שום דבר חשוב לא קרה.
+שוב עננים, עוד מעט הגשם
+בינתיים שתיקה, עוד מעט הקשת
+דממה ארוכה, שבע השנים הבאות.
+
+ילדות גדולות בוכות...
+
+סוף העונה כל חלום מראה כבר את סוף העונה.
+בלילות כאלה היא לא ישנה,
+משהו עומד באוויר.
+
+ילדות גדולות בוכות...
+ילדות גדולות בוכות עכשיו
+כל שנה בסתיו, כל שנה בסתיו.` },
+{ name: "ביתי בצפון היפה | נתן יונתן", cat: ["בית"], youtube: "https://www.canva.com/design/DAG3AZShgEM/TIXgandnpNH88dHB6B2ovw/view?utm_content=DAG3AZShgEM&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h89d3a04534", isPoem: true },
+  { name: "אני רוצה הביתה | נמרוד שיין", cat: ["בית"], youtube: "https://www.canva.com/design/DAGYXGQsnts/CfFHNDaV13FskFvvjjmsrA/view?utm_content=DAGYXGQsnts&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "אולי כאן נגמרת דרכי | לאה גולדברג", cat: ["בית"], youtube: "https://www.canva.com/design/DAG3AceulqE/LIVYpdAUQGMvZ8TPXRMs-A/view?utm_content=DAG3AceulqE&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=hfe5e0770ca", isPoem: true },
+  { name: "מקום | רפי וייכרט", cat: ["בית"], youtube: "https://www.canva.com/design/DAG3AdUjz3M/irciLcT0ZSKoKlyYIEU37A/view?utm_content=DAG3AdUjz3M&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h6552416e87", isPoem: true },
+  { name: "בבית נעצרת החזרה | יונתן יבין", cat: ["בית"], youtube: "https://www.canva.com/design/DAGYXMifo5U/4ebKSpOvYX20M-98IHytvQ/view?utm_content=DAGYXMifo5U&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "טוב ללכת בדרכים | נתן יונתן", cat: ["בית"], youtube: "https://www.canva.com/design/DAGYXJYa9hU/WWm4CTF2Em1KRldwZlbLkg/view?utm_content=DAGYXJYa9hU&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+    { name: "גשם שלי", cat: ["עונות"], youtube: "https://youtu.be/k5zl91duaS4", lyrics: `
+
+שתי טיפות על עלה קטן שתי דקות מהגשם
+מתכונן בלי לקחת זמן חי על מים ולחם
+פה זה רעם היה ברק מסיבה בשמים
+מתקרב ושומר מרחק ומוריד לנו מים
+סגור במקדש הסתיו על חלקות עננים
+אלו הם חייו של מוריד הגשמים
+
+ענני אפור ענני לבן והנה הגשם שלי
+הוא מביא לי אור שוב הוא בא בזמן לנפש לאור הפנימי
+שב ומתחזק שב ומחבק הגשם השיב לי אותי
+שוב אני שלך שוב אני שלך
+
+תן לי רק סערה קטנה שתשטוף את העיניים
+תן לי שטף גשמי ברכה בשביל לחם ומים
+אביב במקדש הסתיו עם פרחי העונה
+אלו הם חייו משנה לשנה
+
+ענני אפור ענני לבן והנה הגשם שלי
+הוא מביא לי אור שוב הוא בא בזמן לנפש לאור הפנימי
+שב ומתחזק שב ומחבק הגשם השיב לי אותי
+שוב אני שלך שוב אני שלך
+
+מודים אנחנו לך ה אלוהינו ואלוהי אבותינו
+על כל טיפה וטיפה שהורדת לנו
+ואילו פינו מלא שירה כים ולשונינו רנה כהמון גליו` },
+    { name: "גשם שיבוא", cat: ["עונות"], youtube: "https://youtu.be/Cp9JLlmYWj4", lyrics: `
+
+
+ושוב הדרך מרמה, זה עוד פיתול ועליה
+וכבר נדמה שזה לנצח ימשך
+וחום השמש שמכה על השפתיים הסדוקות
+איש לא יודע כבר לאן כל זה הולך
+
+וכבר ראינו מעיין וכשנגענו נעלם
+ושוב הכל סביב שומם ומייאש
+ובכוחות האחרונים אדם מביט אל המרומים
+ומבפנים נושא תפילה ומבקש
+
+רד אלי, בוא פזר עלי טיפות גדולות של נחמה
+רד אלי, תרחם עלי, הגיע זמן לשבור צמא
+אל האדמה, אל הנשמה, גשם שיבוא לנשימה
+
+והלילות עוד אפלים, ריקים מכוכבים נופלים
+ורק הרוח מנשב, יבש מטל
+גם הימים כל כך דומים עד שנדמה לי לפעמים
+שאנחנו צועדים במעגל
+
+ורק הלב היטב זוכר אוויר מתוק ומשכר
+וקול נשכח שעוד לוחש ממרחקים
+אז בכוחות האחרונים אדם מביט אל המרומים
+רוצה לראות את השמיים נפתחים
+
+רד אלי...` },
+{ name: "שליחים אל ילדותי | יהודה עמיחי", cat: ["געגוע"], youtube: "https://www.canva.com/design/DAG20pcqoIg/utlMFRPwPEcbhEZS5oS2yg/view?utm_content=DAG20pcqoIg&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=hddc99529de", isPoem: true },
+  { name: "הליכה לבדי | פנחס שדה", cat: ["געגוע"], youtube: "https://www.canva.com/design/DAGYW3k2amU/TgsbyViHbzE5SA67A-cHPQ/view?utm_content=DAGYW3k2amU&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "תורת היחסות הפרטית מאוד | אלכס אפשטיין", cat: ["געגוע"], youtube: "https://www.canva.com/design/DAG20pRQ6YM/bp04BQ_KU64ijQ2IFRCeWA/view?utm_content=DAG20pRQ6YM&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h25343cb466", isPoem: true },
+  { name: "ים של געגוע | אהוד מנור", cat: ["געגוע"], youtube: "https://www.canva.com/design/DAG20ryK9Sk/VT_B8kyIedL0hui8nT4OUg/view?utm_content=DAG20ryK9Sk&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=he6046f3253", isPoem: true },
+  { name: "באותו גלגול קסום | זלדה", cat: ["געגוע"], youtube: "https://www.canva.com/design/DAGYXCdi2mM/XT1I8PLO0xuX2JaMnrDtrA/view?utm_content=DAGYXCdi2mM&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "כאשר געגועים | זלדה", cat: ["געגוע"], youtube: "https://www.canva.com/design/DAGYWy_--Ws/RI6HKeuE1UCatqkBaDwK3A/view?utm_content=DAGYWy_--Ws&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "כל הנהרות | אבות ישורון", cat: ["געגוע"], youtube: "https://www.canva.com/design/DAGYW3oFQ0I/Nwki0_IMkj9NlTCg_n_0ow/view?utm_content=DAGYW3oFQ0I&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "בסוף | גיורא פישר", cat: ["געגוע"], youtube: "https://www.canva.com/design/DAG20q3k7qw/UrEzC70wvj75KeFPnMevYw/view?utm_content=DAG20q3k7qw&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=hed3e95ad70", isPoem: true },
+  { name: "המסע הקצר ביותר | לאה גולדברג", cat: ["געגוע"], youtube: "https://www.canva.com/design/DAG3Ad7A1Nc/KmoW5wEOwPbLXOH__jxsJQ/view?utm_content=DAG3Ad7A1Nc&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=heffe25e5fe", isPoem: true },
+  { name: "בטיסת לילה מוינה לתל אביב | אדוה מגל כהן", cat: ["געגוע"], youtube: "https://www.canva.com/design/DAG3Aa8OGrk/b4HfGZEyApk13ifexvdzCg/view?utm_content=DAG3Aa8OGrk&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=ha84d70ef23", isPoem: true },
+    { name: "גשם אחרון", cat: ["עונות"], youtube: "https://youtu.be/KxKANJdEHQg", lyrics: `
+גשם בוא, רד עלי,
+בוא כסה אותי עכשיו, אותי ואת ימי.
+רד לאט, רד ושא אותי לים
+אל נא אל תחדל לרדת לעולם,
+אל תחדל.
+
+רד עכשיו, רד עלי
+שא אותי ואת ימי, אל תוך הנעלם.
+
+וענן, יחוג מעל ימי הים,
+חוג יחוג יומם וליל,
+חוג יחוג ורוח מיילל.
+והים יגיע עד גגות תבל,
+ואין אוויר אין אש אין חול,
+ואור אחרון ייגוע בלאט בלי קול
+וקץ לכל.
+
+לילה בוא, רד עלי
+בוא עטוף אותי עכשיו, עצום את שתי עיני.
+רד לאט, את עין השמש האפל
+שים ידך ביד הגשם הנופל, ונופל.
+
+וענן, יחוג מעל ימי הים...
+
+גשם בוא, רד עלי,
+שא אותי ואת ימי, אל תוך הנעלם.` },
+{ name: "איכה תוכל ציפור יחידה | לאה גולדברג", cat: ["מחזק"], youtube: "https://www.canva.com/design/DAGxpXy3fAo/chVmsvBuA_ipx2bSmn7hLA/view?utm_content=DAGxpXy3fAo&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h1f6e33550a", isPoem: true },
+  { name: "גשר | רפי וייכרט", cat: ["מחזק"], youtube: "https://www.canva.com/design/DAGxpbKiDR4/BkbtRTlWhWNJ09D4VHj0fg/view?utm_content=DAGxpbKiDR4&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=hcd10c7a17a", isPoem: true },
+  { name: "על סף מדבר | יחזקאל רחמים", cat: ["מחזק"], youtube: "https://www.canva.com/design/DAGYXMqFXpU/0jOS57gOlPAL878c7JxC-g/view?utm_content=DAGYXMqFXpU&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "כשאת מחזיקה את כל העולמות | גלי רביץ", cat: ["מחזק"], youtube: "https://www.canva.com/design/DAGYW-rVEJU/SvFmhIL3lcQWg6bdXH8MnA/view?utm_content=DAGYW-rVEJU&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "לפרוש זרועות | סלעית לזר", cat: ["מחזק"], youtube: "https://www.canva.com/design/DAGxpQFI2A0/zfRDNtVjJvu5c-5IMBWkvA/view?utm_content=DAGxpQFI2A0&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=he6126cfe56", isPoem: true },
+  { name: "דלתו של השושן | אביטל הררי", cat: ["מחזק"], youtube: "https://www.canva.com/design/DAGYXNyYVdc/tGdDDUzqOaXj9_C5RYMxbA/view?utm_content=DAGYXNyYVdc&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "אני ועצמי | טלי וייס", cat: ["מחזק"], youtube: "https://www.canva.com/design/DAGxpbMeoBY/faKCxb05mfNSly_V-hJsLg/view?utm_content=DAGxpbMeoBY&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h86b0626578", isPoem: true },
+  { name: "כוכב נופל | דעאל רודריגז גארסיה", cat: ["מחזק"], youtube: "https://www.canva.com/design/DAGYWwPJksI/eeD3B8GFYr_qb9z4aM_RCQ/view?utm_content=DAGYWwPJksI&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "השמענה קולכן ברכות השחר | זלדה", cat: ["מחזק"], youtube: "https://www.canva.com/design/DAGxpUZRXbw/yFU2eXyvF1v7F8lop3EznA/view?utm_content=DAGxpUZRXbw&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h6730d261b1", isPoem: true },
+  { name: "אל תתייאש | רבי נחמן", cat: ["מחזק"], youtube: "https://www.canva.com/design/DAGYXC_4tJE/6gBXR0_xxJ4KHwgPNyed7A/view?utm_content=DAGYXC_4tJE&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+    { name: "תקופות השנה", cat: ["עונות"], youtube: "https://youtu.be/NnZuHgcA6BQ", lyrics: `
+הרוח נושבת בחריגים
+ריחות בשמים נפוגים
+וחולפים מועדים וחגים, מועדים וחגים.
+
+אובד האילן בקרה את עליו
+וענן מצמח שערו ותלתליו
+והזוהר שהוצק בו נחבא בשוליו
+זוחלים ועולים מן הארץ מחשכים
+והופכים הנהרות עזים ועמוקים
+ושמונת הנרות במנורה נדלקים
+
+והאור לא נמצא אלא טיפה מזהירה
+ואין חום עוד בארץ זולתי בבערה
+ואין זוהר מתאבך זולת במנורה
+
+והתכלת השקטה זכה מחלב
+והאור מתענג על מעלליו
+והכסף הקר נהפך לזהב
+ואדמת הגבעה כנחושת אדומה
+וענפי האילן אדומים בחמה
+וברוב תאווה שואפים את חומה
+
+וקני סוף ברוח נעים ושורקים
+ועלי העצים עגולים וירוקים
+ומי נהרות מרעידים ומפכים
+
+קיץ חורף אביב וסתיו
+מי נהרות והים הרחב
+והרים ויערות ושיחים ופרחים
+וגופי עשבים ירוקים ולחים
+והאור הנודד כנסיך מאוהב
+וצינת הכסף וחום הזהב
+סובבים והולכים בגלגל השנה
+שטים ועוברים בתקופות השנה
+ואתה עמהם בתקופת השנה.
+
+והרוח נושבת בחריגים
+ריחות בשמים נפוגים
+וחולפים מועדים וחגים, מועדים וחגים.` },
+{ name: "העולם בחלון | רחל חלפי", cat: ["טבע"], youtube: "https://www.canva.com/design/DAGYW_cqSLY/OMN2Rn_qCibjXkgoJny4uw/view?utm_content=DAGYW_cqSLY&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "הנחל שר לאבן | לאה גולדברג", cat: ["טבע"], youtube: "https://www.canva.com/design/DAGYW7fI3MI/GB7HokWqhADbhyKoZdXCPA/view?utm_content=DAGYW7fI3MI&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "יש שעה שהאור | רחל חלפי", cat: ["טבע"], youtube: "https://www.canva.com/design/DAGYWzDRgR0/5t3Tzy-aqnicjcPm1ZdIpQ/view?utm_content=DAGYWzDRgR0&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "סוף החורף | ש''י עגנון", cat: ["טבע"], youtube: "https://www.canva.com/design/DAGYWzDRgR0/5t3Tzy-aqnicjcPm1ZdIpQ/view?utm_content=DAGYWzDRgR0&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "עץ (האושר פשוט כחובה) | לאה גולדברג", cat: ["טבע"], youtube: "https://www.canva.com/design/DAGYW4WVGgk/VpwWPNt0P8_x_f2izDOjmQ/view?utm_content=DAGYW4WVGgk&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "פריחת שקד | יורם טהרלב", cat: ["טבע"], youtube: "https://www.canva.com/design/DAGYW6z9V6I/HzzGSN-ywq89yhoc3uf5SQ/view?utm_content=DAGYW6z9V6I&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+    { name: "דצמבר", cat: ["עונות"], youtube: "https://youtu.be/C4Jg5_IX9tc", lyrics: `
+
+
+ריח ים ורוח סתיו
+ומיץ של תפוחי זהב
+ומין סגריר מתוק חמוץ
+מושך מבית אלי חוץ
+ללכת לכת ולנשום
+אויר שקיעות כחול אדום
+ללכת לכת ולנשום
+אויר שקיעות כחול אדום.
+
+אויר שקיעות, ניחוח דק,
+הגשם זה עתה נפסק.
+עלה ושוט והסתכל
+עד מה יפה היא התבל.
+עלה ושוט והסתכל
+עד מה יפה היא התבל.
+
+הפנסים חוורי פנים,
+כחולות עיני העננים
+ומשהו מוזר כזה
+לוחץ דומם על החזה,
+לוחץ, קורע ודורש,
+הלב רוצה להתעטש.
+לוחץ, קורע ודורש,
+הלב רוצה להתעטש.
+
+אויר שקיעות, ניחוח דק...
+
+דצמבר חודש מקוטר
+ריחות תפוח ומטר,
+אתה נותן כוחות גנוזים
+להרוגי התמוזים,
+אתה יודע להשיב
+מעט אביב לתל אביב.
+אתה יודע להשיב
+מעט אביב לתל אביב.
+
+אויר שקיעות, ניחוח דק...	
+ ` },
+{ name: "דיוקן אמי", cat: ["משפחה"], youtube: "https://youtu.be/VkgQyNxNQqw", lyrics: `
+
+דיוקן אימי על הפסנתר
+ידע ימים יפים יותר
+וגם ימים יותר קשים
+באלף תשע מאות שלושים בקיץ
+דיוקן אימי מונף אל השמיים
+עוקב אחר ציפור בלתי נראית
+
+ובאין קמע לי או נר
+דיוקן אימי עלי שומר
+הוא מגבוה כמו מקשיב
+ואת המנגינה מכתיב אלי
+
+דיוקן אימי מונף אל השמיים
+שומע הללויה כל העת
+כמו מתוך אגם רחוק, אגם שקט
+
+קורה שלפעמים נורא עצוב לי
+קורה שלפעמים יש יום אפור
+קורה ששום דבר כבר לא חשוב לי
+לא הללויה לא שמיים לא ציפור
+
+דיוקן על הפסנתר
+חידות וחלומות פותר
+גם בימים ללא חמדה
+ימי סגריר, ימי רפיון ידייםן
+
+דיוקן אימי מונף אל השמיים
+חותר אל איזה אופק לא נודע
+אומר שמחה, אומר חיים, אומר תודה
+
+קורה שלפעמים נורא עצוב לי
+קורה שלפעמים יש יום אפור
+קורה ששום דבר כבר לא חשוב לי
+לא הללויה לא שמיים לא ציפור
+
+אבל כמו אל הרפתקה
+אל איזו דרך רחוקה
+שמחכה ומחכה
+והפתעות יש בחיקה עדיין
+
+דיוקן אימי מונף אל השמיים
+מלא אפשרויות מלא תקווה
+אל העתיד האין סופי שטרם בא` },
+    { name: "ילדה כמוך", cat: ["משפחה"], youtube: "https://youtu.be/nHFwd9gIzIw", lyrics: `
+סוף היום מגיע ואני קצת נח
+בפינת הבית במיטה שלך
+כשאת נכנסת את לא שמה לב
+שאני בשקט מביט בך וחושב
+
+את מתכוננת למסיבת כיתה.
+מול הראי כמו אישה קטנה
+אסוף פזור אולי צמות
+זה לא חשוב עם ילדה כמוך
+
+זה הזמן ללכת את כבר מוכנה
+ואנחנו יחד חוצים את השכונה
+את מספרת בקול פעמונים
+איך את לא סובלת את כל הבנים
+
+בין הבית והעבודה
+אני אסיר אבל אסיר תודה
+על האדמה לדרוך
+יד ביד עם ילדה כמוך
+
+הנה את נכנסת אל המסיבה
+את קצת מתביישת את לא המלכה
+את עדינה מדיי בשביל למלוך
+רק תדעי שאין שם עוד ילדה כמוך
+
+החלומות שלנו מתרחקים
+והלבבות שלנו נסדקים
+אבל תמיד אפשר למשוך
+זה לא קשה עם ילדה כמוך
+
+עולם קשוח מחכה לך שם
+אבל בכל זאת יש גם לעולם
+מין צורך להשתחוות
+לפעמים מול ילדה כמוך` },
+    { name: "מלך העולם", cat: ["משפחה"], youtube: "https://youtu.be/xTTCD0U_HJg", lyrics: `
+שם בתוך מיטה, מול קיר ענק כחול, קר וזול,
+לפעמים אתה, נאנח בלי קול ובכל זאת,
+אמא שם שומרת גם כשאתה גדול
+מחליפה לך בגדים
+אומרת שאתה: מלך הגברים
+בשבילה אתה יכול להיות
+מה שבא לך לראש,
+למשל, מלך החיות או מלך ההרים, אם תטפס אי שם,
+קום תהיה כל מה שבא לך
+כי בשבילה אתה תמיד מלך העולם.
+
+"שם אתה תמיד, כל מה שתרצה, רק תבחר",
+כך אומרת היא ואתה שואל: "מה עוד אפשר
+מה שלא הייתי בטח לא אהיה"...
+מחליפה לך בגדים, אומרת שאתה,
+מלך הגברים, בשבילה אתה יכול להיות
+מה שבא לך לראש,
+למשל, מלך החיות או מלך ההרים, אם תטפס אי שם,
+קום תהיה כל מה שבא לך
+כי בשבילה אתה תמיד מלך העולם.
+
+בשבילה אתה מלך השירים
+בשבילה אתה יכול להיות,
+מה שבא לך לראש,
+למשל, מלך החיות או מלך ההרים, אם תטפס אי שם,
+קום תהיה כל מה שבא לך
+כי בשבילה אתה תמיד
+מלך העולם, מלך העולם.` },
+{ name: "זרקי את התיק | בת חן שניידר", cat: ["התחלה"], youtube: "https://www.canva.com/design/DAGYV1uemDs/AsS95ChrLCEkJsyhJ91gJQ/view?utm_content=DAGYV1uemDs&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "אני הפעם הבאה | יהודה עמיחי", cat: ["התחלה"], youtube: "https://www.canva.com/design/DAGYVxiOG9M/-DOK9Ql8tircLNbx_e8Eow/view?utm_content=DAGYVxiOG9M&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "מדי בוקר | אריה סיוון", cat: ["התחלה"], youtube: "https://www.canva.com/design/DAGYVy6v81Y/VgyDfByaSGQ58v8nLQYIEw/view?utm_content=DAGYVy6v81Y&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "מסע תגליות אמיתי | מרסל פרוסט", cat: ["התחלה"], youtube: "https://www.canva.com/design/DAGYV9aqXew/VLZulVBwj4Z1eelZum7SPA/view?utm_content=DAGYV9aqXew&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "הדרך היחידה לקבל אור | ר' שלמה קרליבך", cat: ["התחלה"], youtube: "https://www.canva.com/design/DAGYV7Ac6jc/Y04T9SJUQEs3VXt5r1Qspg/view?utm_content=DAGYV7Ac6jc&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "להתחיל מחדש בעיניים פקוחות | יענקלה רוטבליט", cat: ["התחלה"], youtube: "https://www.canva.com/design/DAGYVzbnk2k/IjRs_9Rq6CCgTgJoPGs8Vg/view?utm_content=DAGYVzbnk2k&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+    { name: "נורי", cat: ["משפחה"], youtube: "https://youtu.be/6G7rzlSWPQ4", lyrics: `
+
+אל תברח
+לאן בעצם אתה ממהר כל כך?
+שב איתי עוד רגע
+יש לי בשבילך סיפור
+אבא לא מבטיח סתם
+סיפור כזה עוד לא שמעת
+מעולם
+
+על היום בו המילים יצאו מדעתן
+וכל מה שחשבנו
+הסתחרר
+ונעלם איתן
+
+האם שמעת?
+מאז שבאת לעולם
+הוא קצת פחות בטוח
+ואמיתי ומשוגע
+אתה צודק, זה לא סיפור
+אבל אולי זה משהו
+שרציתי שתדע
+כשאנחנו יחד
+אין חיוך נדיב מספיק
+אין מגע עדין מידי
+אני שומר עליך
+ואתה שומר עליי
+
+אל תברח
+הערב בחלון בהיר ומסובך
+הכול הולך ומתרחק
+הכול הולך ובא
+הזעם, והעדינות, העצב והאהבה
+שלך עכשיו
+ואם עצמתי את עיני כשכאב
+ניסיתי להביט בך
+רציתי לבקש סליחה
+
+האם שמעת?
+
+מאז שבאת לעולם
+הוא קצת פחות בטוח
+אמיתי ומשוגע
+אתה צודק, זה לא סיפור
+אבל אולי זה משהו
+שחשוב לי שתדע
+כשאנחנו יחד
+אין חיוך נדיב מספיק
+אין מגע עדין מידי
+אני שומר עליך
+ואתה שומר עליי
+` },
+{ name: "אמונה | שניקה שקד", cat: ["אמונה"], youtube: "https://www.canva.com/design/DAGYV3GIl6c/cZ1ONoL9NXC5G7LoU6LDFw/view?utm_content=DAGYV3GIl6c&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "בסוף | עדי קיסר", cat: ["אמונה"], youtube: "https://www.canva.com/design/DAGYV2_8A84/DwEsUzb6iSl48mPx_zMkig/view?utm_content=DAGYV2_8A84&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "רק לב נשבר | זלדה", cat: ["אמונה"], youtube: "https://www.canva.com/design/DAGYV_vsnRQ/N0UrulLntftTpNVcLJSxGg/view?utm_content=DAGYV_vsnRQ&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "הלילה | רחל סרולוביץ", cat: ["אמונה"], youtube: "https://www.canva.com/design/DAGYV6AV-a4/Uz63eWuvaZ7h4Lk2VK92gA/view?utm_content=DAGYV6AV-a4&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "והיא תהלתך | יהודה עמיחי", cat: ["אמונה"], youtube: "https://www.canva.com/design/DAGYVxZIxao/zwLW8Ig0pL_4yz__6bzWKw/view?utm_content=DAGYVxZIxao&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+    { name: "אחותי", cat: ["משפחה"], youtube: "https://youtu.be/3E__BZWL1j4", lyrics: `
+
+את זוכרת אחותי
+מה שאז לחשת לי
+מה שאז הבטחת לי
+איך מחקת לי את הדמעה
+איך ראית לי את הנשמה
+כשהשמש נעלמה
+למקום אחר, אחר
+
+את זוכרת אחותי
+מה שאז אבד בי
+משהו נולד בי
+המשקולת לרגליי
+הצמרמורת בידיי
+והחופש בעיניי
+שתמיד חוזר, בוער, דוהר איתי
+
+שתינו נלחמות להחזיק את החיים
+להתפייס עם הסופות, לדבר עם אלוהים
+ולפקוח ת'עיניים - יש דברים יפים לראות
+יש שמים, אין שמים
+ואנחנו נשארות
+
+את יודעת אחותי
+זה כבר לא כואב לי
+זה כבר לא טורף בי
+חוט המשי מסתלסל
+ונקשר בחוט ברזל
+רק האור בחוץ נופל
+ותמיד מוחל, צוהל, גואל אותי
+
+שתינו נלחמות להחזיק את החיים
+להתפייס עם הסופות, לדבר עם אלוהים
+ולפקוח ת'עיניים - יש דברים יפים לראות
+יש שמים, אין שמים
+ואנחנו נשארות` },
+    { name: "נומי נגה", cat: ["משפחה"], youtube: "https://youtu.be/gS_TJh4zrzI", lyrics: `
+רוח קל עובר בלילה,
+על גבעת הכרכומים,
+בכנפיו יביא בשורה טובה
+וכל מיני בשמים.
+
+נומי נומי,
+נוגה נוגה,
+נומי נומי יקירה,
+מעלייך
+בשמיים
+כוכבים אומרים שירה.
+
+מעלייך בשמים
+כוכבים במסילותם
+זה לזה ישמיעו זמר,
+שלנצח לא ייתם
+
+נומי נומי...
+
+כל הדשא כל העשב,
+הגדל במדרונים
+יתכסה גם הוא הלילה
+בשמיכה של עננים
+
+נומי נומי...
+
+עייפים עצי האשל
+העומדים על הירדן
+אמא ללי לך לוחשת
+זה הזמן להירדם
+
+נומי נומי...` },
+    { name: "ריסים", cat: ["משפחה"], youtube: "https://youtu.be/pfx7zZQiwy4", lyrics: `ריסים, ריסים ולחיים
+וחיוך של טוב
+ילדה קטנה עצמה עיניים
+ונפקח חלום
+
+תחילה נגול וכל כולו סגול
+ממש אותו היער
+והבקתה שבה חיכתה
+לשווא לבוא הנער
+כשלא קורים נסי נסים
+יש עצב בריסים
+
+ריסים, ריסים סגרו על תכלת
+עם הבהוב ירוק
+אל החלום מביא תוחלת
+אגודל מתוק
+
+זבובי מדים הופיעו גמדים
+מהסיפור של אבא
+ועימהם בא דוב נוהם
+מהסיפור של סבא
+פלאי פלאים, נסי נסים
+ואושר בריסים
+
+ריסים, ריסים ולחיים
+חיוכי שלום
+ילדה קטנה פקחה עיניים
+נעצם חלום` },
+    { name: "שיר לאמא", cat: ["משפחה"], youtube: "https://youtu.be/Ovfet4GP9y0", lyrics: `טוב געגועים
+ששומרים אותך איתי
+מהזמן המטשטש
+מהדרך המייאש
+אם אוכל להיות עצוב לרגע גם אהיה שמח
+
+קול הגלים
+מתקרבים אך נשברים
+חלומות ללא מילים
+ופנייך אינם ברורים
+פה בחוף המבטחים אפשר כמעט ולהגיע
+
+אתה לא לבד
+תראה, כוכב קטן אחד
+בוא, תישען
+מדי פעם כשמזדמן
+
+ריח עוגות
+של ידיים אוהבות
+בימים ובלילות
+וצריך קצת לחכות
+אם אצליח באמת לזכור אולי אוכל לשכוח
+
+חום חיבוקים
+אחרונים ומנחמים
+ושלא יקפא הלב
+השמחה והכאב
+
+אתה לא לבד
+תראה, כוכב קטן אחד
+בוא, תישען
+מדי פעם כשמזדמן
+
+אתה לא לבד
+תראה, כוכב קטן נחמד
+בוא, תבקר
+לא בשביל להישאר
+
+מתקרבים אך נשברים (אתה לא לבד)
+חלומות ללא מילים (תראה, כוכב קטן נחמד)
+מהזמן המטשטש (בוא, תבקר)
+ששומרים אותך איתי (לא בשביל להישאר)
+אתה לא לבד
+לא לבד
+` },
+    { name: "ילדותי השניה", cat: ["משפחה"], youtube: "https://youtu.be/ay0XxFDjkyI", lyrics: `
+
+זו ילדותי השניה,
+מה שתתני לי אקח.
+זו ילדותי השניה,
+איתך.
+
+זו ילדותי השניה,
+עול השנים כבר נשכח.
+זו ילדותי השניה,
+ליבי נפתח.
+
+דרך עינייך בת,
+אני רואה ומגלה שוב עולם.
+דרך ידייך אלמד
+לגעת שוב בגלי הים.
+דרך שפתייך בת,
+טעם חדש למילים.
+ואיתך שוב אגדל בלי לחשוש -
+אנחנו כבר בני שלוש.
+
+זו ילדותי השניה...
+
+דרך שירייך בת,
+אני אלמד שוב להקשיב לבריאה.
+בפסיעותייך אצעד
+בדרך אל הפלאים שבעה.
+בחיוכייך בת,
+בוקר חדש ללילות.
+ואיתך לחיים יש סיבה -
+אנחנו כבר בני ארבע.
+
+במבטייך בת,
+אני אלמד שוב לאהוב בלי לחשוב.
+בדמעותייך ארעד
+כאילו סוף העולם קרוב.
+בחיבוקייך בת,
+רטט עובר בגופי.
+ואיתך יום נוסף אבקש
+ואנו כבר בני חמש.
+
+זו ילדותי השניה,
+מה שתיתני לי אקח.
+זו ילדותי השניה -
+איתך.` },
+{ name: "אל השיר הזה צריך לבוא מתוך שמחה | ישראל נטע", cat: ["שירים על שירים"], youtube: "https://www.canva.com/design/DAGYVIalu0g/g_rec-JDuW8F0NNoDSg9OQ/view?utm_content=DAGYVIalu0g&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "יום זה יום יולד בו שיר | שאול טשרניחובסקי", cat: ["שירים על שירים"], youtube: "https://www.canva.com/design/DAGYVPHURpg/ha08CyL648Kjuj2Q0-UT_Q/view?utm_content=DAGYVPHURpg&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "אחדים אוהבים שירה | ויסלבה שימבורסקה", cat: ["שירים על שירים"], youtube: "https://www.canva.com/design/DAGYVFb3KQg/GmaNsCCsuuHLoYLzbinbwg/view?utm_content=DAGYVFb3KQg&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "תמיד יש סיבה | רותי לאופר", cat: ["שירים על שירים"], youtube: "https://www.canva.com/design/DAGYVB2qU-U/QYH2Tr_UkK-wNqHEBITwOw/view?utm_content=DAGYVB2qU-U&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "אדם כמו ציפור | נתן יונתן", cat: ["שירים על שירים"], youtube: "https://www.canva.com/design/DAGYVMtf-NU/nPDYRLDw_pW60po900pe3w/view?utm_content=DAGYVMtf-NU&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "אתה קורא את זה מהר מדי | קן נוריס", cat: ["שירים על שירים"], youtube: "https://www.canva.com/design/DAGaB9MYsC8/2KEXnvadLriYamh9dJzicA/view?utm_content=DAGaB9MYsC8&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=hd83b62d62d", isPoem: true },
+  { name: "לא תמות בת השיר | שאול טשרניחובסקי", cat: ["שירים על שירים"], youtube: "https://www.canva.com/design/DAGYVAb6Jn0/NtOuzSb-cSMdFoKyHUnoMQ/view?utm_content=DAGYVAb6Jn0&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "אינני מכירה את חלומותי | רחל נגב", cat: ["שירים על שירים"], youtube: "https://www.canva.com/design/DAGYVGFmFRg/90NCVbi8eda_sRWI2ecYLg/view?utm_content=DAGYVGFmFRg&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+{ name: "נפשי כלתה לחרוזים", cat: ["שירים על שירים"], youtube: "https://youtu.be/wA-HZgschm0", lyrics: `
+
+נפשי כלתה לחרוזים,
+לחליפות ניבים קלים,
+אך כל ניבים , רק רמזים
+וצליליהם בלים.
+
+השיר כלוא בתוך הלב.
+הלא תזכור, לבי הדל,
+מה מעודן היה הכאב
+ואף הכאב חדל
+
+ולא נשאר מכאב וצחוק
+בלתי אם הד יגון טמיר,
+כקודם, דבר אמת רחוק,
+ולא הושר השיר.` },
+    { name: "שיר בארבעה בתים", cat: ["שירים על שירים"], youtube: "https://youtu.be/cIeupbWPpWQ", lyrics: `
+
+בשדה ירוק רדפתי אחריך
+אך הילדים קסמו לך יותר
+בפיהם יפה אתה מאין כמוך
+עד מתי, שירי, מפני תסתתר?
+
+בחשכת הליל רדפתי אחריך
+אך האוהבים קסמו לך יותר
+בפיהם יפה אתה מאין כמוך
+עד מתי, שירי, מפני תסתתר?
+
+בדרכי עפר רדפתי אחריך
+אך החיילים קסמו לך יותר
+בפיהם יפה אתה מאין כמוך
+עד מתי, שירי, מפני תסתתר?
+
+בין המון אדם רדפתי אחריך
+אך הזמרים קסמו לך יותר
+בפיהם יפה אתה מאין כמוך
+עד מתי, שירי, מפני תסתתר?` },
+{ name: "הודיה | שירה לוי", cat: ["הודיה"], youtube: "https://www.canva.com/design/DAGYVH_jVAs/YXM4BZJscMIiNDYwpriJFg/view?utm_content=DAGYVH_jVAs&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "על הנסים | ט. כרמי", cat: ["הודיה"], youtube: "https://www.canva.com/design/DAGYU2i7eOY/XE9kLXzauypYhY63_AnCmw/view?utm_content=DAGYU2i7eOY&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "שיר הלל | לאה גולדברג", cat: ["הודיה"], youtube: "https://www.canva.com/design/DAGYU2PCCjs/5raJ0hRCYyEAfN8hQ5X_Ow/view?utm_content=DAGYU2PCCjs&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "ויש להתפלא | יחזקאל רחמים", cat: ["הודיה"], youtube: "https://www.canva.com/design/DAGYVDcmdC0/gQh50d_iveKAiXr0Pj8p_w/view?utm_content=DAGYVDcmdC0&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+    { name: "שיר", cat: ["שירים על שירים"], youtube: "https://youtu.be/XvjR0jsPbnY", lyrics: `
+
+שיר לי פשוט
+כמו הים, כמו העץ, כמו האבן
+
+שיר שיגע בי נקי
+שישרוף אותי השקט
+שיבלע אותי אמיתי
+שכל מי ששומע ירגיש איתי.
+
+שישמעו אלה שהלילה ישנים
+כי אני כאן ערה, בעיניים פקוחות
+אל הקיר.
+זה הבית שעומד כבר שנים
+בין אותם הבתים -
+הוא יחיד.
+
+וידעתי שאיש לא יחזיר
+ורציתי לזכור את השיר
+שיגע בי נקי
+שישרוף אותי השקט
+שיבלע אותי אמיתי
+שכל מי ששומע ירגיש איתי.
+
+שישמעו אלה שהלילה מפליגים,
+אוניית מלאכים, בים הנצחי -
+התמיד.
+זה הבית שעומד כבר שנים
+בין אותם הבתים -
+הוא יחיד.
+
+וידעתי שאיש לא יחזיר
+ורציתי לזכור את השיר
+
+שיגע בי נקי
+שישרוף אותי השקט
+שיבלע אותי אמיתי
+שכל מי ששומע ירגיש איתי.
+
+שישמעו אלה שהלילה,
+אלה שלמעלה.` },
+{ name: "חלמתי את שירת הזמיר | שאול טשרניחובסקי", cat: ["שמחה"], youtube: "https://www.canva.com/design/DAGYU3Yzxtw/qhRah6zpV6S7ZEWaFpn2zQ/view?utm_content=DAGYU3Yzxtw&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "דיוק הכאב וטשטוש האושר | יהודה עמיחי", cat: ["שמחה"], youtube: "https://www.canva.com/design/DAGYU5z8fLo/_M-7CZ8ENsKCIsRdsvA1ww/view?utm_content=DAGYU5z8fLo&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "כל יום | עלמה זהר", cat: ["שמחה"], youtube: "https://www.canva.com/design/DAGYUwZ1Z00/vJ-sVTMzpva_-Apg7vjGsg/view?utm_content=DAGYUwZ1Z00&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "ילדות פתיחה | לאה גולדברג", cat: ["שמחה"], youtube: "https://www.canva.com/design/DAGYU7kAREE/XxmOmKM1dTd_ZbDphGAMKQ/view?utm_content=DAGYU7kAREE&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+    { name: "מי ששר", cat: ["שירים על שירים"], youtube: "https://youtu.be/QTPjPsZ7bBI", lyrics: `
+מי ששר
+מי ששיר בליבו נקשר
+לא יאמר לי שאי אפשר
+לגלות, כשהדרך נגמרת,
+דרך אחרת.
+מי ששר
+מי ששיר בליבו נקשר
+לא יאמר לי שלא נשאר
+דבר מכל מה שעבר
+זה מכבר.
+
+מי ששר
+מעביר את הזמן בכיף
+עד הלילה הוא כבר עייף
+וישן כמו תינוק עד ששמש
+שב לו מאמש.
+מי ששר
+ואפילו אם יזייף
+אלוהים את ראשו לוטף,
+ואז לרגע מי ששר
+מאושר.
+
+מי ששר
+לא אומר לעולם נואש,
+מאמין בליבו וחש
+שהנה אהבה מתקרבת,
+באה לשבת,
+מי ששר
+לא אומר לעולם נואש,
+מחכה למחר חדש,
+ועד מחר נשאר לעד
+יום אחד
+יום אחד
+מי ששר.
+
+מי ששר
+מעביר את הזמן בכיף
+עד הלילה הוא כבר עייף,
+וישן נפלא.` },
+    { name: "מעלי דממה", cat: ["שירים על שירים"], youtube: "https://youtu.be/Tz46-YZQkDM", lyrics: `
+
+
+מעליי דממה כחולה מוארת
+אור כוכב מזהיר לבן
+פשר סוד לא נגע בו נצח
+אל חלונות ביתי הרוח סערה
+
+תן לי לבוא וללכת
+רק לנגן אהבה
+
+הושט לי היד אחי שלי
+זו שעה של שקיעה
+רגע ענוג בלי מילה מיותרת
+בחלומותיי תופיע דמותך
+רגע של שלווה
+נסוך על פניי
+
+תן לי לבוא וללכת
+רק לנגן אהבה` },
+    { name: "הנה הנה", cat: ["שירים על שירים"], youtube: "https://youtu.be/bE5cHysMf5o", lyrics: `
+הנה הנה הנה
+מנגינה שמתחילה נמוך
+מנגינה שמתחילה במי במול
+אבל רוצה, אבל רוצה לגדול
+ללה במול, פה מינור
+מחפשת לה מוצא
+והנה היא עולה, עולה.
+
+לא ידעתי שתברח
+לא ידעתי שתעוף רחוק כל כך.
+לא ידעתי שאותי תשכח.
+תתחצף ותענה:
+הנה, הנה, הנה.
+
+עוד שנה שמתחילה לאט,
+עוד שנה שמתחילה היום לגדול,
+היום זוחלת ומחר פתאום
+תגיד שלום, כמו חלום.
+ממהרת לדרכה,
+והנה היא עולה עולה.
+
+לא ידעתי שתברח...
+
+אהבה שמתחילה עמוק
+אהבה שמבטיחה להיות קרובה
+שמבטיחה להיות טובה טובה,
+יפה יפה, עד סופה.
+עוד קטנה בשביל גדולה
+אך הנה היא עולה עולה.
+
+לא ידעתי שתברח...
+
+זאת היתה המנגינה שלי
+מנגינה שאהבה אותי שנה
+אבל פתאום היתה שונה,
+נשאה עינה והיא אינה,
+והיא אינה, והיא אינה.
+
+לא ידעתי שתברח...` },
+    { name: "חליל מקנה סוף", cat: ["שירים על שירים"], youtube: "https://youtu.be/wP2eXGYKT0w", lyrics: `
+ידידי עשה חליל לי
+מקנה ירוק של סוף
+ואמר עכשיו נגני לי
+שיר שמח או עצוב
+
+חלילי עשוי מסוף הוא
+ועל כן הוא מחלל
+איך השמש והצל
+נשקפים בראי המים
+
+חלילי עיתים עצוב הוא
+ועל כן הוא מילל
+כמו שועל קטן עזוב
+שאבד בתוך הסוף
+
+חלילי צוחק בקיץ
+חלילי בוכה בסתיו
+באביב הוא מתרונן לו
+כציפור בראש ענף
+
+אך בחורף הוא שומע
+איך הרוח בעלים
+לבדו לשיר יודע
+כאלף חלילים
+
+מי יודע איזה פלא
+אי הדרך נכנסו
+כל המנגינות האלה
+אל קנה ירוק של סוף
+
+ידידי עשה חליל לי
+מקנה ירוק של סוף
+ואמר עכשיו נגני לי
+שיר שמח או עצוב
+
+ידידי עשה חליל לי` },
+  { name: "פרידה", cat: ["פרידה"], youtube: "https://youtu.be/OdYRuoXrHHw?si=vzt3NWiRJBx09b0T", lyrics: `
+
+בגידת הגוף, נאמנות הרוח
+שרידי הזהר של הנעורים
+אי פה אי שם נשמע ניגון שכוח
+ואלה הדברים שנשארים
+
+יש בגינה צינור וממטרה
+ותאנה חרוב וכל הדשא
+המיית הבית כמשנה סדורה
+כמו מתפללת היא ומבקשת
+
+כאב וסבל לא יוכלו לאהבה
+ונהרות אותה לא יכבו
+כשנחלי-הזיכרון על כל טובם
+אל תוך האוקיינוס יקוו
+
+גם צער-הפרידה - הוא לא ימחק
+את סוד הזוהר של הנעורים
+והוא קורן אלינו ממרחק
+כי הוא מן הדברים שנשארים` },
+  { name: "ימים של קיץ", cat: ["פרידה"], youtube: "https://youtu.be/zvCtz01_2BA?si=g-UbkFy8L-UWs_hG", lyrics: `
+
+וכשהכל נגמר ידעתי שתשובי עוד
+בסוף כל מלחמה יש אשליה קטנה
+וכשהלב נשבר ידעתי שתבואי
+עוד הלילה לאסוף את כאבי
+
+וכשהכל נגמר
+ידעתי שנחזור להיות
+כמו שהיינו פעם חברים טובים
+ולפעמים אני חזק ולפעמים גם לא
+האם את מפחדת אהובה שלי
+
+אני אשאיר ימים של קיץ ארוכים על החלון
+והשנים שיעברו ולא ישאירו זיכרון
+וזה רק אני ואת
+זה רק אני ואת היום
+
+וכשהכל נגמר
+חלמתי אלף חלומות
+על כל מה שהספקתי ועל מה שלא
+ואם אני ראוי
+האם אני יכול להיות
+זה שירדם איתך היום
+
+ויעברו שנים ויתחלפו להן עונות
+וגם אנחנו נזדקן את עוד תראי
+על הפנים ועל השערות הלבנות
+בתוך כל אלה מתחבאות להן שנים	
+ ` },
+  { name: "כל מי שאת", cat: ["פרידה"], youtube: "https://youtu.be/fQuuBh0kP50?si=cheRG82E16FWghVF", lyrics: `
+
+
+המחוגים בשעון כמו זוג מספריים
+קרובים לנגיעה בפתיל חייך
+ואי אפשר לתפוס במבט
+את כל מי שאת
+
+חיילים שנפלו חברים לכיתה
+נאספים ליד המיטה
+כשאת נשארת לבד
+עם כל מי שאת
+
+לא בידינו להחליט
+מתי תבוא המעלית
+ויפתח עידן אחר
+כשהדלת תיסגר
+לא בכוחנו לשנות
+רק לאסוף עוד זיכרונות
+ובזמן שמחכים
+במקום לבכות - אנחנו צוחקים
+
+המחוגים בשעון מתעקשים לזוז
+בסיני אין היאחזות
+וברדיו כל היום
+לשיר זה כמו להיות ירקון
+
+אבל פרח קטן שהביא לך חבר
+וספר של באך על הפסנתר
+הופכים את החדר לעיר מקלט
+של כל מי שאת
+
+לא בידינו להחליט...` },
+  { name: "מונסון", cat: ["פרידה"], youtube: "https://youtu.be/zqKtq65O_iE?si=Q6q2YDpmr5XV_P49", lyrics: `
+נשרוף ת'זמן נשרוף נשרוף
+את כל מה שבינינו
+תני לרגע שיחלוף
+העבר עוד לפנינו
+
+כמו שבאתי הלכתי
+זה הכל חלומות
+ואולי לא הייתי שם לאהוב
+כנראה ששכחתי
+אולי הלכתי רחוק
+לא יכול לאהוב אותך מקרוב
+
+הצמאון לאהבה
+ורעב שמתמשך
+ויש שושן ויש בו קוץ
+ושריטה קטנה בלב
+
+כמו שבאת לי הלכת לי
+זה הכל חלומות
+ואולי לא היית שם לאהוב
+כנראה שנשכחתי
+את הולכת רחוק
+כנראה שזה ככה
+בחלומות.` },
+  { name: "החגיגה נגמרת", cat: ["פרידה"], youtube: "https://youtu.be/FamZOVKnRJE?si=CVxCG0a9fuqybfHF", lyrics: `
+
+ולפעמים
+החגיגה נגמרת
+כיבוי אורות
+החצוצרה אומרת
+שלום לכינורות
+אשמורת תיכונה נושקת לשלישית -
+לקום מחר בבוקר ולהתחיל מבראשית.
+
+לקום מחר בבוקר עם שיר חדש בלב
+לשיר אותו בכח, לשיר אותו בכאב
+לשמוע חלילים ברוח החופשית
+ולהתחיל מבראשית.
+
+מבראשית
+את עולמך בבוקר תמיד לברוא:
+האדמה, העשב וכל המאורות
+ואז מן העפר, בצלם אנשים
+לקום מחר בבוקר ולהתחיל מבראשית.
+
+לקום מחר בבוקר...
+
+גם אצלך
+החגיגה נגמרת
+ובחצות
+הביתה את הדרך
+קשה לך למצוא
+מתוך החשכה אנחנו מבקשים -
+לקום מחר בבוקר ולהתחיל מבראשית.
+
+לקום מחר בבוקר...` },
+  { name: "שיר פרידה", cat: ["פרידה"], youtube: "https://youtu.be/NeBYphQ3Qy0?si=yKvcX0NZ5R3XI9n1", lyrics: `
+זה שיר פרידה,
+אז בואי רק אמרי שלום.
+אני אומר תודה
+ואת יודעת שחלום,
+סופו להתגשם...
+אני אומר תודה
+ואחר כך נושק
+
+כמו חופים של ים עוזב,
+אני עובר עכשיו ממך.
+בין דמעות ובין כאב,
+אני הולך אני...
+
+זה שיר פרידות
+תמיד אומרים בין השורות,
+שכמו חידות,
+פרידות גם הן אינן פתורות.
+אין בי מנוחה,
+רוחך שבי
+גם היא בוכה.
+
+כמו חופים שים עוזב...
+
+כל הפרידות הן עצובות,
+כאב המילים חותך,
+טלפנתי שנה ולא ענית,
+אני הולך ממך.` },
+  { name: "כמה טוב שנפגשנו", cat: ["פרידה"], youtube: "https://youtu.be/WjG_BoLx5As?si=lOgkqJRdsHcYEAvy", lyrics: `
+אם עד לפני שעה קלה
+היינו רחוקים
+עכשיו יש הקלה גדולה
+בוכים וצוחקים
+
+כי זה חיבור של נשמות
+זה קשר אמיתי
+ותחושות טובות חמות
+מלוות אותי
+
+כמה טוב, כמה טוב שנפגשנו
+מה אני בלעדיכם
+יחד התרגשנו
+כל זה בשבילכם
+
+כמה טוב, כמה טוב שנפגשנו
+כאן פנים אל פנים
+השירים שאהבנו
+תודה על השנים
+
+אתם אתי בכל מצב
+מלווים אותי
+מביט באור לבכם עכשיו
+אור שהולך אתי
+
+כי אתם נותנים לי כוח
+לתת לכם שמחה
+את לבכם אלי
+לפתוח לרווחה
+
+כמה טוב שנפגשנו
+מה אני בלעדיכם
+יחד התרגשנו
+כל זה בשבילכם
+
+כמה טוב שנפגשנו
+כאן פנים אל פנים
+השירים שאהבנו
+תודה על השנים
+
+רגע לפני שנפרדים
+אוספים את השירים
+לזמן שעוד יביא לכאן
+ימים מאושרים
+
+יום חדש עלינו יאיר
+שמיים בהירים
+וביחד עוד נשיר
+את כל השירים
+
+כמה טוב שנפגשנו...` },
+{ name: "יונתן הקטן | יהונתן גפן", cat: ["משפחה"], youtube: "https://www.canva.com/design/DAG3AZNA6Qk/xCZY1KFxrfetRu7YmHq7PQ/view?utm_content=DAG3AZNA6Qk&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=hf238042735", isPoem: true },
+  { name: "אולי נרדם | נתן יונתן", cat: ["משפחה"], youtube: "https://www.canva.com/design/DAGYXFQwNtA/BAivFNTb7YxmvFIL33kKNw/view?utm_content=DAGYXFQwNtA&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "הכל מתקצר | מיכאל זץ", cat: ["משפחה"], youtube: "https://www.canva.com/design/DAGYXHOezIc/sx_pkBOyc7DrChAffLp4tw/view?utm_content=DAGYXHOezIc&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "מוצ''ש | קרן דוד הרטמן", cat: ["משפחה"], youtube: "https://www.canva.com/design/DAG3ATpgK38/kQLjFLlj_2UH7f_2G0DqfA/view?utm_content=DAG3ATpgK38&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=hf9fab22d14", isPoem: true },
+  { name: "במסעדה אצל עזורה | יוסי בנאי", cat: ["משפחה"], youtube: "https://www.canva.com/design/DAGYXE2y70Y/7qDGiOHhnr4DwllTd5mjDg/view?utm_content=DAGYXE2y70Y&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "ילדי הבוגר | לא ידוע", cat: ["משפחה"], youtube: "https://www.canva.com/design/DAGYW_OoLxw/VOLTOMAlDwc7DG6mECcfRw/view?utm_content=DAGYW_OoLxw&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "אימי | איריס אליה כהן", cat: ["משפחה"], youtube: "https://www.canva.com/design/DAG3ASpSpEg/SsU775cpopGKMMf_31ab7g/view?utm_content=DAG3ASpSpEg&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h733000563b", isPoem: true },
+  { name: "מצח הנפש | טלי ורסנו אייסמן", cat: ["משפחה"], youtube: "https://www.canva.com/design/DAGYXIdPh90/4Mhb-D-YlPpCX07hhgODOg/view?utm_content=DAGYXIdPh90&utm_campaign=designshare&utm_medium=link&utm_source=editor", isPoem: true },
+  { name: "הפקדה | יעל קידר", cat: ["משפחה"], youtube: "https://www.canva.com/design/DAG3AewwjnA/TvZVVnwGc2W2wIggQg2Ghg/view?utm_content=DAG3AewwjnA&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=haaa855c977", isPoem: true },
+  { name: "רקמה מדויקת | דליה רביקוביץ", cat: ["משפחה"], youtube: "https://www.canva.com/design/DAG3AVibk-A/NN1-dYW1-ec9gb2T5jSBBA/view?utm_content=DAG3AVibk-A&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h3bedce12c6", isPoem: true },
+  { name: "וייטנם | ויסלבה שימבורסקה", cat: ["משפחה"], youtube: "https://www.canva.com/design/DAG3AV5cmAI/8FymJup7Ozh--AqXp0gD4g/view?utm_content=DAG3AV5cmAI&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h5bbe828d98", isPoem: true },
+  { name: "מסע חיי", cat: ["פרידה"], youtube: "https://youtu.be/ETUsBQ_FQSA?si=a8t8CgoR8p61mlvr", lyrics: `
+אני יוצא שוב אל הדרך המושטת לרגלי
+אל ימים ולילות, אל מסע חיי
+אני אומר שלום לכל אחד
+ארץ נרדמת ולב נפרד
+
+מן הבית בו גדלתי נשמתי עוד מביטה
+חלונות נפקחים אל אמת פשוטה
+אני הולך איתה לכל מדבר
+ארץ חורגת או דרך בר
+
+אבל כמי הנחל הסוער
+תמיד אני חוזר
+לאן שגעגוע טוב ייקח
+לשם אני שייך
+
+ואם מישהו בבית מסתכל עלי עכשיו
+כאדם לאדם, לא לאור כוכב
+אני אומר תודה בקול נרעד
+ארץ נפרדת ולב אחד
+
+אבל כמי הנחל הסוער...
+
+חוזר אל השבילים, אל הרחובות, אל הידיים המחכות
+אל הזריחות, אל השקיעות והשנים הכי יפות
+אל שיקרה, אל שעבר, אל מה שעוד לא נאמר
+
+כמי הנחל הסוער...` },
+  { name: "יש לך אותי", cat: ["פרידה"], youtube: "https://youtu.be/krqt5mo4iEs?si=i7Opbenr_MPfudxA", lyrics: `
+לכי ילדה אהובה אל חופים רחוקים
+אל חלומות אחרים
+יש עוד דרכים שאותן לא עברו מעולם
+לכי לשם
+
+קחי לך ילדה אהובה את תרמיל האתמול
+יש בו כמעט את הכל
+לכי ילדה אהובה, כי עוד לא מאוחר
+אל המחר
+
+לא, לא, אל תשכחי
+גם כשעצוב לך
+יש לך אותי
+לא, לא, אל תשכחי
+אני כאן
+
+אל תכעסי אהובה, אם נתנו לך לחשוב
+אין כאן מקום לאהוב
+פעם היה זה חלום
+שאליו מגיעים
+ממקומות אחרים
+
+לא, לא, אל תשכחי...
+
+ואני כבר עייפתי מאוד
+על שנים אבודות לא אבכה עוד
+כשביקשתי למצוא את הסוד
+זה שגם לך מחכה
+
+לכי ילדה אהובה אל חופים רחוקים
+אל חלומות אחרים
+יש עוד דרכים נסתרות להגיע דרכן
+לכי איתן
+
+לא, לא, אל תשכחי...` },
+  { name: "מאה שנים", cat: ["פרידה"], youtube: "https://youtu.be/5Md6jEI6bnw?si=-4uzqRLiCIjrE31K", lyrics: `בעוד
+מאה שנים מכאן
+ישארו רק התמונות
+עדות
+לרגעים שנצרבו אצלי בזיכרנות
+
+ולילדה בשתי צמות
+ופה מלא בשאלות.
+תספרי מה שסיפרו לך
+תתני פרשנויות
+
+וכמו בטלפון שבור תוסיפי עוד מילה
+עד שלא ישאר שום זכר לכל מה שהיה
+
+ואחרי כל זה מי זכור מי ידע
+היו לילות שזעקתי את שמך
+ואחרי כל זה מי יזכור מי ידע
+אני רדפתי תמיד אחרי האמת
+
+ואף אחד כבר לא ידע
+אני בחרתי להאמין
+גם כשהכול נראה כמו סוף
+גם כשדיממתי מבפנים
+ולאף אחד לא ישנה כמה הייתי אמיצה
+ואיך
+איך ניצחתי ת׳פחדים
+מצאתי אור החשיכה
+
+וכמו בטלפון שבור תוסיפי עוד מילה
+עד שלא ישאר שום זכר לכל מה שהיה` },
+  { name: "אולי עוד קיץ", cat: ["פרידה"], youtube: "https://youtu.be/WALmDsMxwTM?si=mgPkkL4o0CFOfEaL", lyrics: `
+היום עולה והיום בא,
+זמן קצר, המלאכה רבה,
+בקושי אפשר לנשום,
+בקושי אפשר לחלום.
+
+כרכבות חולפות ביעף
+מתראים אנו בחטף
+עוצרים ושותים קפה,
+זוכרים שהיום יפה.
+
+ודאי ישנו מקום בו
+הכל קורה לאט,
+הזמן עומד מלכת
+אולי זה פה על יד.
+
+אולי עוד קיץ
+אנחנו ניפגש
+כולנו נתרגש -
+זה נפלא.
+אולי עוד קיץ
+נמחה את הדמעה
+ואם תגיע השעה
+ונבקש -
+אולי עוד קיץ ניפגש.
+
+היום עולה והחום בא,
+רוח קם לו מן המדבר.
+בקושי אפשר לנשום,
+בקושי אפשר לחלום.
+
+כמסלולי הכוכבים,
+לפעמים אנו מצטלבים
+נותנים רגע יד ביד,
+יכול להיות נחמד.
+
+רק שרוחות המערב
+יביאו סוף לשרב
+ולליבנו - הקלה
+ותקווה גדולה.
+
+אולי עוד קיץ...` },
+  { name: "טיול", cat: ["פרידה"], youtube: "https://youtu.be/UMNI_XAS1wc?si=5ruSfTme63soccsk", lyrics: `
+והאמת, כולנו יודעים שיום אחד הטיול ייגמר
+היה דווקא כיף, נהנינו נורא, שמחנו מטוב וצמחנו מרע.
+גיטרה בשמש, על דשא ירוק, עפנו גבוה, צללנו עמוק
+בכינו מצער, בכינו מצחוק.
+
+והאמת, כמה פחדנו שמישהו יבוא ישבור לנו את הלב
+ואיך גילינו, שכמו כל דבר, הזמן מרפא גם לב שנשבר
+מרוב געגוע רצינו למות, הרגשנו ריקים, חסרי משמעות
+חגגנו בעצב את תום התמימות.
+
+כולנו לבד וכולנו ביחד
+בדרך הביתה צריך לעצור מול הים
+לגלגל את הזמן ולקחת אוויר. עכשיו.
+
+והאמת, כמה שמחנו כשהשמש באה ביום גשום
+ראינו עולם, נשארנו ערים, מצאנו אמת בתוך השירים
+נשיקה ראשונה, נהגנו לבד, עזבנו לאמא לאט את היד
+היינו באמצע, היינו בצד.
+
+כולנו לבד וכולנו ביחד
+בדרך הביתה צריך לעצור מול הים
+לגלגל את הזמן ולקחת אוויר. עכשיו.
+
+זו האמת, כולנו יודעים שיום אחד הטיול יגמר.` },
+  { name: "האיש ההוא", cat: ["פרידה", "זיכרון"], youtube: "https://youtu.be/iKkQr5OxkfM?si=1TOgK4EbIkW1Qz13", lyrics: `
+
+איפה ישנם עוד אנשים כמו האיש ההוא
+אשר היה כערבות הבוכיות.
+
+למרגלות ההר נולד
+ליד הנחל.
+בחורף שר בין ערבות בוכיות.
+בקיץ בין אורות בצעי המים
+לחמו שילח על פני הנחל לדגה.
+מקני הסוף כרת לו עפיפון
+וכשהיה לאיש
+מגבעולי הערבות הבוכיות נטה סוכה,
+מאבן המבצר האפורה בנה לו בית,
+על מי הנחל טחנה הקים,
+זרע שדות.
+שלח הונו על פני הים באניות סוחר.
+אך יש אשר יניח כלי מלאכתו,
+ויהיה פתאום לאיש אחר.
+
+איפה ישנם עוד אנשים כמו האיש ההוא
+אשר היה כערבות הבוכיות.
+
+למרגלות ההר נולד, ליד הנחל
+יידוד פזור נפש על ההר או בבכאים.
+ובנופלו בבוקר לא עבות אחד על אדמתו,
+יקנו לו אחוזת עולם,
+ליד אמות המים השקטות.
+איפה ישנם עוד אנשים כמו האיש ההוא
+אשר היה כערבות הבוכיות.
+וכמו מבצר עתיק היה בסוף הדרך.
+
+איפה ישנם עוד אנשים כמו האיש ההוא
+אשר היה כערבות הבוכיות.` },
+    { name: "הלילה הוא שירים", cat: ["שירים על שירים"], youtube: "https://youtu.be/Zqt0al7vA-Y", lyrics: `חכו נא עוד רגע, חכו נא בשקט
+חכו בזהירות, המסך יורד
+הלילה איננו רק חושך על דרך
+לפעמים הוא שירים וניגון והד
+
+כן, לפעמים הלילה הוא שירים רבים
+לפעמים, כן, לפעמים
+הלילה מנגן ומכה בתופים
+לפעמים, לפעמים
+לפעמים, הוא עד כדי כך תמים
+
+חכו נא עוד הרף, עצמו העיניים
+חכו עוד שנייה, זאת ולא יותר
+הלילה אינו רק חלום ושמיים
+לפעמים הוא תפילה למחר אחר
+
+כן, לפעמים, הלילה הוא תפילות רבות
+לפעמים, כן, לפעמים
+הלילה מתפלל, ועיניו עצומות
+לפעמים, כן לפעמים
+לפעמים, הוא עד כדי כך תמים
+
+חכו נא עוד רגע, היא כבר מסיימת
+רק רגע וסוף , האורות כבים
+הלילה איננו רק ארץ רודמת
+לפעמים הוא פשוט, קצת שירים יפים
+
+כן, לפעמים, הלילה הוא שירים יפים
+לפעמים, כן, לפעמים
+הלילה הוא ניגון וחדוות נעורים
+לפעמים, כן לפעמים
+לפעמים, הוא עד כדי כך תמים
+
+הלילה מנגן ומכה בתופים
+לפעמים, כן, לפעמים
+כן לפעמים, הוא עד כדי כך תמים` }
+]; // סגירת מערך השירים (playlist)
+
+    // פונקציית הצגת כרטיסי השירים בדף
+   function displaySongs(songsToDisplay) {
+    const resultsDiv = document.getElementById('results');
+    if (!resultsDiv) return;
+    resultsDiv.innerHTML = "";
+
+    // מיון השירים: שירים רגילים בהתחלה, שירי משוררים (isPoem) בסוף
+    const sortedSongs = [...songsToDisplay].sort((a, b) => {
+        if (a.isPoem && !b.isPoem) return 1;
+        if (!a.isPoem && b.isPoem) return -1;
+        return 0;
+    });
+    
+    sortedSongs.forEach(song => {
+        const card = document.createElement('div');
+        card.className = 'song-card';
+        
+        if (song.isPoem) {
+            card.classList.add('poet-style');
+            card.onclick = () => window.open(song.youtube, '_blank');
+        } else {
+            card.onclick = () => openModal(song);
+        }
+        
+        card.innerText = song.name;
+        resultsDiv.appendChild(card);
+    });
+}
+
+    // פתיחת חלונית השיר (מודאל)
+    function openModal(song) {
+        const modal = document.getElementById('songModal');
+        if (!modal) return;
+        document.getElementById('modalTitle').innerText = song.name;
+        document.getElementById('modalLyrics').innerText = song.lyrics;
+        document.getElementById('modalYoutube').href = song.youtube;
+        modal.style.display = "block";
+    }
+
+    // סגירת חלונית השיר
+    function closeModal() { 
+        const modal = document.getElementById('songModal');
+        if (modal) modal.style.display = "none"; 
+    }
+
+    // פונקציית החיפוש החופשי
+    function searchSongs() {
+        const query = document.getElementById('searchBar').value.toLowerCase();
+        const filtered = playlist.filter(s => {
+            const nameMatch = s.name.toLowerCase().includes(query);
+            const catMatch = Array.isArray(s.cat) 
+                ? s.cat.some(c => c.toLowerCase().includes(query))
+                : s.cat.toLowerCase().includes(query);
+            return nameMatch || catMatch;
+        });
+        displaySongs(filtered);
+    }
+
+    // פונקציית הסינון לפי קטגוריות + סימון באפרסק
+    function filterCategory(category) {
+        // סימון ויזואלי של הכפתור שנלחץ
+        const buttons = document.querySelectorAll('.categories button');
+        buttons.forEach(btn => btn.classList.remove('active'));
+
+        buttons.forEach(btn => {
+            if (btn.innerText === category) {
+                btn.classList.add('active');
+            }
+        });
+
+        // ביצוע הסינון בפועל
+        if (category === 'הכל') {
+            displaySongs(playlist);
+        } else {
+            const filtered = playlist.filter(s => {
+                if (Array.isArray(s.cat)) return s.cat.includes(category);
+                return s.cat === category;
+            });
+            displaySongs(filtered);
+        }
+    }
+
+    // הפעלה ראשונית של האתר
+    displaySongs(playlist);
+
+    // סגירת המודאל בלחיצה מחוץ לתוכן
+    window.onclick = function(event) {
+        const modal = document.getElementById('songModal');
+        if (event.target == modal) {
+            closeModal();
+        }
+    }
+</script>
+</body>
+</html>
