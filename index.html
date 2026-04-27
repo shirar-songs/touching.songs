@@ -91,6 +91,38 @@
 
 .song-card.poet-style:hover {
     background: #ffe5d4 !important;
+    <head>
+    <meta charset="UTF-8">
+    <title>שיר לכל עת</title>
+    <style>
+        /* כאן יש לך בטח כבר עיצובים קיימים לכרטיסי השירים וכו' */
+        
+        /* תוסיפי את זה בסוף העיצובים הקיימים: */
+        .share-container {
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .whatsapp-share-btn {
+            background-color: white;
+            color: #40E0D0;
+            border: 1px solid #40E0D0;
+            padding: 8px 30px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 16px;
+            display: inline-block;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            font-family: sans-serif; /* או הפונט של האתר שלך */
+        }
+
+        .whatsapp-share-btn:hover {
+            background-color: #40E0D0;
+            color: white;
+        }
+    </style>
+</head>
 }  </style>
 </head>
 <body>
@@ -12368,7 +12400,7 @@ Whisper words of wisdom, let it be` },
     // הפעלה ראשונית של האתר
     displaySongs(playlist);
 
-    // סגירת המודאל בלחיצה מחוץ לתוכן
+    // // סגירת המודאל בלחיצה מחוץ לתוכן
     window.onclick = function(event) {
         const modal = document.getElementById('songModal');
         if (event.target == modal) {
@@ -12376,5 +12408,12 @@ Whisper words of wisdom, let it be` },
         }
     }
 </script>
+
+<div class="share-container">
+    <a href="https://wa.me/?text=שיר לכל עת – שירים שנוגעים בלב: https://shirar-songs.github.io/touching.songs" target="_blank" class="whatsapp-share-btn">
+        נהניתם? מוזמנים לשתף חברים :)
+    </a>
+</div>
+
 </body>
 </html>
